@@ -23,8 +23,8 @@ var deployCmd = &cobra.Command{
 	Use:   "deploy",
 	Short: "Deploy OpenModelz inferences",
 	Long:  `Deploys OpenModelZ inferences directly via flags.`,
-	Example: `  omz deploy --image=modelzai/llm-bloomz-560m:23.06.13
-  omz deploy --image=modelzai/llm-bloomz-560m:23.06.13 --name bloomz-560m`,
+	Example: `  mdz deploy --image=modelzai/llm-blomdz-560m:23.06.13
+  mdz deploy --image=modelzai/llm-blomdz-560m:23.06.13 --name blomdz-560m`,
 	GroupID: "basic",
 	PreRunE: getAgentClient,
 	RunE:    commandDeploy,

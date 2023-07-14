@@ -20,9 +20,9 @@ var listCommand = &cobra.Command{
 	Use:   "list",
 	Short: "List OpenModelz inferences",
 	Long:  `Lists OpenModelZ inferences either on a local or remote agent`,
-	Example: `  omz list
-  omz list -v
-  omz list -q`,
+	Example: `  mdz list
+  mdz list -v
+  mdz list -q`,
 	GroupID: "basic",
 	PreRunE: getAgentClient,
 	RunE:    commandList,

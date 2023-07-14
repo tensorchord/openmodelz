@@ -9,7 +9,7 @@ var deleteCmd = &cobra.Command{
 	Use:     "delete",
 	Short:   "Delete OpenModelz inferences",
 	Long:    `Deletes OpenModelZ inferences`,
-	Example: `  omz delete bloomz-560m`,
+	Example: `  mdz delete blomdz-560m`,
 	GroupID: "basic",
 	PreRunE: getAgentClient,
 	Args:    cobra.ExactArgs(1),

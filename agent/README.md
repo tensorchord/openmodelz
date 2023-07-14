@@ -4,5 +4,5 @@ TODO:
 
 - Make resolver optional
 - proxy with use case
-- omz init
+- mdz init
 - ai lab

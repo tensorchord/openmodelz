@@ -3,7 +3,7 @@ package cmd
 import (
 	"github.com/cockroachdb/errors"
 	"github.com/spf13/cobra"
-	"github.com/tensorchord/openmodelz/omz/pkg/version"
+	"github.com/tensorchord/openmodelz/mdz/pkg/version"
 )
 
 // versionCmd represents the versionCmd
@@ -11,7 +11,7 @@ var versionCmd = &cobra.Command{
 	Use:     "version",
 	Short:   "Print the client and agent version information",
 	Long:    `Print the client and server version information`,
-	Example: `  omz version`,
+	Example: `  mdz version`,
 	PreRunE: getAgentClient,
 	RunE:    commandVersion,
 }

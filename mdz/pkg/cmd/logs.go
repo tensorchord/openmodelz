@@ -16,7 +16,7 @@ var logsCmd = &cobra.Command{
 	Use:     "logs",
 	Short:   "Print the logs for a inference",
 	Long:    `Print the logs for a inference`,
-	Example: `  omz logs bloomz-560m`,
+	Example: `  mdz logs blomdz-560m`,
 	GroupID: "debug",
 	PreRunE: getAgentClient,
 	RunE:    commandLogs,

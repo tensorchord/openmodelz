@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/cobra/doc"
 
 	"github.com/tensorchord/openmodelz/agent/client"
 )
@@ -19,9 +20,9 @@ var (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "omz",
+	Use:   "mdz",
 	Short: "Manage your OpenModelZ inferences from the command line",
-	Long:  `omz is a CLI library to manage your OpenModelZ inferences from the command line.`,
+	Long:  `mdz is a CLI library to manage your OpenModelZ inferences from the command line.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
@@ -41,7 +42,7 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.omz.yaml)")
+	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.mdz.yaml)")
 	rootCmd.PersistentFlags().StringVarP(&agentURL, "agent-url", "a", "http://localhost:8081", "URL of the OpenModelZ agent")
 	rootCmd.PersistentFlags().StringVarP(&namespace, "namespace", "n", "default", "Namespace to use for OpenModelZ inferences")
 	rootCmd.PersistentFlags().BoolVarP(&debug, "debug", "", false, "Enable debug logging")
@@ -63,4 +64,8 @@ func getAgentClient(cmd *cobra.Command, args []string) error {
 		}
 	}
 	return nil
+}
+
+func GenMarkdownTree(dir string) error {
+	return doc.GenMarkdownTree(rootCmd, dir)
 }
