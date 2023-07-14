@@ -76,7 +76,16 @@ After that, you could use `omz infer civitai epicrealism` to experiment with it.
 omz infer civitai epicrealism --prompt "A photo of a cat"
 ```
 
-### Share with your teammates
+### Deploy Huggingface spaces
+
+You could deploy Huggingface spaces with `omz deploy huggingface` command. A Huggingface spaces will be deployed with the model serverlessly.
+
+```bash
+# Deploy Huggingface space application.
+omz deploy huggingface Manjushri/Music-Genie-GPU --name music-genie
+```
+
+### Share any deployed model with your teammates
 
 You could share your deployed models with your teammates with `omz share` command. A shareable link will be generated for your teammates to access your deployed models.
 
