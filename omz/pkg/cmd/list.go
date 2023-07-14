@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sort"
 
+	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/spf13/cobra"
 	"github.com/tensorchord/openmodelz/agent/api/types"
 )
@@ -61,19 +62,51 @@ func commandList(cmd *cobra.Command, args []string) error {
 			}
 		}
 
-		cmd.Printf("%-30s\t%-"+fmt.Sprintf("%d", maxWidth)+"s\t%-15s\t%-5s\t%-5s\n", "Function", "Image", "Invocations", "Replicas", "CreatedAt")
+		t := table.NewWriter()
+		t.SetStyle(table.Style{
+			Box:     table.StyleBoxDefault,
+			Color:   table.ColorOptionsDefault,
+			Format:  table.FormatOptionsDefault,
+			HTML:    table.DefaultHTMLOptions,
+			Options: table.OptionsNoBordersAndSeparators,
+			Title:   table.TitleOptionsDefault,
+		})
+		t.AppendHeader(table.Row{"Name", "Endpoint", "Image", "Status", "Invocations", "Replicas", "CreatedAt"})
+
 		for _, inf := range infs {
 			functionImage := inf.Spec.Image
-			// if len(function.Image) > 40 {
-			// 	functionImage = functionImage[0:38] + ".."
-			// }
-			cmd.Printf("%-30s\t%-"+fmt.Sprintf("%d", maxWidth)+"s\t%-15d\t%-5d\t\t%-5s\n", inf.Spec.Name, functionImage, int64(inf.Status.InvocationCount), inf.Status.Replicas, inf.Status.CreatedAt.String())
+			t.AppendRow(table.Row{
+				inf.Spec.Name,
+				fmt.Sprintf("%s/%s.%s", agentURL, inf.Spec.Name, inf.Spec.Namespace),
+				functionImage,
+				inf.Status.Phase,
+				int64(inf.Status.InvocationCount),
+				fmt.Sprintf("%d/%d", inf.Status.AvailableReplicas, inf.Status.Replicas),
+				inf.Status.CreatedAt.String(),
+			})
 		}
+
+		cmd.Println(t.Render())
 	} else {
-		cmd.Printf("%-30s\t%-15s\t%-5s\n", "Function", "Invocations", "Replicas")
+		t := table.NewWriter()
+		t.SetStyle(table.Style{
+			Box:     table.StyleBoxDefault,
+			Color:   table.ColorOptionsDefault,
+			Format:  table.FormatOptionsDefault,
+			HTML:    table.DefaultHTMLOptions,
+			Options: table.OptionsNoBordersAndSeparators,
+			Title:   table.TitleOptionsDefault,
+		})
+		t.AppendHeader(table.Row{"Name", "Endpoint", "Status", "Replicas"})
 		for _, inf := range infs {
-			cmd.Printf("%-30s\t%-15d\t%-5d\n", inf.Spec.Name, int64(inf.Status.InvocationCount), inf.Status.Replicas)
+			t.AppendRow(table.Row{
+				inf.Spec.Name,
+				fmt.Sprintf("%s/%s.%s", agentURL, inf.Spec.Name, inf.Spec.Namespace),
+				inf.Status.Phase,
+				fmt.Sprintf("%d/%d", inf.Status.AvailableReplicas, inf.Status.Replicas),
+			})
 		}
+		cmd.Println(t.Render())
 	}
 	return nil
 }
