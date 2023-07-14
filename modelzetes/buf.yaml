@@ -1,0 +1,920 @@
+apiVersion: v1
+items:
+- apiVersion: tensorchord.ai/v1
+  kind: Inference
+  metadata:
+    creationTimestamp: "2023-06-02T07:37:53Z"
+    generation: 1
+    labels:
+      inference: 895f81b5-7e60-49b0-a2c1-145fc884cac7
+    name: 895f81b5-7e60-49b0-a2c1-145fc884cac7
+    namespace: modelz-a39caa1c-0b03-4054-b75f-1f1cf8424b01
+    resourceVersion: "76627989"
+    uid: 8f0b842a-be19-4dae-9fa0-986e830b0670
+  spec:
+    annotations:
+      ai.tensorchord.docker.image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/mosec-imagebind:23.05.2
+      ai.tensorchord.domain: https://imagebind-ogeboq7ciyo3sq0t.modelz.tech
+      ai.tensorchord.source: docker
+    constraints:
+    - ai.tensorchord.server-resource=nvidia-tesla-t4-4c-16g
+    image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/mosec-imagebind:23.05.2
+    labels:
+      ai.tensorchord.framework: mosec
+      ai.tensorchord.name: imagebind
+      ai.tensorchord.region: us-central1
+      ai.tensorchord.scale.max: "1"
+      ai.tensorchord.scale.min: "0"
+      ai.tensorchord.scale.target: "10"
+      ai.tensorchord.scale.type: capacity
+      ai.tensorchord.scale.zero-duration: 1m0s
+      ai.tensorchord.server-resource: nvidia-tesla-t4-4c-16g
+      ai.tensorchord.startup-duration: 10m0s
+      ai.tensorchord.vendor: gcp
+    name: 895f81b5-7e60-49b0-a2c1-145fc884cac7
+    resources:
+      limits:
+        nvidia.com/gpu: "1"
+      requests:
+        cpu: "3"
+        memory: 12Gi
+        nvidia.com/gpu: "1"
+- apiVersion: tensorchord.ai/v1
+  kind: Inference
+  metadata:
+    creationTimestamp: "2023-05-06T09:28:13Z"
+    generation: 1
+    labels:
+      inference: c5e72dcd-bee6-4b82-b08b-47cc9f4a2c1c
+    name: c5e72dcd-bee6-4b82-b08b-47cc9f4a2c1c
+    namespace: modelz-a39caa1c-0b03-4054-b75f-1f1cf8424b01
+    resourceVersion: "50967692"
+    uid: 1f201ac0-ed45-4cf3-b084-47752fabfb5c
+  spec:
+    annotations:
+      ai.tensorchord.docker.image: docker.io/starkind/moss:v1.11
+      ai.tensorchord.domain: https://moss-jmclvinro4plugtp.modelz.tech
+      ai.tensorchord.source: docker
+    constraints:
+    - ai.tensorchord.server-resource=nvidia-ada-l4-8c-32g
+    image: docker.io/starkind/moss:v1.11
+    labels:
+      ai.tensorchord.framework: gradio
+      ai.tensorchord.name: moss
+      ai.tensorchord.port: "7860"
+      ai.tensorchord.region: us-central1
+      ai.tensorchord.scale.max: "1"
+      ai.tensorchord.scale.min: "0"
+      ai.tensorchord.scale.target: "10"
+      ai.tensorchord.scale.type: capacity
+      ai.tensorchord.scale.zero-duration: 5m0s
+      ai.tensorchord.server-resource: nvidia-ada-l4-8c-32g
+      ai.tensorchord.startup-duration: 10m0s
+      ai.tensorchord.vendor: gcp
+    name: c5e72dcd-bee6-4b82-b08b-47cc9f4a2c1c
+    resources:
+      limits:
+        nvidia.com/gpu: "1"
+      requests:
+        cpu: 6500m
+        memory: 24Gi
+        nvidia.com/gpu: "1"
+- apiVersion: tensorchord.ai/v1
+  kind: Inference
+  metadata:
+    creationTimestamp: "2023-05-15T03:41:02Z"
+    generation: 3
+    labels:
+      inference: 0b1e753e-9703-41c8-9311-b6bb943bcbda
+    name: 0b1e753e-9703-41c8-9311-b6bb943bcbda
+    namespace: modelz-a9d660cf-2537-4e48-bcaf-adf8470a83c0
+    resourceVersion: "60441705"
+    uid: ee8818d1-1e46-4d0b-bab3-3b1893ba4703
+  spec:
+    annotations:
+      ai.tensorchord.docker.image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/gradio-stable-diffusion:23.04.4
+      ai.tensorchord.domain: https://sd-uif34dg3x17kb21j.modelz.tech
+      ai.tensorchord.inference.spec: '{"name":"0b1e753e-9703-41c8-9311-b6bb943bcbda","image":"us-central1-docker.pkg.dev/nth-guide-378813/modelzai/gradio-stable-diffusion:23.04.4","envVars":{"GRADIO_SERVER_NAME":"0.0.0.0","GRADIO_SERVER_PORT":"7860","HF_ENDPOINT":"http://hfserver.default:8080"},"constraints":["ai.tensorchord.server-resource=nvidia-ada-l4-8c-32g"],"labels":{"ai.tensorchord.framework":"gradio","ai.tensorchord.name":"sd","ai.tensorchord.port":"7860","ai.tensorchord.region":"us-central1","ai.tensorchord.scale.max":"1","ai.tensorchord.scale.min":"0","ai.tensorchord.scale.target":"10","ai.tensorchord.scale.type":"capacity","ai.tensorchord.scale.zero-duration":"5m0s","ai.tensorchord.server-resource":"nvidia-ada-l4-8c-32g","ai.tensorchord.startup-duration":"10m0s","ai.tensorchord.vendor":"gcp","app":"0b1e753e-9703-41c8-9311-b6bb943bcbda","controller":"0b1e753e-9703-41c8-9311-b6bb943bcbda","inference":"0b1e753e-9703-41c8-9311-b6bb943bcbda"},"annotations":{"ai.tensorchord.docker.image":"us-central1-docker.pkg.dev/nth-guide-378813/modelzai/gradio-stable-diffusion:23.04.4","ai.tensorchord.domain":"https://sd-uif34dg3x17kb21j.modelz.tech","ai.tensorchord.inference.spec":"{\"name\":\"0b1e753e-9703-41c8-9311-b6bb943bcbda\",\"image\":\"us-central1-docker.pkg.dev/nth-guide-378813/modelzai/gradio-stable-diffusion:23.04.4\",\"constraints\":[\"ai.tensorchord.server-resource=nvidia-ada-l4-8c-32g\"],\"labels\":{\"ai.tensorchord.framework\":\"gradio\",\"ai.tensorchord.name\":\"sd\",\"ai.tensorchord.port\":\"7860\",\"ai.tensorchord.region\":\"us-central1\",\"ai.tensorchord.scale.max\":\"1\",\"ai.tensorchord.scale.min\":\"0\",\"ai.tensorchord.scale.target\":\"10\",\"ai.tensorchord.scale.type\":\"capacity\",\"ai.tensorchord.scale.zero-duration\":\"5m0s\",\"ai.tensorchord.server-resource\":\"nvidia-ada-l4-8c-32g\",\"ai.tensorchord.startup-duration\":\"10m0s\",\"ai.tensorchord.vendor\":\"gcp\"},\"annotations\":{\"ai.tensorchord.docker.image\":\"us-central1-docker.pkg.dev/nth-guide-378813/modelzai/gradio-stable-diffusion:23.04.4\",\"ai.tensorchord.domain\":\"https://sd-uif34dg3x17kb21j.modelz.tech\",\"ai.tensorchord.source\":\"docker\"},\"resources\":{\"limits\":{\"nvidia.com/gpu\":\"1\"},\"requests\":{\"cpu\":\"6500m\",\"memory\":\"24Gi\",\"nvidia.com/gpu\":\"1\"}}}","ai.tensorchord.source":"docker","prometheus.io.scrape":"false"},"resources":{"limits":{"nvidia.com/gpu":"1"},"requests":{"cpu":"6500m","memory":"24Gi","nvidia.com/gpu":"1"}}}'
+      ai.tensorchord.source: docker
+      prometheus.io.scrape: "false"
+    constraints:
+    - ai.tensorchord.server-resource=nvidia-ada-l4-8c-32g
+    envVars:
+      GRADIO_SERVER_NAME: 0.0.0.0
+      GRADIO_SERVER_PORT: "7860"
+      HF_ENDPOINT: http://hfserver.default:8080
+    image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/gradio-stable-diffusion:23.04.4
+    labels:
+      ai.tensorchord.framework: gradio
+      ai.tensorchord.name: sd
+      ai.tensorchord.port: "7860"
+      ai.tensorchord.region: us-central1
+      ai.tensorchord.scale.max: "1"
+      ai.tensorchord.scale.min: "0"
+      ai.tensorchord.scale.target: "10"
+      ai.tensorchord.scale.type: capacity
+      ai.tensorchord.scale.zero-duration: 5m0s
+      ai.tensorchord.server-resource: nvidia-ada-l4-8c-32g
+      ai.tensorchord.startup-duration: 10m0s
+      ai.tensorchord.vendor: gcp
+      app: 0b1e753e-9703-41c8-9311-b6bb943bcbda
+      controller: 0b1e753e-9703-41c8-9311-b6bb943bcbda
+      inference: 0b1e753e-9703-41c8-9311-b6bb943bcbda
+    name: 0b1e753e-9703-41c8-9311-b6bb943bcbda
+    resources:
+      limits:
+        nvidia.com/gpu: "1"
+      requests:
+        cpu: 6500m
+        memory: 24Gi
+        nvidia.com/gpu: "1"
+- apiVersion: tensorchord.ai/v1
+  kind: Inference
+  metadata:
+    creationTimestamp: "2023-05-18T11:50:26Z"
+    generation: 1
+    labels:
+      inference: 2fb46857-d0ea-4237-8165-4defbe037bbd
+    name: 2fb46857-d0ea-4237-8165-4defbe037bbd
+    namespace: modelz-a9d660cf-2537-4e48-bcaf-adf8470a83c0
+    resourceVersion: "62499285"
+    uid: 7edbbfe2-809f-4196-9ac1-fc47f731e817
+  spec:
+    annotations:
+      ai.tensorchord.docker.image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/mosec-whisper:23.04.1
+      ai.tensorchord.domain: https://ws-c2om23pvkpaeirf9.modelz.tech
+      ai.tensorchord.source: docker
+    constraints:
+    - ai.tensorchord.server-resource=nvidia-ada-l4-8c-32g
+    envVars:
+      HF_HUB_OFFLINE: "true"
+    image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/mosec-whisper:23.04.1
+    labels:
+      ai.tensorchord.framework: mosec
+      ai.tensorchord.name: ws
+      ai.tensorchord.region: us-central1
+      ai.tensorchord.scale.max: "1"
+      ai.tensorchord.scale.min: "0"
+      ai.tensorchord.scale.target: "10"
+      ai.tensorchord.scale.type: capacity
+      ai.tensorchord.scale.zero-duration: 5m0s
+      ai.tensorchord.server-resource: nvidia-ada-l4-8c-32g
+      ai.tensorchord.startup-duration: 10m0s
+      ai.tensorchord.vendor: gcp
+    name: 2fb46857-d0ea-4237-8165-4defbe037bbd
+    resources:
+      limits:
+        nvidia.com/gpu: "1"
+      requests:
+        cpu: 6500m
+        memory: 24Gi
+        nvidia.com/gpu: "1"
+- apiVersion: tensorchord.ai/v1
+  kind: Inference
+  metadata:
+    creationTimestamp: "2023-06-02T12:55:10Z"
+    generation: 1
+    labels:
+      inference: 41d0d82e-31e4-4704-9e0d-49eec10a455b
+    name: 41d0d82e-31e4-4704-9e0d-49eec10a455b
+    namespace: modelz-a9d660cf-2537-4e48-bcaf-adf8470a83c0
+    resourceVersion: "76837944"
+    uid: b562acde-3849-4ecb-ac8e-30ba5252c7a5
+  spec:
+    annotations:
+      ai.tensorchord.docker.image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/mosec-stable-diffusion:23.04.1
+      ai.tensorchord.domain: https://mosec-sd-3n7j7i3oh28sp2jw.modelz.tech
+      ai.tensorchord.source: docker
+      ai.tensorchord.template-id: 0d603dd5-6d74-4e94-bc70-e5f223dd9d81
+    constraints:
+    - ai.tensorchord.server-resource=nvidia-tesla-t4-4c-16g
+    envVars:
+      HF_HUB_OFFLINE: "true"
+    image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/mosec-stable-diffusion:23.04.1
+    labels:
+      ai.tensorchord.framework: mosec
+      ai.tensorchord.name: mosec-sd
+      ai.tensorchord.region: us-central1
+      ai.tensorchord.scale.max: "1"
+      ai.tensorchord.scale.min: "0"
+      ai.tensorchord.scale.target: "10"
+      ai.tensorchord.scale.type: capacity
+      ai.tensorchord.scale.zero-duration: 5m0s
+      ai.tensorchord.server-resource: nvidia-tesla-t4-4c-16g
+      ai.tensorchord.startup-duration: 10m0s
+      ai.tensorchord.vendor: gcp
+    name: 41d0d82e-31e4-4704-9e0d-49eec10a455b
+    resources:
+      limits:
+        nvidia.com/gpu: "1"
+      requests:
+        cpu: "3"
+        memory: 12Gi
+        nvidia.com/gpu: "1"
+- apiVersion: tensorchord.ai/v1
+  kind: Inference
+  metadata:
+    creationTimestamp: "2023-06-02T12:53:20Z"
+    generation: 1
+    labels:
+      inference: 431e5913-f5f3-45dd-a1b3-139917a07cf9
+    name: 431e5913-f5f3-45dd-a1b3-139917a07cf9
+    namespace: modelz-a9d660cf-2537-4e48-bcaf-adf8470a83c0
+    resourceVersion: "76836748"
+    uid: 682dec57-3eb6-4925-af3b-c56a81073009
+  spec:
+    annotations:
+      ai.tensorchord.command: python app.py
+      ai.tensorchord.docker.image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/gradio-ramananth1-dolly-v2:23.05.1
+      ai.tensorchord.domain: https://ddddd2-wqkeotxfansceqp2.modelz.tech
+      ai.tensorchord.source: docker
+      ai.tensorchord.template-id: 074852a9-b324-4c02-95b1-da06ec98a964
+    constraints:
+    - ai.tensorchord.server-resource=nvidia-ada-l4-8c-32g
+    image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/gradio-ramananth1-dolly-v2:23.05.1
+    labels:
+      ai.tensorchord.framework: gradio
+      ai.tensorchord.name: ddddd2
+      ai.tensorchord.port: "7860"
+      ai.tensorchord.region: us-central1
+      ai.tensorchord.scale.max: "1"
+      ai.tensorchord.scale.min: "0"
+      ai.tensorchord.scale.target: "10"
+      ai.tensorchord.scale.type: capacity
+      ai.tensorchord.scale.zero-duration: 5m0s
+      ai.tensorchord.server-resource: nvidia-ada-l4-8c-32g
+      ai.tensorchord.startup-duration: 10m0s
+      ai.tensorchord.vendor: gcp
+    name: 431e5913-f5f3-45dd-a1b3-139917a07cf9
+    resources:
+      limits:
+        nvidia.com/gpu: "1"
+      requests:
+        cpu: 6500m
+        memory: 24Gi
+        nvidia.com/gpu: "1"
+- apiVersion: tensorchord.ai/v1
+  kind: Inference
+  metadata:
+    creationTimestamp: "2023-06-02T07:38:54Z"
+    generation: 1
+    labels:
+      inference: 660a2a0a-d9b1-4b86-823b-4dc86f89cd02
+    name: 660a2a0a-d9b1-4b86-823b-4dc86f89cd02
+    namespace: modelz-a9d660cf-2537-4e48-bcaf-adf8470a83c0
+    resourceVersion: "76628665"
+    uid: f89d820c-7c7e-43d3-a73b-cafe57627006
+  spec:
+    annotations:
+      ai.tensorchord.command: python app.py
+      ai.tensorchord.docker.image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/gradio-ramananth1-dolly-v2:23.05.1
+      ai.tensorchord.domain: https://ddd-oky85wto4kxp0uyz.modelz.tech
+      ai.tensorchord.source: docker
+    constraints:
+    - ai.tensorchord.server-resource=nvidia-ada-l4-8c-32g
+    image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/gradio-ramananth1-dolly-v2:23.05.1
+    labels:
+      ai.tensorchord.framework: gradio
+      ai.tensorchord.name: ddd
+      ai.tensorchord.port: "7860"
+      ai.tensorchord.region: us-central1
+      ai.tensorchord.scale.max: "1"
+      ai.tensorchord.scale.min: "0"
+      ai.tensorchord.scale.target: "10"
+      ai.tensorchord.scale.type: capacity
+      ai.tensorchord.scale.zero-duration: 5m0s
+      ai.tensorchord.server-resource: nvidia-ada-l4-8c-32g
+      ai.tensorchord.startup-duration: 10m0s
+      ai.tensorchord.vendor: gcp
+    name: 660a2a0a-d9b1-4b86-823b-4dc86f89cd02
+    resources:
+      limits:
+        nvidia.com/gpu: "1"
+      requests:
+        cpu: 6500m
+        memory: 24Gi
+        nvidia.com/gpu: "1"
+- apiVersion: tensorchord.ai/v1
+  kind: Inference
+  metadata:
+    creationTimestamp: "2023-06-02T07:29:34Z"
+    generation: 1
+    labels:
+      inference: 744ef0a4-51ea-438c-b013-f5c3b1c1548f
+    name: 744ef0a4-51ea-438c-b013-f5c3b1c1548f
+    namespace: modelz-a9d660cf-2537-4e48-bcaf-adf8470a83c0
+    resourceVersion: "76622421"
+    uid: a7ae0743-e166-4591-aec0-33a23101506d
+  spec:
+    annotations:
+      ai.tensorchord.command: python app.py
+      ai.tensorchord.docker.image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/gradio-ramananth1-dolly-v2:23.05.1
+      ai.tensorchord.domain: https://dollyv2-9fhuv221e3py7j8t.modelz.tech
+      ai.tensorchord.source: docker
+    constraints:
+    - ai.tensorchord.server-resource=nvidia-ada-l4-8c-32g
+    image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/gradio-ramananth1-dolly-v2:23.05.1
+    labels:
+      ai.tensorchord.framework: gradio
+      ai.tensorchord.name: dollyv2
+      ai.tensorchord.port: "7860"
+      ai.tensorchord.region: us-central1
+      ai.tensorchord.scale.max: "1"
+      ai.tensorchord.scale.min: "0"
+      ai.tensorchord.scale.target: "10"
+      ai.tensorchord.scale.type: capacity
+      ai.tensorchord.scale.zero-duration: 5m0s
+      ai.tensorchord.server-resource: nvidia-ada-l4-8c-32g
+      ai.tensorchord.startup-duration: 10m0s
+      ai.tensorchord.vendor: gcp
+    name: 744ef0a4-51ea-438c-b013-f5c3b1c1548f
+    resources:
+      limits:
+        nvidia.com/gpu: "1"
+      requests:
+        cpu: 6500m
+        memory: 24Gi
+        nvidia.com/gpu: "1"
+- apiVersion: tensorchord.ai/v1
+  kind: Inference
+  metadata:
+    creationTimestamp: "2023-06-02T07:30:30Z"
+    generation: 1
+    labels:
+      inference: aeaf50f9-1b7e-4a37-87a1-6947a65fc07c
+    name: aeaf50f9-1b7e-4a37-87a1-6947a65fc07c
+    namespace: modelz-a9d660cf-2537-4e48-bcaf-adf8470a83c0
+    resourceVersion: "76623043"
+    uid: 8ce0ace2-a710-4ba0-96ad-be2f100ad8fb
+  spec:
+    annotations:
+      ai.tensorchord.command: python app.py
+      ai.tensorchord.docker.image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/gradio-ramananth1-dolly-v2:23.05.1
+      ai.tensorchord.domain: https://dollyv2-l3idk5o2yhzpgqmc.modelz.tech
+      ai.tensorchord.source: docker
+    constraints:
+    - ai.tensorchord.server-resource=nvidia-ada-l4-8c-32g
+    image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/gradio-ramananth1-dolly-v2:23.05.1
+    labels:
+      ai.tensorchord.framework: gradio
+      ai.tensorchord.name: dollyv2
+      ai.tensorchord.port: "7860"
+      ai.tensorchord.region: us-central1
+      ai.tensorchord.scale.max: "1"
+      ai.tensorchord.scale.min: "0"
+      ai.tensorchord.scale.target: "10"
+      ai.tensorchord.scale.type: capacity
+      ai.tensorchord.scale.zero-duration: 5m0s
+      ai.tensorchord.server-resource: nvidia-ada-l4-8c-32g
+      ai.tensorchord.startup-duration: 10m0s
+      ai.tensorchord.vendor: gcp
+    name: aeaf50f9-1b7e-4a37-87a1-6947a65fc07c
+    resources:
+      limits:
+        nvidia.com/gpu: "1"
+      requests:
+        cpu: 6500m
+        memory: 24Gi
+        nvidia.com/gpu: "1"
+- apiVersion: tensorchord.ai/v1
+  kind: Inference
+  metadata:
+    creationTimestamp: "2023-06-27T04:20:35Z"
+    generation: 1
+    labels:
+      inference: 8ed9973e-8bf0-45d3-8f9a-24a228e1a1f9
+    name: 8ed9973e-8bf0-45d3-8f9a-24a228e1a1f9
+    namespace: modelz-ba5ce029-180a-445d-89a8-bb111b29c0fe
+    resourceVersion: "98647435"
+    uid: 92b09491-086f-4be0-baf1-c4a6d82cb2c5
+  spec:
+    annotations:
+      ai.tensorchord.command: python app.py
+      ai.tensorchord.domain: https://test-y5qie3qkgqba99fw.modelz.tech
+      ai.tensorchord.huggingface.space: https://huggingface.co/spaces/abidlabs/en2fr
+      ai.tensorchord.source: huggingface
+    constraints:
+    - ai.tensorchord.server-resource=nvidia-tesla-t4-4c-16g
+    image: registry.hf.space/abidlabs-en2fr:latest
+    labels:
+      ai.tensorchord.framework: gradio
+      ai.tensorchord.name: test
+      ai.tensorchord.port: "7860"
+      ai.tensorchord.region: us-central1
+      ai.tensorchord.scale.max: "1"
+      ai.tensorchord.scale.min: "1"
+      ai.tensorchord.scale.target: "10"
+      ai.tensorchord.scale.type: capacity
+      ai.tensorchord.scale.zero-duration: 5m0s
+      ai.tensorchord.server-resource: nvidia-tesla-t4-4c-16g
+      ai.tensorchord.startup-duration: 10m0s
+      ai.tensorchord.vendor: gcp
+    name: 8ed9973e-8bf0-45d3-8f9a-24a228e1a1f9
+    resources:
+      limits:
+        nvidia.com/gpu: "1"
+      requests:
+        cpu: "3"
+        memory: 12Gi
+        nvidia.com/gpu: "1"
+- apiVersion: tensorchord.ai/v1
+  kind: Inference
+  metadata:
+    creationTimestamp: "2023-06-15T06:59:52Z"
+    generation: 1
+    labels:
+      inference: b33863ba-9c0f-4edb-8f95-00a522a0c335
+    name: b33863ba-9c0f-4edb-8f95-00a522a0c335
+    namespace: modelz-ba5ce029-180a-445d-89a8-bb111b29c0fe
+    resourceVersion: "88434776"
+    uid: 48cf0cdc-defa-4986-ad55-13a4769252e3
+  spec:
+    annotations:
+      ai.tensorchord.docker.image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/gradio-stable-diffusion:23.04.4
+      ai.tensorchord.domain: https://test-gradio-yf9ws7k1yimrgrcd.modelz.tech
+      ai.tensorchord.source: docker
+      ai.tensorchord.template-id: 9c0137e7-5732-49f9-b6bd-e920f1c6e4d4
+    constraints:
+    - ai.tensorchord.server-resource=nvidia-tesla-t4-4c-16g
+    image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/gradio-stable-diffusion:23.04.4
+    labels:
+      ai.tensorchord.framework: gradio
+      ai.tensorchord.name: test-gradio
+      ai.tensorchord.port: "7860"
+      ai.tensorchord.region: us-central1
+      ai.tensorchord.scale.max: "1"
+      ai.tensorchord.scale.min: "0"
+      ai.tensorchord.scale.target: "10"
+      ai.tensorchord.scale.type: capacity
+      ai.tensorchord.scale.zero-duration: 5m0s
+      ai.tensorchord.server-resource: nvidia-tesla-t4-4c-16g
+      ai.tensorchord.startup-duration: 10m0s
+      ai.tensorchord.vendor: gcp
+    name: b33863ba-9c0f-4edb-8f95-00a522a0c335
+    resources:
+      limits:
+        nvidia.com/gpu: "1"
+      requests:
+        cpu: "3"
+        memory: 12Gi
+        nvidia.com/gpu: "1"
+- apiVersion: tensorchord.ai/v1
+  kind: Inference
+  metadata:
+    creationTimestamp: "2023-06-05T03:27:22Z"
+    generation: 1
+    labels:
+      inference: 0741b1e5-f556-439d-adc7-9cba932d2d73
+    name: 0741b1e5-f556-439d-adc7-9cba932d2d73
+    namespace: modelz-cd4a928c-7c66-4934-beb2-98dd82d672ce
+    resourceVersion: "79293297"
+    uid: e2183d12-afa4-443c-ab59-01af0f581aba
+  spec:
+    annotations:
+      ai.tensorchord.docker.image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/mosec-whisper:23.04.1
+      ai.tensorchord.domain: https://whisper-9yx10apmsgdtb0di.modelz.tech
+      ai.tensorchord.source: docker
+      ai.tensorchord.template-id: c2974e48-7fc3-4690-8910-a2e98abc82d1
+    constraints:
+    - ai.tensorchord.server-resource=nvidia-tesla-t4-4c-16g
+    envVars:
+      HF_HUB_OFFLINE: "true"
+    image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/mosec-whisper:23.04.1
+    labels:
+      ai.tensorchord.framework: mosec
+      ai.tensorchord.name: whisper
+      ai.tensorchord.region: us-central1
+      ai.tensorchord.scale.max: "1"
+      ai.tensorchord.scale.min: "0"
+      ai.tensorchord.scale.target: "10"
+      ai.tensorchord.scale.type: capacity
+      ai.tensorchord.scale.zero-duration: 5m0s
+      ai.tensorchord.server-resource: nvidia-tesla-t4-4c-16g
+      ai.tensorchord.startup-duration: 10m0s
+      ai.tensorchord.vendor: gcp
+    name: 0741b1e5-f556-439d-adc7-9cba932d2d73
+    resources:
+      limits:
+        nvidia.com/gpu: "1"
+      requests:
+        cpu: "3"
+        memory: 12Gi
+        nvidia.com/gpu: "1"
+- apiVersion: tensorchord.ai/v1
+  kind: Inference
+  metadata:
+    creationTimestamp: "2023-06-05T03:25:48Z"
+    generation: 1
+    labels:
+      inference: 3c2328a1-4c61-41b8-b670-6df5813d8c51
+    name: 3c2328a1-4c61-41b8-b670-6df5813d8c51
+    namespace: modelz-cd4a928c-7c66-4934-beb2-98dd82d672ce
+    resourceVersion: "79292168"
+    uid: f0da8e43-2235-4910-98d2-76621fdd2e4a
+  spec:
+    annotations:
+      ai.tensorchord.command: python app.py
+      ai.tensorchord.docker.image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/gradio-ramananth1-dolly-v2:23.05.1
+      ai.tensorchord.domain: https://dolly-p52q4f5qhpnayw00.modelz.tech
+      ai.tensorchord.source: docker
+      ai.tensorchord.template-id: 10a47537-d1cc-4aa5-a9bd-173060cf812e
+    constraints:
+    - ai.tensorchord.server-resource=nvidia-ada-l4-8c-32g
+    image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/gradio-ramananth1-dolly-v2:23.05.1
+    labels:
+      ai.tensorchord.framework: gradio
+      ai.tensorchord.name: dolly
+      ai.tensorchord.port: "7860"
+      ai.tensorchord.region: us-central1
+      ai.tensorchord.scale.max: "1"
+      ai.tensorchord.scale.min: "0"
+      ai.tensorchord.scale.target: "10"
+      ai.tensorchord.scale.type: capacity
+      ai.tensorchord.scale.zero-duration: 5m0s
+      ai.tensorchord.server-resource: nvidia-ada-l4-8c-32g
+      ai.tensorchord.startup-duration: 10m0s
+      ai.tensorchord.vendor: gcp
+    name: 3c2328a1-4c61-41b8-b670-6df5813d8c51
+    resources:
+      limits:
+        nvidia.com/gpu: "1"
+      requests:
+        cpu: 6500m
+        memory: 24Gi
+        nvidia.com/gpu: "1"
+- apiVersion: tensorchord.ai/v1
+  kind: Inference
+  metadata:
+    creationTimestamp: "2023-06-29T03:27:54Z"
+    generation: 1
+    labels:
+      inference: 480f37dc-57b5-4677-a2e7-9e34621dc4e3
+    name: 480f37dc-57b5-4677-a2e7-9e34621dc4e3
+    namespace: modelz-cd4a928c-7c66-4934-beb2-98dd82d672ce
+    resourceVersion: "100326009"
+    uid: fc090985-3971-41f3-8777-6785ea328fa5
+  spec:
+    annotations:
+      ai.tensorchord.docker.image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/mosec-tts-vits:23.06.7
+      ai.tensorchord.domain: https://vits-bench-f5sn326og2gb20lv.modelz.tech
+      ai.tensorchord.source: docker
+    constraints:
+    - ai.tensorchord.server-resource=nvidia-tesla-t4-4c-16g
+    image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/mosec-tts-vits:23.06.7
+    labels:
+      ai.tensorchord.framework: mosec
+      ai.tensorchord.name: vits-bench
+      ai.tensorchord.region: us-central1
+      ai.tensorchord.scale.max: "3"
+      ai.tensorchord.scale.min: "0"
+      ai.tensorchord.scale.target: "5"
+      ai.tensorchord.scale.type: capacity
+      ai.tensorchord.scale.zero-duration: 1m0s
+      ai.tensorchord.server-resource: nvidia-tesla-t4-4c-16g
+      ai.tensorchord.startup-duration: 10m0s
+      ai.tensorchord.vendor: gcp
+    name: 480f37dc-57b5-4677-a2e7-9e34621dc4e3
+    resources:
+      limits:
+        nvidia.com/gpu: "1"
+      requests:
+        cpu: "3"
+        memory: 12Gi
+        nvidia.com/gpu: "1"
+- apiVersion: tensorchord.ai/v1
+  kind: Inference
+  metadata:
+    creationTimestamp: "2023-06-05T03:26:49Z"
+    generation: 1
+    labels:
+      inference: 5f10d4e3-e9b0-46e1-9265-6d2ecb98930e
+    name: 5f10d4e3-e9b0-46e1-9265-6d2ecb98930e
+    namespace: modelz-cd4a928c-7c66-4934-beb2-98dd82d672ce
+    resourceVersion: "79292878"
+    uid: d77bb280-b397-4e41-a2f5-9bf180f61596
+  spec:
+    annotations:
+      ai.tensorchord.command: python app.py
+      ai.tensorchord.docker.image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/gradio-stabilityai-stablelm-tuned-alpha-chat:23.05.1
+      ai.tensorchord.domain: https://stablelm-7p1b95fcxhyeiriy.modelz.tech
+      ai.tensorchord.source: docker
+      ai.tensorchord.template-id: 64462bf4-2373-4273-ae76-433707410bcd
+    constraints:
+    - ai.tensorchord.server-resource=nvidia-ada-l4-8c-32g
+    image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/gradio-stabilityai-stablelm-tuned-alpha-chat:23.05.1
+    labels:
+      ai.tensorchord.framework: gradio
+      ai.tensorchord.name: stablelm
+      ai.tensorchord.port: "7860"
+      ai.tensorchord.region: us-central1
+      ai.tensorchord.scale.max: "1"
+      ai.tensorchord.scale.min: "0"
+      ai.tensorchord.scale.target: "10"
+      ai.tensorchord.scale.type: capacity
+      ai.tensorchord.scale.zero-duration: 5m0s
+      ai.tensorchord.server-resource: nvidia-ada-l4-8c-32g
+      ai.tensorchord.startup-duration: 10m0s
+      ai.tensorchord.vendor: gcp
+    name: 5f10d4e3-e9b0-46e1-9265-6d2ecb98930e
+    resources:
+      limits:
+        nvidia.com/gpu: "1"
+      requests:
+        cpu: 6500m
+        memory: 24Gi
+        nvidia.com/gpu: "1"
+- apiVersion: tensorchord.ai/v1
+  kind: Inference
+  metadata:
+    creationTimestamp: "2023-06-05T03:27:12Z"
+    generation: 1
+    labels:
+      inference: 81343170-1688-491c-a139-87037f3b8dcd
+    name: 81343170-1688-491c-a139-87037f3b8dcd
+    namespace: modelz-cd4a928c-7c66-4934-beb2-98dd82d672ce
+    resourceVersion: "79293174"
+    uid: 8d63f8de-7bf6-40a8-8997-fa69fce037d0
+  spec:
+    annotations:
+      ai.tensorchord.docker.image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/gradio-visual-chatgpt:23.04.1
+      ai.tensorchord.domain: https://visual-chatgpt-0e0iez8r17xzxksf.modelz.tech
+      ai.tensorchord.source: docker
+      ai.tensorchord.template-id: 78100725-18ca-41e9-b7a8-7ac573f6280b
+    constraints:
+    - ai.tensorchord.server-resource=nvidia-tesla-t4-4c-16g
+    envVars:
+      OPENAI_API_KEY: a
+    image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/gradio-visual-chatgpt:23.04.1
+    labels:
+      ai.tensorchord.framework: gradio
+      ai.tensorchord.name: visual-chatgpt
+      ai.tensorchord.port: "7860"
+      ai.tensorchord.region: us-central1
+      ai.tensorchord.scale.max: "1"
+      ai.tensorchord.scale.min: "0"
+      ai.tensorchord.scale.target: "10"
+      ai.tensorchord.scale.type: capacity
+      ai.tensorchord.scale.zero-duration: 5m0s
+      ai.tensorchord.server-resource: nvidia-tesla-t4-4c-16g
+      ai.tensorchord.startup-duration: 10m0s
+      ai.tensorchord.vendor: gcp
+    name: 81343170-1688-491c-a139-87037f3b8dcd
+    resources:
+      limits:
+        nvidia.com/gpu: "1"
+      requests:
+        cpu: "3"
+        memory: 12Gi
+        nvidia.com/gpu: "1"
+- apiVersion: tensorchord.ai/v1
+  kind: Inference
+  metadata:
+    creationTimestamp: "2023-06-09T10:50:48Z"
+    generation: 1
+    labels:
+      inference: 8e365318-53ed-449e-ac15-f7ab8750d79f
+    name: 8e365318-53ed-449e-ac15-f7ab8750d79f
+    namespace: modelz-cd4a928c-7c66-4934-beb2-98dd82d672ce
+    resourceVersion: "83183128"
+    uid: 5fca43a9-a9e4-4bd0-8b9b-5ffa5b730ab8
+  spec:
+    annotations:
+      ai.tensorchord.docker.image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/llm-bloomz-560m:23.06.12
+      ai.tensorchord.domain: https://a-k7l6t2w8osvf4trq.modelz.tech
+      ai.tensorchord.source: docker
+      ai.tensorchord.template-id: 92721d83-2dba-460f-9bde-b7eee4ea4950
+    constraints:
+    - ai.tensorchord.server-resource=cpu-4c-16g
+    image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/llm-bloomz-560m:23.06.12
+    labels:
+      ai.tensorchord.framework: other
+      ai.tensorchord.name: a
+      ai.tensorchord.region: us-central1
+      ai.tensorchord.scale.max: "1"
+      ai.tensorchord.scale.min: "0"
+      ai.tensorchord.scale.target: "10"
+      ai.tensorchord.scale.type: capacity
+      ai.tensorchord.scale.zero-duration: 5m0s
+      ai.tensorchord.server-resource: cpu-4c-16g
+      ai.tensorchord.startup-duration: 10m0s
+      ai.tensorchord.vendor: gcp
+    name: 8e365318-53ed-449e-ac15-f7ab8750d79f
+    resources:
+      requests:
+        cpu: "3"
+        memory: 8Gi
+- apiVersion: tensorchord.ai/v1
+  kind: Inference
+  metadata:
+    creationTimestamp: "2023-06-19T09:15:48Z"
+    generation: 1
+    labels:
+      inference: c6637a2e-0812-4600-b9d5-d1fbc01a68f8
+    name: c6637a2e-0812-4600-b9d5-d1fbc01a68f8
+    namespace: modelz-cd4a928c-7c66-4934-beb2-98dd82d672ce
+    resourceVersion: "92057903"
+    uid: b59cdece-e083-40bc-8a39-25d30ad9a753
+  spec:
+    annotations:
+      ai.tensorchord.command: python app.py
+      ai.tensorchord.domain: https://hf-9oln0cnymw5eyzzf.modelz.tech
+      ai.tensorchord.huggingface.space: https://huggingface.co/spaces/HuggingFaceH4/falcon-chat
+      ai.tensorchord.source: huggingface
+    constraints:
+    - ai.tensorchord.server-resource=cpu-4c-16g
+    image: registry.hf.space/huggingfaceh4-falcon-chat:latest
+    labels:
+      ai.tensorchord.framework: gradio
+      ai.tensorchord.name: hf
+      ai.tensorchord.port: "7860"
+      ai.tensorchord.region: us-central1
+      ai.tensorchord.scale.max: "1"
+      ai.tensorchord.scale.min: "0"
+      ai.tensorchord.scale.target: "10"
+      ai.tensorchord.scale.type: capacity
+      ai.tensorchord.scale.zero-duration: 5m0s
+      ai.tensorchord.server-resource: cpu-4c-16g
+      ai.tensorchord.startup-duration: 10m0s
+      ai.tensorchord.vendor: gcp
+    name: c6637a2e-0812-4600-b9d5-d1fbc01a68f8
+    resources:
+      requests:
+        cpu: "3"
+        memory: 8Gi
+- apiVersion: tensorchord.ai/v1
+  kind: Inference
+  metadata:
+    creationTimestamp: "2023-06-05T03:26:36Z"
+    generation: 1
+    labels:
+      inference: c7f18c10-4c99-471c-b9d3-dd906e02cc7f
+    name: c7f18c10-4c99-471c-b9d3-dd906e02cc7f
+    namespace: modelz-cd4a928c-7c66-4934-beb2-98dd82d672ce
+    resourceVersion: "79292725"
+    uid: 36d9a032-2cda-4abb-ad8e-aad182e6850f
+  spec:
+    annotations:
+      ai.tensorchord.docker.image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/gradio-stable-diffusion:23.04.4
+      ai.tensorchord.domain: https://sd-web-co4ubmbo9k6c751q.modelz.tech
+      ai.tensorchord.source: docker
+      ai.tensorchord.template-id: 755b5ba6-ce50-4ef9-bbe0-e00c3cecb380
+    constraints:
+    - ai.tensorchord.server-resource=nvidia-tesla-t4-4c-16g
+    image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/gradio-stable-diffusion:23.04.4
+    labels:
+      ai.tensorchord.framework: gradio
+      ai.tensorchord.name: sd-web
+      ai.tensorchord.port: "7860"
+      ai.tensorchord.region: us-central1
+      ai.tensorchord.scale.max: "1"
+      ai.tensorchord.scale.min: "0"
+      ai.tensorchord.scale.target: "10"
+      ai.tensorchord.scale.type: capacity
+      ai.tensorchord.scale.zero-duration: 5m0s
+      ai.tensorchord.server-resource: nvidia-tesla-t4-4c-16g
+      ai.tensorchord.startup-duration: 10m0s
+      ai.tensorchord.vendor: gcp
+    name: c7f18c10-4c99-471c-b9d3-dd906e02cc7f
+    resources:
+      limits:
+        nvidia.com/gpu: "1"
+      requests:
+        cpu: "3"
+        memory: 12Gi
+        nvidia.com/gpu: "1"
+- apiVersion: tensorchord.ai/v1
+  kind: Inference
+  metadata:
+    creationTimestamp: "2023-06-05T03:26:16Z"
+    generation: 1
+    labels:
+      inference: d0c06992-94b5-4a99-90b4-a9900335acfe
+    name: d0c06992-94b5-4a99-90b4-a9900335acfe
+    namespace: modelz-cd4a928c-7c66-4934-beb2-98dd82d672ce
+    resourceVersion: "79292483"
+    uid: 42b1485b-9ed6-49ed-81b7-fb9742931300
+  spec:
+    annotations:
+      ai.tensorchord.command: python app.py
+      ai.tensorchord.docker.image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/gradio-microsoft-hugginggpt:23.05.1
+      ai.tensorchord.domain: https://huggingpt-5vi5th3l7llhgq4h.modelz.tech
+      ai.tensorchord.source: docker
+      ai.tensorchord.template-id: 8dbec890-ff7b-467e-ada2-e37f055f5c4f
+    constraints:
+    - ai.tensorchord.server-resource=nvidia-ada-l4-8c-32g
+    image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/gradio-microsoft-hugginggpt:23.05.1
+    labels:
+      ai.tensorchord.framework: gradio
+      ai.tensorchord.name: huggingpt
+      ai.tensorchord.port: "7860"
+      ai.tensorchord.region: us-central1
+      ai.tensorchord.scale.max: "1"
+      ai.tensorchord.scale.min: "0"
+      ai.tensorchord.scale.target: "10"
+      ai.tensorchord.scale.type: capacity
+      ai.tensorchord.scale.zero-duration: 5m0s
+      ai.tensorchord.server-resource: nvidia-ada-l4-8c-32g
+      ai.tensorchord.startup-duration: 10m0s
+      ai.tensorchord.vendor: gcp
+    name: d0c06992-94b5-4a99-90b4-a9900335acfe
+    resources:
+      limits:
+        nvidia.com/gpu: "1"
+      requests:
+        cpu: 6500m
+        memory: 24Gi
+        nvidia.com/gpu: "1"
+- apiVersion: tensorchord.ai/v1
+  kind: Inference
+  metadata:
+    creationTimestamp: "2023-06-05T03:26:26Z"
+    generation: 1
+    labels:
+      inference: f3d6bedf-447d-4f9b-b27f-1f03f43a1f97
+    name: f3d6bedf-447d-4f9b-b27f-1f03f43a1f97
+    namespace: modelz-cd4a928c-7c66-4934-beb2-98dd82d672ce
+    resourceVersion: "79292608"
+    uid: 68ee40dd-6366-4229-941a-16a5c019956d
+  spec:
+    annotations:
+      ai.tensorchord.docker.image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/mosec-stable-diffusion:23.04.1
+      ai.tensorchord.domain: https://sd-rl41fip7qafvrjzl.modelz.tech
+      ai.tensorchord.source: docker
+      ai.tensorchord.template-id: 6fe4cfb5-4e8b-4d34-ba03-de534343361e
+    constraints:
+    - ai.tensorchord.server-resource=nvidia-tesla-t4-4c-16g
+    envVars:
+      HF_HUB_OFFLINE: "true"
+    image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/mosec-stable-diffusion:23.04.1
+    labels:
+      ai.tensorchord.framework: mosec
+      ai.tensorchord.name: sd
+      ai.tensorchord.region: us-central1
+      ai.tensorchord.scale.max: "1"
+      ai.tensorchord.scale.min: "0"
+      ai.tensorchord.scale.target: "10"
+      ai.tensorchord.scale.type: capacity
+      ai.tensorchord.scale.zero-duration: 5m0s
+      ai.tensorchord.server-resource: nvidia-tesla-t4-4c-16g
+      ai.tensorchord.startup-duration: 10m0s
+      ai.tensorchord.vendor: gcp
+    name: f3d6bedf-447d-4f9b-b27f-1f03f43a1f97
+    resources:
+      limits:
+        nvidia.com/gpu: "1"
+      requests:
+        cpu: "3"
+        memory: 12Gi
+        nvidia.com/gpu: "1"
+- apiVersion: tensorchord.ai/v1
+  kind: Inference
+  metadata:
+    creationTimestamp: "2023-05-26T08:34:40Z"
+    generation: 2
+    labels:
+      inference: 94e62a6d-adde-4ff2-9053-7b15b6f18727
+    name: 94e62a6d-adde-4ff2-9053-7b15b6f18727
+    namespace: modelz-d3524a71-c17c-4c92-8faf-8603f02f4713
+    resourceVersion: "99387184"
+    uid: 5b11d701-b474-4cad-8fff-bf107c5b3992
+  spec:
+    annotations:
+      ai.tensorchord.docker.image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/mosec-whisper:23.04.1
+      ai.tensorchord.domain: https://demo-e9ijwrk2il0kvzl7.modelz.tech
+      ai.tensorchord.inference.spec: '{"name":"94e62a6d-adde-4ff2-9053-7b15b6f18727","image":"us-central1-docker.pkg.dev/nth-guide-378813/modelzai/mosec-whisper:23.04.1","envVars":{"HF_HUB_OFFLINE":"true"},"constraints":["ai.tensorchord.server-resource=nvidia-tesla-t4-4c-16g"],"labels":{"ai.tensorchord.framework":"mosec","ai.tensorchord.name":"demo","ai.tensorchord.region":"us-central1","ai.tensorchord.scale.max":"1","ai.tensorchord.scale.min":"0","ai.tensorchord.scale.target":"10","ai.tensorchord.scale.type":"capacity","ai.tensorchord.scale.zero-duration":"5m0s","ai.tensorchord.server-resource":"nvidia-tesla-t4-4c-16g","ai.tensorchord.startup-duration":"10m0s","ai.tensorchord.vendor":"gcp"},"annotations":{"ai.tensorchord.docker.image":"us-central1-docker.pkg.dev/nth-guide-378813/modelzai/mosec-whisper:23.04.1","ai.tensorchord.domain":"https://demo-e9ijwrk2il0kvzl7.modelz.tech","ai.tensorchord.source":"docker"},"resources":{"limits":{"nvidia.com/gpu":"1"},"requests":{"cpu":"3","memory":"12Gi","nvidia.com/gpu":"1"}}}'
+      ai.tensorchord.source: docker
+      prometheus.io.scrape: "false"
+    constraints:
+    - ai.tensorchord.server-resource=nvidia-tesla-t4-4c-16g
+    envVars:
+      HF_ENDPOINT: http://hfserver.default:8080
+      HF_HUB_OFFLINE: "true"
+      MOSEC_PORT: "8080"
+    image: us-central1-docker.pkg.dev/nth-guide-378813/modelzai/mosec-whisper:23.04.1
+    labels:
+      ai.tensorchord.framework: mosec
+      ai.tensorchord.name: demo
+      ai.tensorchord.region: us-central1
+      ai.tensorchord.scale.max: "0"
+      ai.tensorchord.scale.min: "0"
+      ai.tensorchord.scale.target: "10"
+      ai.tensorchord.scale.type: capacity
+      ai.tensorchord.scale.zero-duration: 5m0s
+      ai.tensorchord.server-resource: nvidia-tesla-t4-4c-16g
+      ai.tensorchord.startup-duration: 10m0s
+      ai.tensorchord.vendor: gcp
+      app: 94e62a6d-adde-4ff2-9053-7b15b6f18727
+      controller: 94e62a6d-adde-4ff2-9053-7b15b6f18727
+      inference: 94e62a6d-adde-4ff2-9053-7b15b6f18727
+    name: 94e62a6d-adde-4ff2-9053-7b15b6f18727
+    resources:
+      limits:
+        nvidia.com/gpu: "1"
+      requests:
+        cpu: "3"
+        memory: 12Gi
+        nvidia.com/gpu: "1"
+kind: List
+metadata:
+  resourceVersion: ""
+  selfLink: ""

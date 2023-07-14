@@ -1,0 +1,10 @@
+apiVersion: tensorchord.ai/v1
+kind: InferenceIngress
+metadata:
+  name: nodeinfo
+  namespace: default
+spec:
+  domain: "mosec.cloud.modelz.dev"
+  framework: "mosec"
+  function: "mosec"
+  ingressType: "nginx"

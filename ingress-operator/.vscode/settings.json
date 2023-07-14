@@ -1,0 +1,26 @@
+{
+    "go.inferGopath": false,
+    "cSpell.words": [
+        "Infof",
+        "appsv",
+        "corev",
+        "faas",
+        "faasclientset",
+        "faasscheme",
+        "faasv",
+        "handler",
+        "klog",
+        "kube",
+        "kubeclientset",
+        "kubeconfig",
+        "kubeinformers",
+        "logtostderr",
+        "metav",
+        "netv",
+        "networkingv",
+        "sync",
+        "syncer",
+        "threadiness",
+        "traefik"
+    ]
+}

@@ -1,0 +1,241 @@
+project_name: openmodelz
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+    goarch:
+      - amd64
+    id: modelzetes
+    main: ./cmd/modelzetes/main.go
+    dir: ./modelzetes
+    binary: modelzetes
+    ldflags:
+      - -s -w
+      - -X github.com/tensorchord/openmodelz/modelzetes/pkg/version.version={{ .Version }}
+      - -X github.com/tensorchord/openmodelz/modelzetes/pkg/version.buildDate={{ .Date }}
+      - -X github.com/tensorchord/openmodelz/modelzetes/pkg/version.gitCommit={{ .Commit }}
+      - -X github.com/tensorchord/openmodelz/modelzetes/pkg/version.gitTreeState=clean
+      - -X github.com/tensorchord/openmodelz/modelzetes/pkg/version.gitTag={{ .Tag }}
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+    goarch:
+      - amd64
+    id: agent
+    main: ./cmd/agent/main.go
+    dir: ./agent
+    binary: agent
+    ldflags:
+      - -s -w
+      - -X github.com/tensorchord/openmodelz/agent/pkg/version.version={{ .Version }}
+      - -X github.com/tensorchord/openmodelz/agent/pkg/version.buildDate={{ .Date }}
+      - -X github.com/tensorchord/openmodelz/agent/pkg/version.gitCommit={{ .Commit }}
+      - -X github.com/tensorchord/openmodelz/agent/pkg/version.gitTreeState=clean
+      - -X github.com/tensorchord/openmodelz/agent/pkg/version.gitTag={{ .Tag }}
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+    goarch:
+      - amd64
+    id: autoscaler
+    main: ./cmd/autoscaler/main.go
+    dir: ./autoscaler
+    binary: autoscaler
+    ldflags:
+      - -s -w
+      - -X github.com/tensorchord/openmodelz/autoscaler/pkg/version.version={{ .Version }}
+      - -X github.com/tensorchord/openmodelz/autoscaler/pkg/version.buildDate={{ .Date }}
+      - -X github.com/tensorchord/openmodelz/autoscaler/pkg/version.gitCommit={{ .Commit }}
+      - -X github.com/tensorchord/openmodelz/autoscaler/pkg/version.gitTreeState=clean
+      - -X github.com/tensorchord/openmodelz/autoscaler/pkg/version.gitTag={{ .Tag }}
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+    goarch:
+      - amd64
+    id: ingress-operator
+    main: ./main.go
+    dir: ./ingress-operator
+    binary: ingress-operator
+    ldflags:
+      - -s -w
+      - -X github.com/tensorchord/openmodelz/ingress-operator/pkg/version.version={{ .Version }}
+      - -X github.com/tensorchord/openmodelz/ingress-operator/pkg/version.buildDate={{ .Date }}
+      - -X github.com/tensorchord/openmodelz/ingress-operator/pkg/version.gitCommit={{ .Commit }}
+      - -X github.com/tensorchord/openmodelz/ingress-operator/pkg/version.gitTreeState=clean
+      - -X github.com/tensorchord/openmodelz/ingress-operator/pkg/version.gitTag={{ .Tag }}
+archives:
+  - id: modelzetes
+    format: binary
+    builds:
+      - modelzetes
+    name_template: >-
+      {{ .Binary }}_{{ .Version }}_{{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+  - id: agent
+    format: binary
+    builds:
+      - agent
+    name_template: >-
+      {{ .Binary }}_{{ .Version }}_{{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+  - id: autoscaler
+    format: binary
+    builds:
+      - autoscaler
+    name_template: >-
+      {{ .Binary }}_{{ .Version }}_{{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+  - id: apiserver
+    format: binary
+    builds:
+      - apiserver
+    name_template: >-
+      {{ .Binary }}_{{ .Version }}_{{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+  - id: biller
+    format: binary
+    builds:
+      - biller
+    name_template: >-
+      {{ .Binary }}_{{ .Version }}_{{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+  - id: builder
+    format: binary
+    builds:
+      - builder
+    name_template: >-
+      {{ .Binary }}_{{ .Version }}_{{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+  - id: due-checker
+    format: binary
+    builds:
+      - due-checker
+    name_template: >-
+      {{ .Binary }}_{{ .Version }}_{{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+changelog:
+  use: github
+  sort: asc
+  groups:
+    - title: 'Exciting New Features 🎉'
+      regexp: "^.*feat.*"
+      order: 0
+    - title: 'Bug Fix 🛠'
+      regexp: "^.*(Fix|fix|bug).*"
+      order: 1
+    - title: 'Refactor 🏗️'
+      regexp: "^.*refact.*"
+      order: 2
+    - title: 'Documentation 🖊️'
+      regexp: "^.*docs.*"
+      order: 3
+    - title: 'Others:'
+      order: 999
+dockers:
+- image_templates:
+  - "modelzai/openmodelz-modelzetes:v{{ .Version }}-amd64"
+  use: buildx
+  dockerfile: modelzetes/Dockerfile
+  ids:
+  - modelzetes
+  build_flag_templates:
+  - "--platform=linux/amd64"
+# - image_templates:
+#   - "modelzai/modelzetes:v{{ .Version }}-arm64v8"
+#   use: buildx
+#   goarch: arm64
+#   ids:
+#   - modelzetes
+#   dockerfile: modelzetes/Dockerfile
+#   build_flag_templates:
+#   - "--platform=linux/arm64/v8"
+
+- image_templates:
+  - "modelzai/openmodelz-agent:v{{ .Version }}-amd64"
+  use: buildx
+  dockerfile: agent/Dockerfile
+  ids:
+  - agent
+  build_flag_templates:
+  - "--platform=linux/amd64"
+# - image_templates:
+#   - "modelzai/modelz-agent:v{{ .Version }}-arm64v8"
+#   use: buildx
+#   goarch: arm64
+#   ids:
+#   - agent
+#   dockerfile: agent/Dockerfile
+#   build_flag_templates:
+#   - "--platform=linux/arm64/v8"
+
+- image_templates:
+  - "modelzai/openmodelz-autoscaler:v{{ .Version }}-amd64"
+  use: buildx
+  dockerfile: autoscaler/Dockerfile
+  ids:
+  - autoscaler
+  build_flag_templates:
+  - "--platform=linux/amd64"
+# - image_templates:
+#   - "modelzai/modelz-autoscaler:v{{ .Version }}-arm64v8"
+#   use: buildx
+#   goarch: arm64
+#   ids:
+#   - autoscaler
+#   dockerfile: autoscaler/Dockerfile
+#   build_flag_templates:
+#   - "--platform=linux/arm64/v8"
+
+- image_templates:
+  - "modelzai/openmodelz-ingress-operator:v{{ .Version }}-amd64"
+  use: buildx
+  dockerfile: ingress-operator/Dockerfile
+  ids:
+  - ingress-operator
+  build_flag_templates:
+  - "--platform=linux/amd64"
+
+docker_manifests:
+- name_template: modelzai/openmodelz-modelzetes:v{{ .Version }}
+  image_templates:
+  - modelzai/modelzetes:v{{ .Version }}-amd64
+  # - modelzai/modelzetes:v{{ .Version }}-arm64v8
+- name_template: modelzai/openmodelz-agent:v{{ .Version }}
+  image_templates:
+  - modelzai/openmodelz-agent:v{{ .Version }}-amd64
+  # - modelzai/modelz-agent:v{{ .Version }}-arm64v8
+- name_template: modelzai/openmodelz-autoscaler:v{{ .Version }}
+  image_templates:
+  - modelzai/openmodelz-autoscaler:v{{ .Version }}-amd64
+  # - modelzai/modelz-autoscaler:v{{ .Version }}-arm64v8
+- name_template: modelzai/modelz-apiserver:v{{ .Version }}
+  image_templates:
+  - modelzai/modelz-apiserver:v{{ .Version }}-amd64
+  # - modelzai/modelz-apiserver:v{{ .Version }}-arm64v8
+- name_template: modelzai/openmodelz-ingress-operator:v{{ .Version }}
+  image_templates:
+  - modelzai/openmodelz-ingress-operator:v{{ .Version }}-amd64
+  # - modelzai/ingress-operator:v{{ .Version }}-arm64v8
