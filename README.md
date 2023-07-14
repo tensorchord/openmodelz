@@ -24,24 +24,24 @@ You could use OpenModelZ to:
 
 ## Quick Start
 
-Once you've installed the `omz` you can start deploying models and experimenting with them.
+Once you've installed the `mdz` you can start deploying models and experimenting with them.
 
 ### Deploy OpenAI API compatible inferences
 
-You could deploy OpenAI API compatible inferences with `omz deploy openai-chat` command. A OpenAI API compatible server will be deployed with the model serverlessly.
+You could deploy OpenAI API compatible inferences with `mdz deploy openai-chat` command. A OpenAI API compatible server will be deployed with the model serverlessly.
 
 ```bash
-# Deploy bloomz with OpenAI compatible API
-omz deploy openai-chat --model bloomz-560m
+# Deploy blomdz with OpenAI compatible API
+mdz deploy openai-chat --model blomdz-560m
 ```
 
-After that, you could use `omz list` to check the status of your deployment. And you could use `omz infer openai-chat bloomz` to experiment with it.
+After that, you could use `mdz list` to check the status of your deployment. And you could use `mdz infer openai-chat blomdz` to experiment with it.
 
 ```
-$ omz list
-$ omz infer openai-chat bloomz --interactive
+$ mdz list
+$ mdz infer openai-chat blomdz --interactive
 > user: Hello, who are you?
-> bloomz: I am an AI. How can I help you today?
+> blomdz: I am an AI. How can I help you today?
 ...
 ```
 
@@ -49,7 +49,7 @@ Besides, you could use OpenAI python package to interact with the deployed model
 
 ```python
 import openai
-openai.api_base="<your agent url>/inference/bloomz.default"
+openai.api_base="<your agent url>/inference/blomdz.default"
 openai.api_key="any"
 openai.debug = True
 
@@ -63,36 +63,36 @@ chat_completion = openai.ChatCompletion.create(model="", messages=[
 
 ### Deploy Civitai models
 
-You could deploy Civitai models with `omz deploy civitai` command. A stable diffusion web ui will be deployed with the model serverlessly.
+You could deploy Civitai models with `mdz deploy civitai` command. A stable diffusion web ui will be deployed with the model serverlessly.
 
 ```bash
 # Deploy stable diffusion web ui with base models on civitai
-omz deploy civitai https://civitai.com/models/25694 --name epicrealism
+mdz deploy civitai https://civitai.com/models/25694 --name epicrealism
 ```
 
-After that, you could use `omz infer civitai epicrealism` to experiment with it.
+After that, you could use `mdz infer civitai epicrealism` to experiment with it.
 
 ```bash
-omz infer civitai epicrealism --prompt "A photo of a cat"
+mdz infer civitai epicrealism --prompt "A photo of a cat"
 ```
 
 ### Deploy Huggingface spaces
 
-You could deploy Huggingface spaces with `omz deploy huggingface` command. A Huggingface spaces will be deployed with the model serverlessly.
+You could deploy Huggingface spaces with `mdz deploy huggingface` command. A Huggingface spaces will be deployed with the model serverlessly.
 
 ```bash
 # Deploy Huggingface space application.
-omz deploy huggingface Manjushri/Music-Genie-GPU --name music-genie
+mdz deploy huggingface Manjushri/Music-Genie-GPU --name music-genie
 ```
 
 ### Share any deployed model with your teammates
 
-You could share your deployed models with your teammates with `omz share` command. A shareable link will be generated for your teammates to access your deployed models.
+You could share your deployed models with your teammates with `mdz share` command. A shareable link will be generated for your teammates to access your deployed models.
 
 ```bash
 # Share your deployed models with your teammates
-omz share bloomz
-https://3860-101-87-90-254.ngrok.io -> bloomz
+mdz share blomdz
+https://3860-101-87-90-254.ngrok.io -> blomdz
 ```
 
 ### Local experiment
@@ -100,15 +100,15 @@ https://3860-101-87-90-254.ngrok.io -> bloomz
 OpenModelZ runs your models in your cluster by default. But you could also run your models locally with docker.
 
 ```bash
-omz local-run openai-chat bloomz
+mdz local-run openai-chat blomdz
 ```
 
 ### Observe your models
 
-You could use `omz logs` to get the logs.
+You could use `mdz logs` to get the logs.
 
 ```bash
-omz logs bloomz
+mdz logs blomdz
 ```
 
 # Acknowledgements

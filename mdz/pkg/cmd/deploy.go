@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"math/rand"
 	"time"
 
@@ -16,14 +15,17 @@ var (
 	deployPort        int32
 	deployMinReplicas int32
 	deployMaxReplicas int32
+	deployName        string
 )
 
 // deployCmd represents the deploy command
 var deployCmd = &cobra.Command{
-	Use:     "deploy",
-	Short:   "Deploy OpenModelz inferences",
-	Long:    `Deploys OpenModelZ inferences directly via flags.`,
-	Example: `omz deploy --image=modelzai/llm-bloomz-560m:23.06.13`,
+	Use:   "deploy",
+	Short: "Deploy OpenModelz inferences",
+	Long:  `Deploys OpenModelZ inferences directly via flags.`,
+	Example: `  mdz deploy --image=modelzai/llm-blomdz-560m:23.06.13
+  mdz deploy --image=modelzai/llm-blomdz-560m:23.06.13 --name blomdz-560m`,
+	GroupID: "basic",
 	PreRunE: getAgentClient,
 	RunE:    commandDeploy,
 }
@@ -44,6 +46,7 @@ func init() {
 	deployCmd.Flags().Int32Var(&deployPort, "port", 8080, "Port to deploy on")
 	deployCmd.Flags().Int32Var(&deployMinReplicas, "min-replicas", 1, "Minimum number of replicas (can be 0)")
 	deployCmd.Flags().Int32Var(&deployMaxReplicas, "max-replicas", 1, "Maximum number of replicas")
+	deployCmd.Flags().StringVar(&deployName, "name", "", "Name of inference")
 }
 
 func commandDeploy(cmd *cobra.Command, args []string) error {
@@ -51,12 +54,17 @@ func commandDeploy(cmd *cobra.Command, args []string) error {
 		return cmd.Help()
 	}
 
+	name := deployName
+	if name == "" {
+		name = petname.Generate(2, "-")
+	}
+
 	var typ types.ScalingType = types.ScalingTypeCapacity
 	inf := types.InferenceDeployment{
 		Spec: types.InferenceDeploymentSpec{
 			Image:     deployImage,
 			Namespace: namespace,
-			Name:      petname.Generate(2, "-"),
+			Name:      name,
 			Framework: types.FrameworkOther,
 			Scaling: &types.ScalingConfig{
 				MinReplicas:     int32Ptr(deployMinReplicas),
@@ -75,7 +83,7 @@ func commandDeploy(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	fmt.Printf("Inference %s is created\n", inf.Spec.Name)
+	cmd.Printf("Inference %s is created\n", inf.Spec.Name)
 	return nil
 }
 

@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 )
 
@@ -11,8 +9,10 @@ var deleteCmd = &cobra.Command{
 	Use:     "delete",
 	Short:   "Delete OpenModelz inferences",
 	Long:    `Deletes OpenModelZ inferences`,
-	Example: `omz delete <name>`,
+	Example: `  mdz delete blomdz-560m`,
+	GroupID: "basic",
 	PreRunE: getAgentClient,
+	Args:    cobra.ExactArgs(1),
 	RunE:    commandDelete,
 }
 
@@ -29,10 +29,6 @@ func init() {
 }
 
 func commandDelete(cmd *cobra.Command, args []string) error {
-	if len(args) != 1 {
-		return cmd.Help()
-	}
-
 	name := args[0]
 
 	if err := agentClient.InferenceRemove(
@@ -40,6 +36,6 @@ func commandDelete(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	fmt.Printf("Inference %s is deleted\n", name)
+	cmd.Printf("Inference %s is deleted\n", name)
 	return nil
 }

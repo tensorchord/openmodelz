@@ -26,10 +26,10 @@
 #
 
 # This repo's root import path (under GOPATH).
-ROOT := github.com/tensorchord/openmodelz/omz
+ROOT := github.com/tensorchord/openmodelz/mdz
 
 # Target binaries. You can build multiple binaries for a single project.
-TARGETS := omz
+TARGETS := mdz
 
 # Container image prefix and suffix added to targets.
 # The final built images are:
