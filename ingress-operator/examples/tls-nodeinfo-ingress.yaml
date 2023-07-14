@@ -1,0 +1,14 @@
+apiVersion: openfaas.com/v1
+kind: FunctionIngress
+metadata:
+  name: nodeinfo-tls
+  namespace: openfaas
+spec:
+  domain: "nodeinfo-tls.myfaas.club"
+  function: "nodeinfo"
+  ingressType: "nginx"
+  tls:
+    enabled: true
+    issuerRef:
+      name: "letsencrypt-staging"
+      kind: "Issuer"

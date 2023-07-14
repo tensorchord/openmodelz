@@ -1,0 +1,11 @@
+apiVersion: openfaas.com/v1
+kind: FunctionIngress
+metadata:
+  name: nodeinfo
+  namespace: openfaas-fn
+spec:
+  domain: "nodeinfo.myfaas.club"
+  function: "nodeinfo"
+  ingressType: "nginx"
+  bypassGateway: true
+  path: /

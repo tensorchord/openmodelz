@@ -115,3 +115,4 @@ omz logs bloomz
 
 - [OpenFaaS](https://github.com/openfaas) for their work on serverless function services. It laid the foundation for OpenModelZ.
 - [Kubeflow](https://github.com/kubeflow) gives us a lot of insights on simplifying the machine learning deployments.
+- [LocalAI](https://github.com/go-skynet/LocalAI) for their work on OpenAI API compatible inferences.

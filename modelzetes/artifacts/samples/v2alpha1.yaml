@@ -1,0 +1,20 @@
+apiVersion: tensorchord.ai/v2alpha1
+kind: Inference
+metadata:
+  name: demo
+  namespace: default
+spec:
+  name: demo
+  framework: mosec
+  image: modelzai/llm-bloomz-560m:23.06.13
+  scaling:
+    min_replicas: 0
+    max_replicas: 1
+    target_load: 100
+    type: capacity
+    zero_duration: 60
+    startup_duration: 600
+  resources:
+    requests:
+      cpu: "3"
+      memory: 12Gi
