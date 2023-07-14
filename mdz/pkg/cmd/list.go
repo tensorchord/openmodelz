@@ -75,14 +75,18 @@ func commandList(cmd *cobra.Command, args []string) error {
 
 		for _, inf := range infs {
 			functionImage := inf.Spec.Image
+			createdAt := ""
+			if inf.Status.CreatedAt != nil {
+				createdAt = inf.Status.CreatedAt.String()
+			}
 			t.AppendRow(table.Row{
 				inf.Spec.Name,
-				fmt.Sprintf("%s/%s.%s", agentURL, inf.Spec.Name, inf.Spec.Namespace),
+				fmt.Sprintf("%s/inference/%s.%s", agentURL, inf.Spec.Name, inf.Spec.Namespace),
 				functionImage,
 				inf.Status.Phase,
 				int64(inf.Status.InvocationCount),
 				fmt.Sprintf("%d/%d", inf.Status.AvailableReplicas, inf.Status.Replicas),
-				inf.Status.CreatedAt.String(),
+				createdAt,
 			})
 		}
 
@@ -101,7 +105,7 @@ func commandList(cmd *cobra.Command, args []string) error {
 		for _, inf := range infs {
 			t.AppendRow(table.Row{
 				inf.Spec.Name,
-				fmt.Sprintf("%s/%s.%s", agentURL, inf.Spec.Name, inf.Spec.Namespace),
+				fmt.Sprintf("%s/inference/%s.%s", agentURL, inf.Spec.Name, inf.Spec.Namespace),
 				inf.Status.Phase,
 				fmt.Sprintf("%d/%d", inf.Status.AvailableReplicas, inf.Status.Replicas),
 			})
