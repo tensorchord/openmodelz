@@ -12,6 +12,7 @@ var (
 	// Used for flags.
 	agentURL  string
 	namespace string
+	debug     bool
 
 	agentClient *client.Client
 )
@@ -43,10 +44,14 @@ func init() {
 	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.omz.yaml)")
 	rootCmd.PersistentFlags().StringVarP(&agentURL, "agent-url", "a", "http://localhost:8081", "URL of the OpenModelZ agent")
 	rootCmd.PersistentFlags().StringVarP(&namespace, "namespace", "n", "default", "Namespace to use for OpenModelZ inferences")
+	rootCmd.PersistentFlags().BoolVarP(&debug, "debug", "", false, "Enable debug logging")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
+	rootCmd.AddGroup(&cobra.Group{ID: "basic", Title: "Basic Commands:"})
+	rootCmd.AddGroup(&cobra.Group{ID: "debug", Title: "Troubleshooting and Debugging Commands:"})
 }
 
 func getAgentClient(cmd *cobra.Command, args []string) error {

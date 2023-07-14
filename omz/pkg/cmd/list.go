@@ -16,10 +16,13 @@ var (
 
 // listCommand represents the list command
 var listCommand = &cobra.Command{
-	Use:     "list",
-	Short:   "List OpenModelz inferences",
-	Long:    `Lists OpenModelZ inferences either on a local or remote agent`,
-	Example: `omz deploy --image=my_image`,
+	Use:   "list",
+	Short: "List OpenModelz inferences",
+	Long:  `Lists OpenModelZ inferences either on a local or remote agent`,
+	Example: `  omz list
+  omz list -v
+  omz list -q`,
+	GroupID: "basic",
 	PreRunE: getAgentClient,
 	RunE:    commandList,
 }
@@ -47,7 +50,7 @@ func commandList(cmd *cobra.Command, args []string) error {
 	sort.Sort(byName(infs))
 	if listQuiet {
 		for _, inf := range infs {
-			fmt.Printf("%s\n", inf.Spec.Name)
+			cmd.Printf("%s\n", inf.Spec.Name)
 		}
 		return nil
 	} else if listVerbose {
@@ -58,18 +61,18 @@ func commandList(cmd *cobra.Command, args []string) error {
 			}
 		}
 
-		fmt.Printf("%-30s\t%-"+fmt.Sprintf("%d", maxWidth)+"s\t%-15s\t%-5s\t%-5s\n", "Function", "Image", "Invocations", "Replicas", "CreatedAt")
+		cmd.Printf("%-30s\t%-"+fmt.Sprintf("%d", maxWidth)+"s\t%-15s\t%-5s\t%-5s\n", "Function", "Image", "Invocations", "Replicas", "CreatedAt")
 		for _, inf := range infs {
 			functionImage := inf.Spec.Image
 			// if len(function.Image) > 40 {
 			// 	functionImage = functionImage[0:38] + ".."
 			// }
-			fmt.Printf("%-30s\t%-"+fmt.Sprintf("%d", maxWidth)+"s\t%-15d\t%-5d\t\t%-5s\n", inf.Spec.Name, functionImage, int64(inf.Status.InvocationCount), inf.Status.Replicas, inf.Status.CreatedAt.String())
+			cmd.Printf("%-30s\t%-"+fmt.Sprintf("%d", maxWidth)+"s\t%-15d\t%-5d\t\t%-5s\n", inf.Spec.Name, functionImage, int64(inf.Status.InvocationCount), inf.Status.Replicas, inf.Status.CreatedAt.String())
 		}
 	} else {
-		fmt.Printf("%-30s\t%-15s\t%-5s\n", "Function", "Invocations", "Replicas")
+		cmd.Printf("%-30s\t%-15s\t%-5s\n", "Function", "Invocations", "Replicas")
 		for _, inf := range infs {
-			fmt.Printf("%-30s\t%-15d\t%-5d\n", inf.Spec.Name, int64(inf.Status.InvocationCount), inf.Status.Replicas)
+			cmd.Printf("%-30s\t%-15d\t%-5d\n", inf.Spec.Name, int64(inf.Status.InvocationCount), inf.Status.Replicas)
 		}
 	}
 	return nil
