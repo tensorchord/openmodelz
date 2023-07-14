@@ -11,6 +11,10 @@ CLI for OpenModelZ.
 <a href="https://twitter.com/TensorChord"><img src="https://img.shields.io/twitter/follow/tensorchord?style=social" alt="trackgit-views" /></a>
 </p>
 
-# CLI Reference
+## Installation
 
-[](./docs/mdz.md)
+TODO
+
+## CLI Reference
+
+Please check out our [CLI Documentation](./docs/mdz.md)
