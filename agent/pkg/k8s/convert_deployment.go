@@ -87,43 +87,32 @@ func AsEnvVar(envs []v1.EnvVar) map[string]string {
 func AsResources(
 	requirements v1.ResourceRequirements) *types.ResourceRequirements {
 
-	gpuLimit := requirements.Limits[consts.ResourceNvidiaGPU]
-	gpuLimitPtr := &gpuLimit
-
-	gpuRequest := requirements.Requests[consts.ResourceNvidiaGPU]
-	gpuRequestsPtr := &gpuRequest
-
 	resources := types.ResourceRequirements{
-		Limits:   types.ResourceList{},
-		Requests: types.ResourceList{},
-	}
-
-	if !requirements.Limits.Cpu().IsZero() {
-		resources.Limits[types.ResourceCPU] = types.Quantity(
-			requirements.Limits.Cpu().String())
-	}
-	if !requirements.Limits.Memory().IsZero() {
-		resources.Limits[types.ResourceMemory] = types.Quantity(
-			requirements.Limits.Memory().String())
-	}
-	if !gpuLimitPtr.IsZero() {
-		resources.Limits[types.ResourceGPU] = types.Quantity(
-			gpuLimitPtr.String())
-	}
-	if !requirements.Requests.Cpu().IsZero() {
-		resources.Requests[types.ResourceCPU] = types.Quantity(
-			requirements.Requests.Cpu().String())
-	}
-	if !requirements.Requests.Memory().IsZero() {
-		resources.Requests[types.ResourceMemory] = types.Quantity(
-			requirements.Requests.Memory().String())
-	}
-	if !gpuRequestsPtr.IsZero() {
-		resources.Requests[types.ResourceGPU] = types.Quantity(
-			gpuRequestsPtr.String())
+		Limits:   AsResourceList(requirements.Limits),
+		Requests: AsResourceList(requirements.Requests),
 	}
 
 	return &resources
+}
+
+func AsResourceList(resources v1.ResourceList) types.ResourceList {
+	res := types.ResourceList{}
+	gpuResource := resources[consts.ResourceNvidiaGPU]
+	gpuPtr := &gpuResource
+
+	if !resources.Cpu().IsZero() {
+		res[types.ResourceCPU] = types.Quantity(
+			resources.Cpu().String())
+	}
+	if !resources.Memory().IsZero() {
+		res[types.ResourceMemory] = types.Quantity(
+			resources.Memory().String())
+	}
+	if !gpuPtr.IsZero() {
+		res[types.ResourceGPU] = types.Quantity(
+			gpuPtr.String())
+	}
+	return res
 }
 
 // ReadFunctionSecretsSpec parses the name of the required function secrets. This is the inverse of ConfigureSecrets.
