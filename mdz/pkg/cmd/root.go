@@ -43,7 +43,7 @@ func init() {
 	// will be global for your application.
 
 	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.mdz.yaml)")
-	rootCmd.PersistentFlags().StringVarP(&agentURL, "agent-url", "a", "http://localhost:8081", "URL of the OpenModelZ agent")
+	rootCmd.PersistentFlags().StringVarP(&agentURL, "agent", "a", "", "URL of the OpenModelZ agent (MDZ_AGENT) (default http://localhost:8081)")
 	rootCmd.PersistentFlags().StringVarP(&namespace, "namespace", "n", "default", "Namespace to use for OpenModelZ inferences")
 	rootCmd.PersistentFlags().BoolVarP(&debug, "debug", "", false, "Enable debug logging")
 
@@ -57,6 +57,13 @@ func init() {
 
 func getAgentClient(cmd *cobra.Command, args []string) error {
 	if agentClient == nil {
+		if agentURL == "" {
+			// Checkout environment variable MDZ_AGENT.
+			agentURL = os.Getenv("MDZ_AGENT")
+		}
+		if agentURL == "" {
+			agentURL = "http://localhost:8081"
+		}
 		var err error
 		agentClient, err = client.NewClientWithOpts(client.WithHost(agentURL))
 		if err != nil {
