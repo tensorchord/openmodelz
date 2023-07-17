@@ -1,0 +1,8 @@
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: {{ .Values.priorityClass.modelz }}
+value: {{ .Values.priorityClass.modelzValue }}
+preemptionPolicy: Never
+globalDefault: false
+description: "This priority class should be used for modelz only."

@@ -19,6 +19,7 @@ var localAgentCmd = &cobra.Command{
 	GroupID: "basic",
 	PreRunE: getAgentClient,
 	RunE:    commandLocalAgent,
+	Hidden:  true,
 }
 
 func init() {

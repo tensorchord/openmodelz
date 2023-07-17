@@ -1,0 +1,83 @@
+{{- $providerReadTimeout :=  default .Values.agent.readTimeout .Values.modelzetes.readTimeout }}
+{{- $providerWriteTimeout :=  default .Values.agent.writeTimeout .Values.modelzetes.writeTimeout }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "openmodelz.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: modelzetes
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: modelzetes
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: modelzetes
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8082"
+      labels:
+        app: modelzetes
+    spec:
+      priorityClassName: {{ .Values.priorityClass.modelz }}
+      serviceAccountName: {{ .Release.Name }}-operator
+      volumes:
+      {{- if .Values.basicAuth }}
+      - name: auth
+        secret:
+          secretName: basic-auth
+      {{- end }}
+      {{- if .Values.privatedImage }}
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecret }}
+      {{- end }}
+      containers:
+      - name: modelzetes
+        resources:
+          {{- .Values.modelzetes.resources | toYaml | nindent 12 }}
+        image: {{ .Values.modelzetes.image }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        command:
+          - /usr/bin/modelzetes
+        env:
+          - name: MODELZETES_INFERENCE_IMAGE_PULL_POLICY
+            value: {{ .Values.modelzetes.imagePullPolicy | quote }}
+          - name: MODELZETES_PROBE_READINESS_INITIAL_DELAY_SECONDS
+            value: "{{ .Values.modelzetes.readinessProbe.initialDelaySeconds }}"
+          - name: MODELZETES_PROBE_READINESS_TIMEOUT_SECONDS
+            value: "{{ .Values.modelzetes.readinessProbe.timeoutSeconds }}"
+          - name: MODELZETES_PROBE_READINESS_PERIOD_SECONDS
+            value: "{{ .Values.modelzetes.readinessProbe.periodSeconds }}"
+          - name: MODELZETES_PROBE_LIVENESS_INITIAL_DELAY_SECONDS
+            value: "{{ .Values.modelzetes.livenessProbe.initialDelaySeconds }}"
+          - name: MODELZETES_PROBE_LIVENESS_TIMEOUT_SECONDS
+            value: "{{ .Values.modelzetes.livenessProbe.timeoutSeconds }}"
+          - name: MODELZETES_PROBE_LIVENESS_PERIOD_SECONDS
+            value: "{{ .Values.modelzetes.livenessProbe.periodSeconds }}"
+          - name: MODELZETES_PROBE_STARTUP_INITIAL_DELAY_SECONDS
+            value: "{{ .Values.modelzetes.startupProbe.initialDelaySeconds }}"
+          - name: MODELZETES_PROBE_STARTUP_TIMEOUT_SECONDS
+            value: "{{ .Values.modelzetes.startupProbe.timeoutSeconds }}"
+          - name: MODELZETES_PROBE_STARTUP_PERIOD_SECONDS
+            value: "{{ .Values.modelzetes.startupProbe.periodSeconds }}"
+          {{- if .Values.modelzetes.huggingfacePullThroughCache.enabled }}
+          - name: MODELZETES_HUGGINGFACE_ENDPOINT
+            value: "http://hfserver.{{ .Release.Namespace }}:8080"
+          {{- end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

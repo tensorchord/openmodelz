@@ -13,6 +13,7 @@ import (
 	"github.com/tensorchord/openmodelz/modelzetes/pkg/consts"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	corelister "k8s.io/client-go/listers/core/v1"
+	"k8s.io/client-go/rest"
 
 	"github.com/tensorchord/openmodelz/agent/errdefs"
 )
@@ -22,10 +23,10 @@ type Resolver interface {
 	Close(url url.URL)
 }
 
-func NewPortForwardingResolver(path string) Resolver {
+func NewPortForwardingResolver(cfg *rest.Config) Resolver {
 	return &PortForwardingResolver{
-		configPath: path,
-		results:    make(map[int]*forwarder.Result),
+		config:  cfg,
+		results: make(map[int]*forwarder.Result),
 	}
 }
 
@@ -36,8 +37,8 @@ func NewEndpointResolver(lister corelister.EndpointsLister) Resolver {
 }
 
 type PortForwardingResolver struct {
-	configPath string
-	results    map[int]*forwarder.Result
+	config  *rest.Config
+	results map[int]*forwarder.Result
 }
 
 func (e *PortForwardingResolver) Resolve(namespace, name string) (url.URL, error) {
@@ -59,7 +60,7 @@ func (e *PortForwardingResolver) Resolve(namespace, name string) (url.URL, error
 		},
 	}
 
-	ret, err := forwarder.WithForwarders(context.Background(), options, e.configPath)
+	ret, err := forwarder.WithRestConfig(context.Background(), options, e.config)
 	if err != nil {
 		return url.URL{}, err
 	}

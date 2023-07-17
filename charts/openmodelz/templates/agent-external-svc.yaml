@@ -1,0 +1,26 @@
+{{- if .Values.exposeServices }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "openmodelz.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: agent
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: agent-external
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  type: {{ .Values.serviceType }}
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+      {{- if contains "NodePort" .Values.serviceType }}
+      nodePort: {{ .Values.agent.nodePort }}
+      {{- end }}
+  selector:
+    app: agent
+  {{- end }}

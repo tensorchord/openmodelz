@@ -99,7 +99,7 @@ func (s *Server) initKubernetesResources() error {
 	s.runtime = runtime
 	if s.config.Server.Dev {
 		logrus.Warn("running in dev mode, using port forwarding to access pods, please do not use dev mode in production")
-		s.endpointResolver = k8s.NewPortForwardingResolver(s.config.KubeConfig.Kubeconfig)
+		s.endpointResolver = k8s.NewPortForwardingResolver(clientCmdConfig)
 	} else {
 		s.endpointResolver = k8s.NewEndpointResolver(endpoints.Lister())
 	}
