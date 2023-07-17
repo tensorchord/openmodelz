@@ -1,0 +1,21 @@
+{{- if  .Values.autoscaler.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "openmodelz.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: autoscaler
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: autoscaler
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: autoscaler
+{{- end }}

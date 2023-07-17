@@ -1,0 +1,158 @@
+{{- if .Values.createCRDs }}
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: inferences.tensorchord.ai
+spec:
+  group: tensorchord.ai
+  names:
+    kind: Inference
+    listKind: InferenceList
+    plural: inferences
+    singular: inference
+  scope: Namespaced
+  versions:
+    - additionalPrinterColumns:
+        - jsonPath: .spec.image
+          name: Image
+          type: string
+      name: v2alpha1
+      schema:
+        openAPIV3Schema:
+          description: Inference describes an Inference
+          type: object
+          required:
+            - spec
+          properties:
+            apiVersion:
+              description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+              type: string
+            kind:
+              description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+              type: string
+            metadata:
+              type: object
+            spec:
+              description: InferenceSpec defines the desired state of Inference
+              type: object
+              required:
+                - image
+                - name
+              properties:
+                annotations:
+                  description: Annotations are metadata for inferences which may be used by the faas-provider or the gateway
+                  type: object
+                  additionalProperties:
+                    type: string
+                command:
+                  description: Command to run when starting the
+                  type: string
+                constraints:
+                  description: Constraints are specific to the operator.
+                  type: array
+                  items:
+                    type: string
+                envVars:
+                  description: EnvVars can be provided to set environment variables for the inference runtime.
+                  type: object
+                  additionalProperties:
+                    type: string
+                framework:
+                  description: Framework is the inference framework.
+                  type: string
+                http_probe_path:
+                  description: HTTPProbePath is the path of the http probe.
+                  type: string
+                image:
+                  type: string
+                labels:
+                  description: Labels are metadata for inferences which may be used by the faas-provider or the gateway
+                  type: object
+                  additionalProperties:
+                    type: string
+                name:
+                  type: string
+                port:
+                  description: Port is the port exposed by the inference.
+                  type: integer
+                  format: int32
+                resources:
+                  description: Limits for inference
+                  type: object
+                  properties:
+                    claims:
+                      description: "Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. \n This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. \n This field is immutable. It can only be set for containers."
+                      type: array
+                      items:
+                        description: ResourceClaim references one entry in PodSpec.ResourceClaims.
+                        type: object
+                        required:
+                          - name
+                        properties:
+                          name:
+                            description: Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+                            type: string
+                      x-kubernetes-list-map-keys:
+                        - name
+                      x-kubernetes-list-type: map
+                    limits:
+                      description: 'Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                      type: object
+                      additionalProperties:
+                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                        anyOf:
+                          - type: integer
+                          - type: string
+                        x-kubernetes-int-or-string: true
+                    requests:
+                      description: 'Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                      type: object
+                      additionalProperties:
+                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                        anyOf:
+                          - type: integer
+                          - type: string
+                        x-kubernetes-int-or-string: true
+                scaling:
+                  description: Scaling is the scaling configuration for the inference.
+                  type: object
+                  properties:
+                    max_replicas:
+                      description: MaxReplicas is the upper limit for the number of replicas to which the autoscaler can scale up. It cannot be less that minReplicas. It defaults to 1.
+                      type: integer
+                      format: int32
+                    min_replicas:
+                      description: MinReplicas is the lower limit for the number of replicas to which the autoscaler can scale down. It defaults to 0.
+                      type: integer
+                      format: int32
+                    startup_duration:
+                      description: StartupDuration is the duration of startup time.
+                      type: integer
+                      format: int32
+                    target_load:
+                      description: TargetLoad is the target load. In capacity mode, it is the expected number of the inflight requests per replica.
+                      type: integer
+                      format: int32
+                    type:
+                      description: Type is the scaling type. It can be either "capacity" or "rps". Default is "capacity".
+                      type: string
+                    zero_duration:
+                      description: ZeroDuration is the duration of zero load before scaling down to zero. Default is 5 minutes.
+                      type: integer
+                      format: int32
+                secrets:
+                  description: Secrets list of secrets to be made available to inference
+                  type: array
+                  items:
+                    type: string
+      served: true
+      storage: true
+      subresources: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+
+{{- end }}

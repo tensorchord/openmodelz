@@ -1,0 +1,265 @@
+{{- $functionNs := default .Release.Namespace .Values.functionNamespace }}
+
+{{- if .Values.prometheus.create }}
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  labels:
+    app: {{ template "openmodelz.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: prometheus-config
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: prometheus-config
+  namespace: {{ .Release.Namespace | quote }}
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval:     15s
+      evaluation_interval: 15s
+      external_labels:
+          monitor: 'faas-monitor'
+
+    rule_files:
+        - 'alert.rules.yml'
+        - 'prometheus-rules.yml'
+
+    alerting:
+      alertmanagers:
+      - static_configs:
+        - targets:
+          - alertmanager:9093
+
+    scrape_configs:
+      - job_name: 'prometheus'
+        scrape_interval: 10s
+        static_configs:
+          - targets: ['localhost:9090']
+
+      # Capture endpoints in the modelz namespace with a scrape annotation
+      # such as the gateway-provider service.
+      - job_name: 'modelz-endpoints'
+        kubernetes_sd_configs:
+        - role: endpoints
+        relabel_configs:
+        - action: labelmap
+          regex: __meta_kubernetes_service_label_(.+)
+        - source_labels: [__meta_kubernetes_namespace]
+          action: replace
+          target_label: kubernetes_namespace
+        - source_labels: [__meta_kubernetes_service_name]
+          action: replace
+          target_label: kubernetes_name
+
+        - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
+          separator: ;
+          regex: ([^:]+)(?::\d+)?;(\d+)
+          target_label: __address__
+          replacement: $1:$2
+          action: replace
+
+        - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
+          action: keep
+          regex: true
+        # - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_port]
+        #   action: keep
+        #   regex: true
+
+      - job_name: 'kubernetes-pods'
+        scrape_interval: 5s
+        honor_labels: false
+        kubernetes_sd_configs:
+          - role: pod
+        relabel_configs:
+        - action: labelmap
+          regex: __meta_kubernetes_pod_label_(.+)
+        - source_labels: [__meta_kubernetes_namespace]
+          action: replace
+          target_label: kubernetes_namespace
+        - source_labels: [__meta_kubernetes_pod_name]
+          action: replace
+          target_label: kubernetes_pod_name
+        - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+          action: keep
+          regex: true
+        - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+          action: replace
+          regex: ([^:]+)(?::\d+)?;(\d+)
+          replacement: $1:$2
+          target_label: __address__
+        - action: replace
+          regex: (.+)
+          source_labels:
+          - __meta_kubernetes_pod_annotation_prometheus_io_path
+          target_label: __metrics_path__
+
+      - job_name: "service_kube-state-metrics"
+        kubernetes_sd_configs:
+        - role: service
+        relabel_configs:
+        - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
+          action: keep
+          regex: kube-state-metrics
+        - action: labelmap
+          regex: __meta_kubernetes_service_label_(.+)
+        - source_labels: [__meta_kubernetes_namespace]
+          action: replace
+          target_label: namespace
+        - source_labels: [__meta_kubernetes_service_name]
+          action: replace
+          target_label: service
+
+      - job_name: 'kubernetes-resource-metrics'
+        scrape_interval: 10s
+        scheme: https
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          insecure_skip_verify: true
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        kubernetes_sd_configs:
+        - role: node
+        relabel_configs:
+        - action: labelmap
+          regex: __meta_kubernetes_node_label_(.+)
+        - target_label: __address__
+          replacement: kubernetes.default.svc:443
+        - source_labels: [__meta_kubernetes_node_name]
+          regex: (.+)
+          target_label: __metrics_path__
+          replacement: /api/v1/nodes/${1}/proxy/metrics/resource
+        metric_relabel_configs:
+        - source_labels: [__name__]
+          regex: (pod)_(cpu|memory)_(.+)
+          action: keep
+        # Exclude container metrics
+        - source_labels: [__name__]
+          regex: container_(.+)
+          action: drop
+        - action: replace
+          source_labels:
+          - namespace
+          regex: '(.*)'
+          replacement: '$1'
+          target_label: kubernetes_namespace
+        # Output deployment name from Pod
+        - action: replace
+          source_labels:
+          - pod
+          regex: '^([0-9a-zA-Z-]+)+(-[0-9a-zA-Z]+-[0-9a-zA-Z]+)$'
+          replacement: '$1'
+          target_label: deployment_name
+        # Output fully-qualified function name fn.ns
+        - source_labels: [deployment_name, kubernetes_namespace]
+          separator: ";"
+          regex: '(.*);(.*)'
+          replacement: '${1}.${2}'
+          target_label: "inference_name"
+      
+      - job_name: 'nvidia-dcgm'
+        scrape_interval: 10s
+        static_configs:
+          - targets: ['localhost:9400']
+
+      - job_name: kubernetes-cadvisor
+        honor_timestamps: true
+        scrape_interval: 15s
+        scrape_timeout: 10s
+        metrics_path: /metrics/cadvisor
+        scheme: https
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          insecure_skip_verify: true
+        kubernetes_sd_configs:
+        - role: node
+        relabel_configs:
+          - action: labelmap
+            regex: __meta_kubernetes_node_label_(.+)
+          - target_label: __address__
+            replacement: kubernetes.default.svc.cluster.local:443
+          - source_labels: [__meta_kubernetes_node_name]
+            regex: (.+)
+            target_label: __metrics_path__
+            replacement: /api/v1/nodes/${1}/proxy/metrics/cadvisor 
+       
+      - job_name: kubernetes-kubelet
+        honor_timestamps: true
+        scrape_interval: 15s
+        scrape_timeout: 10s
+        metrics_path: /metrics
+        scheme: https
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          insecure_skip_verify: true
+        kubernetes_sd_configs:
+        - role: node
+        relabel_configs:
+        - action: labelmap
+          regex: __meta_kubernetes_node_label_(.+)
+        - target_label: __address__
+          replacement: kubernetes.default.svc.cluster.local:443
+        - target_label: __metrics_path__
+          source_labels: [__meta_kubernetes_node_name]
+          regex: (.+)
+          replacement: /api/v1/nodes/${1}/proxy/metrics
+
+  alert.rules.yml: |
+    groups:
+      - name: modelz
+        rules:
+        - alert: service_down
+          expr: up == 0
+
+  prometheus-rules.yml: |
+    groups:
+    - name: load
+      rules:
+      - record: job:inference_current_load:sum
+        expr: sum by (inference_name) ( rate( gateway_inference_invocation_total{}[30s] ) )  and avg by (inference_name) (gateway_service_target_load{scaling_type="rps"}) > 1
+        labels:
+          scaling_type: rps
+
+      - record: job:inference_current_load:sum
+        expr: sum by (inference_name) ( max_over_time( gateway_inference_invocation_inflight[45s:5s])) and on (inference_name) avg by(inference_name) (gateway_service_target_load{scaling_type="capacity"}) > bool 1
+        labels:
+          scaling_type: capacity
+
+      - record: job:inference_current_load:sum
+        expr: sum(irate ( pod_cpu_usage_seconds_total{}[1m])*1000) by (inference_name) * on (inference_name) avg by (inference_name) (gateway_service_target_load{scaling_type="cpu"}  > bool 1 )
+        labels:
+          scaling_type: cpu
+
+    - name: recently_started_1m
+      interval: 10s
+      rules:
+      - record: job:inference_current_started:max_sum
+        expr: max_over_time(sum by (inference_name) (rate( gateway_inference_invocation_started{}[1m]))[1m:5s]) > 0
+    - name: inspectors
+      interval: 10s
+      rules:
+      - record: pod_restart_count_over_2_10m
+        expr: (sum by (pod,namespace) (increase(kube_pod_container_status_restarts_total{namespace=~"modelz-(.*)"}[10m])) > 2) * on (pod) group_left(inference_name) (label_join(label_replace(kube_pod_info{created_by_kind="ReplicaSet",namespace=~"modelz-(.*)"}, "inference", "$1", "created_by_name", "(.+)-.+"), "inference_name",".","inference","namespace"))
+    - name: resources
+      interval: 10s
+      rules:
+      - record: pod_cpu_usage_5m
+        expr: label_replace(sum(rate(pod_cpu_usage_seconds_total{}[5m])) by (pod, namespace,inference_name), "inference", "$1", "inference_name", "(.+)-.+")*100
+      - record: pod_memory_usage_5m
+        expr: label_replace(sum(rate(pod_memory_working_set_bytes{}[5m])) by (pod, namespace,inference_name), "inference", "$1", "inference_name", "(.+)-.+")/2^20
+      - record: pod_gpu_utilization
+        expr: sum(DCGM_FI_DEV_GPU_UTIL{namespace!=""}) by (pod, namespace, modelName)
+      - record: pod_gpu_memory_usage
+        expr: sum(DCGM_FI_DEV_FB_USED{namespace!=""}) by (pod, namespace, modelName)
+      - record: pod_gpu_memory_utilization
+        expr: sum(DCGM_FI_DEV_MEM_COPY_UTIL{namespace!=""}) by (pod, namespace, modelName)
+      - record: pod_network_write
+        expr: sum(rate(container_network_receive_bytes_total{container!="POD"}[5m])) by (pod, namespace) / 2^20
+      - record: pod_network_read
+        expr: sum(rate(container_network_transmit_bytes_total{container!="POD"}[5m])) by (pod, namespace) / 2^20
+      - record: pod_disk_write
+        expr: sum(rate(container_fs_writes_bytes_total{container!="POD"}[5m])) by (pod, namespace) / 2^20
+      - record: pod_disk_read
+        expr: sum(rate(container_fs_reads_bytes_total{container!="POD"}[5m])) by (pod, namespace) / 2^20
+{{- end }}

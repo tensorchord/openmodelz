@@ -1,0 +1,5 @@
+To verify that openmodelz has started, run:
+
+  kubectl -n {{ .Release.Namespace }} get deployments -l "release={{ .Release.Name }}, app={{ template "openmodelz.name" . }}"
+
+You could use `omz` to manage your inferences.
