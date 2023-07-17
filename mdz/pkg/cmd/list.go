@@ -55,13 +55,6 @@ func commandList(cmd *cobra.Command, args []string) error {
 		}
 		return nil
 	} else if listVerbose {
-		maxWidth := 40
-		for _, inf := range infs {
-			if len(inf.Spec.Image) > maxWidth {
-				maxWidth = len(inf.Spec.Image)
-			}
-		}
-
 		t := table.NewWriter()
 		t.SetStyle(table.Style{
 			Box:     table.StyleBoxDefault,
