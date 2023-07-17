@@ -53,6 +53,7 @@ func init() {
 
 	rootCmd.AddGroup(&cobra.Group{ID: "basic", Title: "Basic Commands:"})
 	rootCmd.AddGroup(&cobra.Group{ID: "debug", Title: "Troubleshooting and Debugging Commands:"})
+	rootCmd.AddGroup(&cobra.Group{ID: "management", Title: "Management Commands:"})
 }
 
 func getAgentClient(cmd *cobra.Command, args []string) error {
