@@ -20,10 +20,6 @@ type InferenceDeploymentInstanceStatus struct {
 	Message   string        `json:"message,omitempty"`
 }
 
-type InferenceDeploymentExecRequest struct {
-	Commands []string `json:"commands,omitempty"`
-}
-
 type InstancePhase string
 
 const (

@@ -5,7 +5,7 @@ import (
 	ingressclient "github.com/tensorchord/openmodelz/ingress-operator/pkg/client/clientset/versioned"
 	clientset "github.com/tensorchord/openmodelz/modelzetes/pkg/client/clientset/versioned"
 	modelzv2alpha1 "github.com/tensorchord/openmodelz/modelzetes/pkg/client/informers/externalversions/modelzetes/v2alpha1"
-	"k8s.io/apimachinery/pkg/runtime/schema"
+	apicorev1 "k8s.io/api/core/v1"
 	appsv1 "k8s.io/client-go/informers/apps/v1"
 	corev1 "k8s.io/client-go/informers/core/v1"
 	"k8s.io/client-go/kubernetes"
@@ -59,11 +59,9 @@ func New(clientConfig *rest.Config,
 		ingressEnabled:     ingressEnabled,
 		eventEnabled:       eventEnabled,
 	}
-	groupName := "core"
-	schemeGroupVersion := schema.GroupVersion{Group: groupName, Version: "v1"}
 	// Ref https://github.com/operator-framework/operator-sdk/issues/1570
 	clientConfig.APIPath = "api"
-	clientConfig.GroupVersion = &schemeGroupVersion
+	clientConfig.GroupVersion = &apicorev1.SchemeGroupVersion
 	clientConfig.NegotiatedSerializer = clientsetscheme.Codecs
 	restClient, err := rest.RESTClientFor(clientConfig)
 	if err != nil {

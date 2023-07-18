@@ -3,10 +3,11 @@ package server
 import (
 	"errors"
 	"net/http"
+	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/tensorchord/openmodelz/agent/api/types"
 	_ "github.com/tensorchord/openmodelz/agent/api/types"
 )
 
@@ -19,7 +20,7 @@ import (
 // @Param       name      path    string true "Name"
 // @Param       instance  path    string true "Instance name"
 // @Success     200       {object} []types.InferenceDeployment
-// @Router      /system/inference/{name}/instances/{instance} [post]
+// @Router      /system/inference/{name}/instance/{instance} [post]
 func (s *Server) handleInferenceInstanceExec(c *gin.Context) error {
 	namespace := c.Query("namespace")
 	if namespace == "" {
@@ -32,17 +33,24 @@ func (s *Server) handleInferenceInstanceExec(c *gin.Context) error {
 	}
 	instance := c.Param("instance")
 	if name == "" {
-		return NewError(http.StatusBadRequest, errors.New("name is required"),
+		return NewError(http.StatusBadRequest, errors.New("instance is required"),
 			"inference-instance-list")
 	}
 
-	var req types.InferenceDeploymentExecRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
+	tty := c.Query("tty")
+	if tty == "" {
+		tty = "false"
+	}
+	ttyBoolean, err := strconv.ParseBool(tty)
+	if err != nil {
 		return NewError(http.StatusBadRequest, err, "inference-instance-exec")
 	}
 
-	err := s.runtime.InferenceExec(c, namespace, instance, req.Commands)
-	if err != nil {
+	command := c.Query("command")
+	commandSlice := strings.Split(command, ",")
+
+	if err := s.runtime.InferenceExec(
+		c, namespace, instance, commandSlice, ttyBoolean); err != nil {
 		return errFromErrDefs(err, "inference-instance-exec")
 	}
 
