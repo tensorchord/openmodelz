@@ -17,8 +17,8 @@ var (
 // serverListCmd represents the server list command
 var serverListCmd = &cobra.Command{
 	Use:     "list",
-	Short:   "List OpenModelZ servers",
-	Long:    `List OpenModelZ servers`,
+	Short:   "List all servers in the cluster",
+	Long:    `List all servers in the cluster`,
 	Example: `  mdz server list`,
 	PreRunE: getAgentClient,
 	RunE:    commandServerList,

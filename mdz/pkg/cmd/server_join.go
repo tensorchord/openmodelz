@@ -9,8 +9,8 @@ import (
 // serverJoinCmd represents the server join command
 var serverJoinCmd = &cobra.Command{
 	Use:     "join",
-	Short:   "Join OpenModelZ server",
-	Long:    `Join OpenModelZ server`,
+	Short:   "Join to the cluster",
+	Long:    `Join to the cluster`,
 	Example: `  mdz server join --`,
 	RunE:    commandServerJoin,
 }

@@ -39,6 +39,13 @@ func commandVersion(cmd *cobra.Command, args []string) error {
 	cmd.Printf(" Compiler: \t%s\n", v.Compiler)
 	cmd.Printf(" Platform: \t%s\n", v.Platform)
 
+	if err := printAgentVersion(cmd); err != nil {
+		return err
+	}
+	return nil
+}
+
+func printAgentVersion(cmd *cobra.Command) error {
 	info, err := agentClient.InfoGet(cmd.Context())
 	if err != nil {
 		return errors.Newf("failed to get agent info: %v", err)
