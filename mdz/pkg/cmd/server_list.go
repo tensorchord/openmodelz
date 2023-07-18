@@ -92,9 +92,9 @@ func commandServerList(cmd *cobra.Command, args []string) error {
 }
 
 func resourceListString(l types.ResourceList) string {
-	res := fmt.Sprintf("cpu: %s, mem: %s", l["cpu"], l["memory"])
+	res := fmt.Sprintf("cpu: %s\nmem: %s", l["cpu"], l["memory"])
 	if l["nvidia.com/gpu"] != "" {
-		res += fmt.Sprintf(", gpu: %s", l["nvidia.com/gpu"])
+		res += fmt.Sprintf("\ngpu: %s", l["nvidia.com/gpu"])
 	}
 	return res
 }

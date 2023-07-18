@@ -20,7 +20,7 @@ func (s *k3sInstallStep) Run() error {
 	checkCmd.Stderr = nil
 	err := checkCmd.Run()
 	if err == nil {
-		fmt.Fprintf(s.options.OutputStream, "🚧 k3s is already installed, skip...\n")
+		fmt.Fprintf(s.options.OutputStream, "🚧 The server is already setup, skip...\n")
 		return nil
 	}
 
