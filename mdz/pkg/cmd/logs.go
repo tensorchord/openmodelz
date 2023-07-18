@@ -19,6 +19,7 @@ var logsCmd = &cobra.Command{
 	Example: `  mdz logs blomdz-560m`,
 	GroupID: "debug",
 	PreRunE: getAgentClient,
+	Args:    cobra.ExactArgs(1),
 	RunE:    commandLogs,
 }
 
