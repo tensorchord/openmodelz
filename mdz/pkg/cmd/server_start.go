@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"time"
+
 	"github.com/spf13/cobra"
 
 	"github.com/tensorchord/openmodelz/mdz/pkg/server"
@@ -9,8 +11,8 @@ import (
 // serverStartCmd represents the server start command
 var serverStartCmd = &cobra.Command{
 	Use:     "start",
-	Short:   "Start OpenModelZ server",
-	Long:    `Start OpenModelZ server`,
+	Short:   "Start the server",
+	Long:    `Start the server`,
 	Example: `  mdz server start`,
 	RunE:    commandServerStart,
 }
@@ -41,7 +43,24 @@ func commandServerStart(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	cmd.Printf("🎉 You could set the environment variable to get started!\n")
+	agentURL = result.AgentURL
+	if err := getAgentClient(cmd, args); err != nil {
+		return err
+	}
+
+	cmd.Printf("🐋 Checking if the server is running...\n")
+	// Retry until verify success.
+	ticker := time.NewTicker(serverPollingInterval)
+	for range ticker.C {
+		if err := printAgentVersion(cmd); err != nil {
+			cmd.Printf("🐋 The server is not ready yet, retrying...\n")
+			continue
+		}
+		break
+	}
+	cmd.Printf("🐳 The server is running at %s\n", result.AgentURL)
+	cmd.Printf("🎉 You could set the environment variable to get started!\n\n")
 	cmd.Printf("export MDZ_AGENT=%s\n", result.AgentURL)
+	cmd.Printf("mdz version\n")
 	return nil
 }

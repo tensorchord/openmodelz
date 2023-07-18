@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"io"
 	"time"
 )
@@ -28,6 +27,9 @@ func NewStart(o Options) (*Engine, error) {
 		Steps: []Step{
 			// Install k3s and related tools.
 			&k3sInstallStep{
+				options: o,
+			},
+			&helmStep{
 				options: o,
 			},
 		},
@@ -77,7 +79,6 @@ func (e *Engine) Run() (*Result, error) {
 			}
 		}
 	}
-	fmt.Fprintf(e.options.OutputStream, "🎬 All steps are done.\n")
 	return &Result{
 		AgentURL: "http://localhost:31112",
 	}, nil

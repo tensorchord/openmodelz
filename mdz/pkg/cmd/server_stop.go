@@ -9,8 +9,8 @@ import (
 // serverStopCmd represents the server stop command
 var serverStopCmd = &cobra.Command{
 	Use:     "stop",
-	Short:   "Stop OpenModelZ server",
-	Long:    `Stop OpenModelZ server`,
+	Short:   "Stop the server",
+	Long:    `Stop the server`,
 	Example: `  mdz server stop`,
 	RunE:    commandServerStop,
 }
