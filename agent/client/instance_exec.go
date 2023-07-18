@@ -22,7 +22,7 @@ func (cli *Client) InstanceExec(ctx context.Context,
 
 	urlPath := fmt.Sprintf(gatewayInferInstanceExecControlPlanePath, inferenceName, instance)
 
-	resp, err := cli.post(ctx, urlPath, urlValues, nil, nil)
+	resp, err := cli.get(ctx, urlPath, urlValues, nil)
 	defer ensureReaderClosed(resp)
 
 	if err != nil {

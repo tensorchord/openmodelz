@@ -2,9 +2,12 @@ package cmd
 
 import (
 	"bufio"
-	"fmt"
+	"log"
+	"net/url"
+	"os"
 
 	"github.com/cockroachdb/errors"
+	"github.com/gorilla/websocket"
 	"github.com/spf13/cobra"
 )
 
@@ -57,17 +60,37 @@ func commandExec(cmd *cobra.Command, args []string) error {
 	}
 
 	if execTTY {
-		resp, err := agentClient.InstanceExecTTY(cmd.Context(), namespace, name, execInstance, args[1:])
+		u := url.URL{Scheme: "ws", Host: "localhost:8081", Path: "/system/inference/llm/instance/llm-8598f68565-45zmn/exec", RawQuery: "namespace=default&tty=true&command=bash"}
+		c, _, err := websocket.DefaultDialer.DialContext(cmd.Context(), u.String(), nil)
 		if err != nil {
-			return err
+			log.Fatal("dial:", err)
 		}
-		defer resp.Close()
-		resp.Conn.Write([]byte("ls\r"))
-		scanner := bufio.NewScanner(resp.Conn)
-		for scanner.Scan() {
-			fmt.Println(scanner.Text())
+		defer c.Close()
+
+		cmd.Printf("Connected to %s\n", execInstance)
+
+		go func() {
+			scanner := bufio.NewScanner((os.Stdin))
+			for {
+				scanner.Scan()
+				txt := scanner.Text()
+				cmd.Printf("stdin: %s\n", txt)
+				if err := c.WriteJSON(&TerminalMessage{
+					Op:   "stdin",
+					Data: txt,
+				}); err != nil {
+					panic(err)
+				}
+			}
+		}()
+
+		for {
+			var msg TerminalMessage
+			if err := c.ReadJSON(&msg); err != nil {
+				return err
+			}
+			cmd.Printf("%s: %s", msg.Op, msg.Data)
 		}
-		return nil
 	} else {
 		res, err := agentClient.InstanceExec(cmd.Context(), namespace, name, execInstance, args[1:], false)
 		if err != nil {
@@ -77,4 +100,20 @@ func commandExec(cmd *cobra.Command, args []string) error {
 		cmd.Printf("%s", res)
 		return nil
 	}
+}
+
+// TerminalMessage is the messaging protocol between ShellController and TerminalSession.
+//
+// OP      DIRECTION  FIELD(S) USED  DESCRIPTION
+// ---------------------------------------------------------------------
+// bind    fe->be     SessionID      Id sent back from TerminalResponse
+// stdin   fe->be     Data           Keystrokes/paste buffer
+// resize  fe->be     Rows, Cols     New terminal size
+// stdout  be->fe     Data           Output from the process
+// toast   be->fe     Data           OOB message to be shown to the user
+type TerminalMessage struct {
+	Op   string `json:"op,omitempty"`
+	Data string `json:"data,omitempty"`
+	Rows uint16 `json:"rows,omitempty"`
+	Cols uint16 `json:"cols,omitempty"`
 }

@@ -64,13 +64,13 @@ func (cli *Client) postHijacked(ctx context.Context, path string, query url.Valu
 	}
 
 	apiPath := cli.getAPIPath(ctx, path, query)
-	req, err := http.NewRequest("POST", apiPath, bodyEncoded)
+	req, err := http.NewRequest("GET", apiPath, bodyEncoded)
 	if err != nil {
 		return HijackedResponse{}, err
 	}
 	req = cli.addHeaders(req, headers)
 
-	conn, err := cli.setupHijackConn(req, "tcp")
+	conn, err := cli.setupHijackConn(req, "websocket")
 	if err != nil {
 		return HijackedResponse{}, err
 	}
@@ -185,6 +185,8 @@ func (cli *Client) setupHijackConn(req *http.Request, proto string) (net.Conn, e
 	req.Host = cli.addr
 	req.Header.Set("Connection", "Upgrade")
 	req.Header.Set("Upgrade", proto)
+	req.Header.Set("Sec-Websocket-Version", "13")
+	req.Header.Set("Sec-Websocket-Key", "dGhlIHNhbXBsZSBub25jZQ==")
 
 	// req.URL.Host = cli.addr
 	// req.URL.Scheme = cli.scheme

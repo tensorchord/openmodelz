@@ -63,6 +63,7 @@ func New(clientConfig *rest.Config,
 	clientConfig.APIPath = "api"
 	clientConfig.GroupVersion = &apicorev1.SchemeGroupVersion
 	clientConfig.NegotiatedSerializer = clientsetscheme.Codecs
+	r.clientConfig = clientConfig
 	restClient, err := rest.RESTClientFor(clientConfig)
 	if err != nil {
 		return r, err
