@@ -63,7 +63,7 @@ func getAgentClient(cmd *cobra.Command, args []string) error {
 			agentURL = os.Getenv("MDZ_AGENT")
 		}
 		if agentURL == "" {
-			agentURL = "http://localhost:8081"
+			agentURL = "http://localhost:31112"
 		}
 		var err error
 		agentClient, err = client.NewClientWithOpts(client.WithHost(agentURL))
