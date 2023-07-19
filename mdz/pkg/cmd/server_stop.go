@@ -12,6 +12,7 @@ var serverStopCmd = &cobra.Command{
 	Short:   "Stop the server",
 	Long:    `Stop the server`,
 	Example: `  mdz server stop`,
+	PreRunE: commandInitLog,
 	RunE:    commandServerStop,
 }
 

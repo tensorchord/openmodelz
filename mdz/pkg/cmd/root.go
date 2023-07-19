@@ -3,6 +3,7 @@ package cmd
 import (
 	"os"
 
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/cobra/doc"
 
@@ -56,7 +57,11 @@ func init() {
 	rootCmd.AddGroup(&cobra.Group{ID: "management", Title: "Management Commands:"})
 }
 
-func getAgentClient(cmd *cobra.Command, args []string) error {
+func commandInit(cmd *cobra.Command, args []string) error {
+	if err := commandInitLog(cmd, args); err != nil {
+		return err
+	}
+
 	if agentClient == nil {
 		if agentURL == "" {
 			// Checkout environment variable MDZ_AGENT.
@@ -70,6 +75,15 @@ func getAgentClient(cmd *cobra.Command, args []string) error {
 		if err != nil {
 			return err
 		}
+	}
+	return nil
+}
+
+func commandInitLog(cmd *cobra.Command, args []string) error {
+	if debug {
+		logrus.SetLevel(logrus.DebugLevel)
+		logrus.Debug("Debug logging enabled")
+		logrus.SetFormatter(&logrus.TextFormatter{FullTimestamp: true})
 	}
 	return nil
 }

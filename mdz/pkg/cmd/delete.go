@@ -11,7 +11,7 @@ var deleteCmd = &cobra.Command{
 	Long:    `Deletes OpenModelZ inferences`,
 	Example: `  mdz delete blomdz-560m`,
 	GroupID: "basic",
-	PreRunE: getAgentClient,
+	PreRunE: commandInit,
 	Args:    cobra.ExactArgs(1),
 	RunE:    commandDelete,
 }

@@ -24,7 +24,7 @@ var listCommand = &cobra.Command{
   mdz list -v
   mdz list -q`,
 	GroupID: "basic",
-	PreRunE: getAgentClient,
+	PreRunE: commandInit,
 	RunE:    commandList,
 }
 

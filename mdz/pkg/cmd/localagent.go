@@ -17,7 +17,7 @@ var localAgentCmd = &cobra.Command{
 	Long:    `Start agent with local docker runtime`,
 	Example: `  mdz local-agent`,
 	GroupID: "basic",
-	PreRunE: getAgentClient,
+	PreRunE: commandInit,
 	RunE:    commandLocalAgent,
 	Hidden:  true,
 }

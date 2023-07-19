@@ -26,7 +26,7 @@ var deployCmd = &cobra.Command{
 	Example: `  mdz deploy --image=modelzai/llm-blomdz-560m:23.06.13
   mdz deploy --image=modelzai/llm-blomdz-560m:23.06.13 --name blomdz-560m`,
 	GroupID: "basic",
-	PreRunE: getAgentClient,
+	PreRunE: commandInit,
 	RunE:    commandDeploy,
 }
 

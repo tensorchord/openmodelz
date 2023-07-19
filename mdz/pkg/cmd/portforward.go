@@ -17,7 +17,7 @@ var portForwardCmd = &cobra.Command{
 	Long:    `Forward one local port to an inference`,
 	Example: `  mdz port-forward blomdz-560m 7860`,
 	GroupID: "debug",
-	PreRunE: getAgentClient,
+	PreRunE: commandInit,
 	Args:    cobra.ExactArgs(2),
 	RunE:    commandForward,
 }
