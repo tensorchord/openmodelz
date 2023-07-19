@@ -234,7 +234,7 @@ type podLoggerEventHandler struct {
 	deleted chan<- string
 }
 
-func (h *podLoggerEventHandler) OnAdd(obj interface{}) {
+func (h *podLoggerEventHandler) OnAdd(obj interface{}, isInitialList bool) {
 	pod := obj.(*corev1.Pod)
 	log.Printf("PodInformer: adding instance: %s", pod.Name)
 	h.added <- pod.Name

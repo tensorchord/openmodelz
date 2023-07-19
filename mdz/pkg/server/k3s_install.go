@@ -32,7 +32,7 @@ func (s *k3sInstallStep) Run() error {
 	fmt.Fprintf(s.options.OutputStream, "🚧 Creating the server...\n")
 	// TODO(gaocegege): Embed the script into the binary.
 	// Always run start, do not check the hash to decide.
-	cmd := exec.Command("/bin/sh", "-c", "INSTALL_K3S_FORCE_RESTART=true K3S_KUBECONFIG_MODE=644 sh -")
+	cmd := exec.Command("/bin/sh", "-c", "INSTALL_K3S_FORCE_RESTART=true K3S_KUBECONFIG_MODE=644 K3S_TOKEN=openmodelz sh -")
 	cmd.SysProcAttr = &syscall.SysProcAttr{
 		Pdeathsig: syscall.SIGKILL,
 	}
