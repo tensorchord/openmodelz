@@ -8,7 +8,7 @@ import (
 
 var (
 	serverVerbose         bool
-	serverPollingInterval time.Duration
+	serverPollingInterval time.Duration = 3 * time.Second
 )
 
 // serverCmd represents the server command
