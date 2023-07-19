@@ -1,7 +1,6 @@
 package client // import "docker.io/go-docker"
 
 import (
-	"fmt"
 	"net/url"
 
 	"github.com/gorilla/websocket"
@@ -27,7 +26,6 @@ func (cli *Client) websocket(ctx context.Context, path string, query url.Values,
 		scheme = "wss"
 	}
 
-	fmt.Printf("apiPath: %v\n", apiPath)
 	apiURL := url.URL{
 		Scheme:   scheme,
 		Host:     cli.addr,
