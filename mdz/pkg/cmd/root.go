@@ -3,6 +3,7 @@ package cmd
 import (
 	"os"
 
+	"github.com/cockroachdb/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/cobra/doc"
@@ -22,8 +23,19 @@ var (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "mdz",
-	Short: "Manage your OpenModelZ inferences from the command line",
-	Long:  `mdz is a CLI library to manage your OpenModelZ inferences from the command line.`,
+	Short: "mdz manages your deployments",
+	Long:  `mdz helps you deploy applications, manage servers, and troubleshoot issues.`,
+	Example: `  mdz server start
+  mdz deploy --image modelzai/llm-bloomz-560m:23.06.13 --name llm
+  mdz list
+  mdz logs llm
+  mdz port-forward llm 7860
+  mdz exec llm ps
+  mdz exec llm --tty bash
+  mdz delete llm
+`,
+	SilenceUsage:  true,
+	SilenceErrors: true,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
@@ -73,6 +85,7 @@ func commandInit(cmd *cobra.Command, args []string) error {
 		var err error
 		agentClient, err = client.NewClientWithOpts(client.WithHost(agentURL))
 		if err != nil {
+			cmd.PrintErrf("Failed to connect to agent: %s\n", errors.Cause(err))
 			return err
 		}
 	}

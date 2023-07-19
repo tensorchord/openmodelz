@@ -1,25 +1,28 @@
-## mdz delete
+## mdz exec
 
-Delete OpenModelz inferences
+Execute a command in an inference
 
 ### Synopsis
 
-Deletes OpenModelZ inferences
+Execute a command in an inference
 
 ```
-mdz delete [flags]
+mdz exec [flags]
 ```
 
 ### Examples
 
 ```
-  mdz delete blomdz-560m
+  mdz exec bloomz-560m ps
+  mdz exec bloomz-560m -i bloomz-560m-abcde-abcde ps
 ```
 
 ### Options
 
 ```
-  -h, --help   help for delete
+  -h, --help              help for exec
+  -i, --instance string   Instance name
+  -t, --tty               Allocate a TTY for the container
 ```
 
 ### Options inherited from parent commands

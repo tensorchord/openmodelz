@@ -4,6 +4,7 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/cockroachdb/errors"
 	petname "github.com/dustinkirkland/golang-petname"
 	"github.com/spf13/cobra"
 	"github.com/tensorchord/openmodelz/agent/api/types"
@@ -80,6 +81,7 @@ func commandDeploy(cmd *cobra.Command, args []string) error {
 
 	if _, err := agentClient.InferenceCreate(
 		cmd.Context(), namespace, inf); err != nil {
+		cmd.PrintErrf("Failed to create the inference: %s\n", errors.Cause(err))
 		return err
 	}
 

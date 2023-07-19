@@ -3,6 +3,7 @@ package cmd
 import (
 	"time"
 
+	"github.com/cockroachdb/errors"
 	"github.com/spf13/cobra"
 
 	"github.com/tensorchord/openmodelz/mdz/pkg/server"
@@ -37,15 +38,18 @@ func commandServerStart(cmd *cobra.Command, args []string) error {
 		RetryInternal: serverPollingInterval,
 	})
 	if err != nil {
+		cmd.PrintErrf("Failed to start the server: %s\n", errors.Cause(err))
 		return err
 	}
 
 	result, err := engine.Run()
 	if err != nil {
+		cmd.PrintErrf("Failed to start the server: %s\n", errors.Cause(err))
 		return err
 	}
 	agentURL = result.AgentURL
 	if err := commandInit(cmd, args); err != nil {
+		cmd.PrintErrf("Failed to start the server: %s\n", errors.Cause(err))
 		return err
 	}
 
@@ -62,6 +66,5 @@ func commandServerStart(cmd *cobra.Command, args []string) error {
 	cmd.Printf("🐳 The server is running at %s\n", result.AgentURL)
 	cmd.Printf("🎉 You could set the environment variable to get started!\n\n")
 	cmd.Printf("export MDZ_AGENT=%s\n", result.AgentURL)
-	cmd.Printf("mdz version\n")
 	return nil
 }

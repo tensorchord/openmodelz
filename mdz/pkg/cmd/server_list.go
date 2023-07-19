@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/cockroachdb/errors"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/spf13/cobra"
 	"github.com/tensorchord/openmodelz/agent/api/types"
@@ -41,6 +42,7 @@ func init() {
 func commandServerList(cmd *cobra.Command, args []string) error {
 	servers, err := agentClient.ServerList(cmd.Context())
 	if err != nil {
+		cmd.PrintErrf("Failed to list servers: %s\n", errors.Cause(err))
 		return err
 	}
 

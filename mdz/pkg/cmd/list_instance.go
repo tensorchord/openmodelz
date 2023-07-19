@@ -44,6 +44,7 @@ func init() {
 func commandListInstance(cmd *cobra.Command, args []string) error {
 	instances, err := agentClient.InstanceList(cmd.Context(), namespace, args[0])
 	if err != nil {
+		cmd.PrintErrf("Failed to list inference instances: %v\n", err)
 		return err
 	}
 
@@ -88,8 +89,6 @@ func commandListInstance(cmd *cobra.Command, args []string) error {
 		cmd.Println(t.Render())
 		return nil
 	}
-
-	return nil
 }
 
 type byInstanceName []types.InferenceDeploymentInstance

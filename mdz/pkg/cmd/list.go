@@ -45,6 +45,7 @@ func init() {
 func commandList(cmd *cobra.Command, args []string) error {
 	infs, err := agentClient.InferenceList(cmd.Context(), namespace)
 	if err != nil {
+		cmd.PrintErrf("Failed to list inferences: %v\n", err)
 		return err
 	}
 
