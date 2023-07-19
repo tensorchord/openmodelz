@@ -1,25 +1,31 @@
 package runtime
 
 import (
-	"context"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
-	"sync"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
 	"github.com/tensorchord/openmodelz/agent/errdefs"
 	v1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/util/rand"
 	clientsetscheme "k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/tools/remotecommand"
 )
 
+const (
+	// Time allowed to write a message to the peer.
+	writeWait = 10 * time.Second
+	// ctrl+d to close terminal.
+	endOfTransmission = "\u0004"
+)
+
 func (r Runtime) InferenceExec(ctx *gin.Context, namespace, instance string,
 	commands []string, tty bool) error {
-	req := r.restClient.Post().
+	req := r.kubeClient.CoreV1().RESTClient().Post().
 		Resource("pods").
 		Name(instance).
 		Namespace(namespace).
@@ -37,22 +43,16 @@ func (r Runtime) InferenceExec(ctx *gin.Context, namespace, instance string,
 		return errdefs.System(err)
 	}
 
-	remoteOptions := remotecommand.StreamOptions{
-		Stdout: ctx.Writer,
-		Stderr: ctx.Writer,
-		Tty:    tty,
-	}
-
 	if tty {
-		t, err := newTerminalSession(fmt.Sprintf("exec/%s/%s", namespace, instance),
+		t, err := newTerminalSession(fmt.Sprintf("exec/%s/%s/%s", namespace, instance, rand.String(5)),
 			ctx.Request, ctx.Writer)
 		if err != nil {
-			log.Println(err)
 			return err
 		}
 		defer t.Close()
 
-		if err = exec.StreamWithContext(context.TODO(), remotecommand.StreamOptions{
+		logrus.WithField("exec", exec).Debugf("executing command")
+		if err = exec.StreamWithContext(ctx.Request.Context(), remotecommand.StreamOptions{
 			Stdin:             t,
 			Stdout:            t,
 			Stderr:            t,
@@ -64,7 +64,13 @@ func (r Runtime) InferenceExec(ctx *gin.Context, namespace, instance string,
 			return nil
 		}
 	} else {
-		if err := exec.StreamWithContext(ctx.Request.Context(), remoteOptions); err != nil {
+		logrus.Debugf("running without tty")
+		if err := exec.StreamWithContext(ctx.Request.Context(),
+			remotecommand.StreamOptions{
+				Stdout: ctx.Writer,
+				Stderr: ctx.Writer,
+				Tty:    tty,
+			}); err != nil {
 			return errdefs.System(err)
 		}
 	}
@@ -77,8 +83,6 @@ type PtyHandler interface {
 	remotecommand.TerminalSizeQueue
 }
 
-const END_OF_TRANSMISSION = "\u0004"
-
 // TerminalMessage is the messaging protocol between ShellController and TerminalSession.
 //
 // OP      DIRECTION  FIELD(S) USED  DESCRIPTION
@@ -89,6 +93,7 @@ const END_OF_TRANSMISSION = "\u0004"
 // stdout  be->fe     Data           Output from the process
 // toast   be->fe     Data           OOB message to be shown to the user
 type TerminalMessage struct {
+	ID   string `json:"id,omitempty"`
 	Op   string `json:"op,omitempty"`
 	Data string `json:"data,omitempty"`
 	Rows uint16 `json:"rows,omitempty"`
@@ -97,7 +102,6 @@ type TerminalMessage struct {
 
 // TerminalSession
 type TerminalSession struct {
-	sync.Mutex
 	ID       string
 	wsConn   *websocket.Conn
 	sizeChan chan remotecommand.TerminalSize
@@ -121,18 +125,21 @@ func (t *TerminalSession) Read(p []byte) (int, error) {
 	var msg TerminalMessage
 	if err := t.wsConn.ReadJSON(&msg); err != nil {
 		logrus.Debugf("%s: read json failed: %v", t.ID, err)
-		return copy(p, END_OF_TRANSMISSION), err
+		return copy(p, endOfTransmission), err
 	}
+	logrus.Debugf("%s: read json: %v", t.ID, msg)
 	switch msg.Op {
 	case "stdin":
-		logrus.Debugf("%s: read %d bytes: %s", t.ID, len(msg.Data), msg.Data)
-		return copy(p, msg.Data), nil
+		logrus.WithField("remote", t.wsConn.RemoteAddr()).Debugf("%s: read %d bytes: %s", t.ID, len(msg.Data), msg.Data)
+		size := copy(p, msg.Data)
+		logrus.WithField("remote", t.wsConn.RemoteAddr()).Debugf("%s: copied %d bytes: %s", t.ID, size, p)
+		return size, nil
 	case "resize":
 		t.sizeChan <- remotecommand.TerminalSize{Width: msg.Cols, Height: msg.Rows}
 		return 0, nil
 	default:
-		logrus.Debugf("%s: unknown message type '%s'", t.ID, msg.Op)
-		return copy(p, END_OF_TRANSMISSION), fmt.Errorf("unknown message type '%s'", msg.Op)
+		logrus.WithField("remote", t.wsConn.RemoteAddr()).Debugf("%s: unknown message type '%s'", t.ID, msg.Op)
+		return copy(p, endOfTransmission), fmt.Errorf("unknown message type '%s'", msg.Op)
 	}
 }
 
@@ -144,10 +151,10 @@ func (t *TerminalSession) Write(p []byte) (int, error) {
 		Data: string(p),
 	}
 
-	logrus.Debugf("%s: write %d bytes: %s", t.ID, len(p), string(p))
+	logrus.WithField("remote", t.wsConn.RemoteAddr()).Debugf("%s: write %d bytes: %s", t.ID, len(p), string(p))
 
 	if err := t.wsConn.WriteJSON(msg); err != nil {
-		log.Printf("write message failed: %v", err)
+		logrus.WithField("remote", t.wsConn.RemoteAddr()).Debugf("write message failed: %v", err)
 		return 0, err
 	}
 	return len(p), nil

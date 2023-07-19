@@ -1,7 +1,8 @@
 package cmd
 
 import (
-	"bufio"
+	"fmt"
+	"io"
 	"log"
 	"net/url"
 	"os"
@@ -9,6 +10,8 @@ import (
 	"github.com/cockroachdb/errors"
 	"github.com/gorilla/websocket"
 	"github.com/spf13/cobra"
+	"golang.org/x/crypto/ssh/terminal"
+	"k8s.io/apimachinery/pkg/util/rand"
 )
 
 var (
@@ -69,16 +72,35 @@ func commandExec(cmd *cobra.Command, args []string) error {
 
 		cmd.Printf("Connected to %s\n", execInstance)
 
+		if !terminal.IsTerminal(0) || !terminal.IsTerminal(1) {
+			return fmt.Errorf("stdin/stdout should be terminal")
+		}
+		oldState, err := terminal.MakeRaw(0)
+		if err != nil {
+			return err
+		}
+		defer terminal.Restore(0, oldState)
+
+		screen := struct {
+			io.Reader
+			io.Writer
+		}{os.Stdin, os.Stdout}
+		term := terminal.NewTerminal(screen, "")
 		go func() {
-			scanner := bufio.NewScanner((os.Stdin))
 			for {
-				scanner.Scan()
-				txt := scanner.Text()
-				cmd.Printf("stdin: %s\n", txt)
-				if err := c.WriteJSON(&TerminalMessage{
+				line, err := term.ReadLine()
+				if err != nil {
+					panic(err)
+				}
+				if line == "" {
+					continue
+				}
+				msg := &TerminalMessage{
+					ID:   rand.String(5),
 					Op:   "stdin",
-					Data: txt,
-				}); err != nil {
+					Data: line + "\n",
+				}
+				if err := c.WriteJSON(msg); err != nil {
 					panic(err)
 				}
 			}
@@ -89,7 +111,7 @@ func commandExec(cmd *cobra.Command, args []string) error {
 			if err := c.ReadJSON(&msg); err != nil {
 				return err
 			}
-			cmd.Printf("%s: %s", msg.Op, msg.Data)
+			cmd.Printf("%s", msg.Data)
 		}
 	} else {
 		res, err := agentClient.InstanceExec(cmd.Context(), namespace, name, execInstance, args[1:], false)
@@ -112,6 +134,7 @@ func commandExec(cmd *cobra.Command, args []string) error {
 // stdout  be->fe     Data           Output from the process
 // toast   be->fe     Data           OOB message to be shown to the user
 type TerminalMessage struct {
+	ID   string `json:"id,omitempty"`
 	Op   string `json:"op,omitempty"`
 	Data string `json:"data,omitempty"`
 	Rows uint16 `json:"rows,omitempty"`
