@@ -1,16 +1,29 @@
 package server
 
 import (
+	"fmt"
 	"io"
 	"time"
+)
+
+const (
+	AgentPort = 31112
 )
 
 type Options struct {
 	Verbose       bool
 	OutputStream  io.Writer
+	Runtime       Runtime
 	RetryInternal time.Duration
 	ServerIP      string
 }
+
+type Runtime string
+
+var (
+	RuntimeK3s    Runtime = "k3s"
+	RuntimeDocker Runtime = "docker"
+)
 
 type Engine struct {
 	options Options
@@ -23,18 +36,32 @@ type Result struct {
 }
 
 func NewStart(o Options) (*Engine, error) {
-	return &Engine{
-		options: o,
-		Steps: []Step{
-			// Install k3s and related tools.
-			&k3sInstallStep{
-				options: o,
+	var engine *Engine
+	switch o.Runtime {
+	case RuntimeDocker:
+		engine = &Engine{
+			options: o,
+			Steps: []Step{
+				&agentDRunStep{
+					options: o,
+				},
 			},
-			&openModelZInstallStep{
-				options: o,
+		}
+	default:
+		engine = &Engine{
+			options: o,
+			Steps: []Step{
+				// Install k3s and related tools.
+				&k3sInstallStep{
+					options: o,
+				},
+				&openModelZInstallStep{
+					options: o,
+				},
 			},
-		},
-	}, nil
+		}
+	}
+	return engine, nil
 }
 
 func NewStop(o Options) (*Engine, error) {
@@ -81,6 +108,6 @@ func (e *Engine) Run() (*Result, error) {
 		}
 	}
 	return &Result{
-		AgentURL: "http://localhost:31112",
+		AgentURL: fmt.Sprintf("http://0.0.0.0:%d", AgentPort),
 	}, nil
 }
