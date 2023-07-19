@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/cockroachdb/errors"
 	"github.com/spf13/cobra"
 
 	"github.com/tensorchord/openmodelz/mdz/pkg/server"
@@ -37,11 +38,13 @@ func commandServerJoin(cmd *cobra.Command, args []string) error {
 		ServerIP:      args[0],
 	})
 	if err != nil {
+		cmd.PrintErrf("Failed to join the cluster: %s\n", errors.Cause(err))
 		return err
 	}
 
 	_, err = engine.Run()
 	if err != nil {
+		cmd.PrintErrf("Failed to join the cluster: %s\n", errors.Cause(err))
 		return err
 	}
 	cmd.Printf("✅ Server Joined\n")

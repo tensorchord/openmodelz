@@ -49,11 +49,14 @@ func commandExec(cmd *cobra.Command, args []string) error {
 	if execInstance == "" {
 		instances, err := agentClient.InstanceList(cmd.Context(), namespace, name)
 		if err != nil {
+			cmd.PrintErrf("Failed to list instances: %s\n", errors.Cause(err))
 			return err
 		}
 		if len(instances) == 0 {
+			cmd.PrintErrf("instance %s not found\n", name)
 			return errors.Newf("instance %s not found", name)
 		} else if len(instances) > 1 {
+			cmd.PrintErrf("inference %s has multiple instances, please specify with -i\n", name)
 			return errors.Newf("inference %s has multiple instances, please specify with -i", name)
 		}
 		execInstance = instances[0].Spec.Name
@@ -64,30 +67,36 @@ func commandExec(cmd *cobra.Command, args []string) error {
 		if len(args) > 1 {
 			shell = args[1]
 		} else if len(args) > 2 {
+			cmd.PrintErrf("too many arguments in tty mode, please use a shell program e.g. bash\n")
 			return fmt.Errorf("too many arguments")
 		}
 
 		if !isAvailableShell(shell) {
+			cmd.PrintErrf("shell %s is not available, try `sh` or `bash`\n", shell)
 			return fmt.Errorf("shell %s is not available, try `sh` or `bash`", shell)
 		}
 
 		resp, err := agentClient.InstanceExecTTY(cmd.Context(), namespace, name, execInstance, []string{shell})
 		if err != nil {
+			cmd.PrintErrf("Failed to execute the shell: %s\n", errors.Cause(err))
 			return err
 		}
 		defer resp.Conn.Close()
 
 		if !terminal.IsTerminal(0) || !terminal.IsTerminal(1) {
+			cmd.PrintErrf("stdin/stdout should be terminal\n")
 			return fmt.Errorf("stdin/stdout should be terminal")
 		}
 		c := resp.Conn
 
 		oldState, err := terminal.MakeRaw(0)
 		if err != nil {
+			cmd.PrintErrf("Failed to make raw terminal: %s\n", errors.Cause(err))
 			return err
 		}
 		oldOutState, err := terminal.MakeRaw(1)
 		if err != nil {
+			cmd.PrintErrf("Failed to make raw terminal: %s\n", errors.Cause(err))
 			return err
 		}
 		defer func() {
@@ -98,6 +107,7 @@ func commandExec(cmd *cobra.Command, args []string) error {
 		// Send terminal size.
 		w, h, err := terminal.GetSize(0)
 		if err != nil {
+			cmd.PrintErrf("Failed to get terminal size: %s\n", errors.Cause(err))
 			return err
 		}
 		msg := &TerminalMessage{
@@ -108,6 +118,7 @@ func commandExec(cmd *cobra.Command, args []string) error {
 			Cols: uint16(w),
 		}
 		if err := c.WriteJSON(msg); err != nil {
+			cmd.PrintErrf("Failed to send terminal message: %s\n", errors.Cause(err))
 			return err
 		}
 
@@ -141,6 +152,7 @@ func commandExec(cmd *cobra.Command, args []string) error {
 		for {
 			var msg TerminalMessage
 			if err := c.ReadJSON(&msg); err != nil {
+				cmd.PrintErrf("Failed to read terminal message: %s\n", errors.Cause(err))
 				return err
 			}
 			cmd.Printf("%s", msg.Data)
@@ -148,6 +160,7 @@ func commandExec(cmd *cobra.Command, args []string) error {
 	} else {
 		res, err := agentClient.InstanceExec(cmd.Context(), namespace, name, execInstance, args[1:], false)
 		if err != nil {
+			cmd.PrintErrf("Failed to execute the command: %s\n", errors.Cause(err))
 			return err
 		}
 

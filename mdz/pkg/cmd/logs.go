@@ -41,6 +41,7 @@ func init() {
 func commandLogs(cmd *cobra.Command, args []string) error {
 	logs, err := agentClient.DeploymentLogGet(cmd.Context(), namespace, args[0], since, tail, end)
 	if err != nil {
+		cmd.PrintErrf("Failed to get logs: %s\n", err)
 		return err
 	}
 	for _, log := range logs {

@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/cockroachdb/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -33,6 +34,7 @@ func commandDelete(cmd *cobra.Command, args []string) error {
 
 	if err := agentClient.InferenceRemove(
 		cmd.Context(), namespace, name); err != nil {
+		cmd.PrintErrf("Failed to remove the inference: %s\n", errors.Cause(err))
 		return err
 	}
 
