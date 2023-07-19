@@ -26,90 +26,40 @@ You could use OpenModelZ to:
 
 Once you've installed the `mdz` you can start deploying models and experimenting with them.
 
-### Deploy OpenAI API compatible inferences
+### Bootstrap `mdz`
 
-You could deploy OpenAI API compatible inferences with `mdz deploy openai-chat` command. A OpenAI API compatible server will be deployed with the model serverlessly.
-
-```bash
-# Deploy blomdz with OpenAI compatible API
-mdz deploy openai-chat --model blomdz-560m
-```
-
-After that, you could use `mdz list` to check the status of your deployment. And you could use `mdz infer openai-chat blomdz` to experiment with it.
-
-```
-$ mdz list
-$ mdz infer openai-chat blomdz --interactive
-> user: Hello, who are you?
-> blomdz: I am an AI. How can I help you today?
-...
-```
-
-Besides, you could use OpenAI python package to interact with the deployed model.
-
-```python
-import openai
-openai.api_base="<your agent url>/inference/blomdz.default"
-openai.api_key="any"
-openai.debug = True
-
-# create a chat completion
-chat_completion = openai.ChatCompletion.create(model="", messages=[
-    {"role": "user", "content": "Who are you?"},
-    {"role": "assistant", "content": "I am a student"},
-    {"role": "user", "content": "What do you learn?"},
-], max_tokens=100)
-```
-
-### Deploy Civitai models
-
-You could deploy Civitai models with `mdz deploy civitai` command. A stable diffusion web ui will be deployed with the model serverlessly.
+Before you actually start using `mdz`, you need to bootstrap it first.
 
 ```bash
-# Deploy stable diffusion web ui with base models on civitai
-mdz deploy civitai https://civitai.com/models/25694 --name epicrealism
+$ mdz server start
+🚧 Initializing the server...
+🚧 Waiting for the server to be ready...
+🐋 Checking if the server is running...
+Agent:
+ Name: 		agent
+ Orchestration: kubernetes
+ Version: 	v0.0.5
+ Build Date: 	2023-07-19T09:12:55Z
+ Git Commit: 	84d0171640453e9272f78a63e621392e93ef6bbb
+ Git State: 	clean
+ Go Version: 	go1.19.10
+ Compiler: 	gc
+ Platform: 	linux/amd64
+🐳 The server is running at http://0.0.0.0:31112
+🎉 You could set the environment variable to get started!
+
+export MDZ_AGENT=http://0.0.0.0:31112
 ```
 
-After that, you could use `mdz infer civitai epicrealism` to experiment with it.
+### Deploy your first applications
+
+Once you've bootstrapped the `mdz` server, you can start deploying your first applications.
 
 ```bash
-mdz infer civitai epicrealism --prompt "A photo of a cat"
+$ mdz deploy --image modelzai/llm-bloomz-560m:23.06.13 --name llm
 ```
 
-### Deploy Huggingface spaces
-
-You could deploy Huggingface spaces with `mdz deploy huggingface` command. A Huggingface spaces will be deployed with the model serverlessly.
-
-```bash
-# Deploy Huggingface space application.
-mdz deploy huggingface Manjushri/Music-Genie-GPU --name music-genie
-```
-
-### Share any deployed model with your teammates
-
-You could share your deployed models with your teammates with `mdz share` command. A shareable link will be generated for your teammates to access your deployed models.
-
-```bash
-# Share your deployed models with your teammates
-mdz share blomdz
-https://3860-101-87-90-254.ngrok.io -> blomdz
-```
-
-### Local experiment
-
-OpenModelZ runs your models in your cluster by default. But you could also run your models locally with docker.
-
-```bash
-mdz local-run openai-chat blomdz
-```
-
-### Observe your models
-
-You could use `mdz logs` to get the logs.
-
-```bash
-mdz logs blomdz
-```
+This will deploy the model `modelzai/llm-bloomz-560m:23.06.13` as a serverless function. You can access it at `http://
 
 # Acknowledgements
 
