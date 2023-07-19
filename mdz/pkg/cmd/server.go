@@ -28,7 +28,7 @@ func init() {
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	serverCmd.PersistentFlags().BoolVarP(&serverVerbose, "verbose", "v", false, "Verbose output")
-	serverCmd.PersistentFlags().DurationVarP(&serverPollingInterval, "polling-interval", "p", 3*time.Second, "Polling interval")
+	// serverCmd.PersistentFlags().DurationVarP(&serverPollingInterval, "polling-interval", "p", 3*time.Second, "Polling interval")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
