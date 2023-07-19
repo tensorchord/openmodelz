@@ -20,7 +20,7 @@ var serverListCmd = &cobra.Command{
 	Short:   "List all servers in the cluster",
 	Long:    `List all servers in the cluster`,
 	Example: `  mdz server list`,
-	PreRunE: getAgentClient,
+	PreRunE: commandInit,
 	RunE:    commandServerList,
 }
 

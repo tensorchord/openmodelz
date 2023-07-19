@@ -18,6 +18,7 @@ var serverCmd = &cobra.Command{
 	Long:    `Manage the servers`,
 	Example: `  mdz server start`,
 	GroupID: "management",
+	PreRunE: commandInitLog,
 }
 
 func init() {

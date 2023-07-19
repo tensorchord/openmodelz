@@ -24,7 +24,7 @@ var execCommand = &cobra.Command{
 	Example: `  mdz exec bloomz-560m ps
   mdz exec bloomz-560m -i bloomz-560m-abcde-abcde ps`,
 	GroupID: "debug",
-	PreRunE: getAgentClient,
+	PreRunE: commandInit,
 	Args:    cobra.MinimumNArgs(1),
 	RunE:    commandExec,
 }

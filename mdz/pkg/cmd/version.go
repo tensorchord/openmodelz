@@ -12,7 +12,7 @@ var versionCmd = &cobra.Command{
 	Short:   "Print the client and agent version information",
 	Long:    `Print the client and server version information`,
 	Example: `  mdz version`,
-	PreRunE: getAgentClient,
+	PreRunE: commandInit,
 	RunE:    commandVersion,
 }
 

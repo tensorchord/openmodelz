@@ -23,7 +23,7 @@ var listInstanceCmd = &cobra.Command{
   mdz list instance bloomz-560m -v
   mdz list instance bloomz-560m -q`,
 	Args:    cobra.ExactArgs(1),
-	PreRunE: getAgentClient,
+	PreRunE: commandInit,
 	RunE:    commandListInstance,
 }
 

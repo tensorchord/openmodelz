@@ -14,6 +14,7 @@ var serverStartCmd = &cobra.Command{
 	Short:   "Start the server",
 	Long:    `Start the server`,
 	Example: `  mdz server start`,
+	PreRunE: commandInitLog,
 	RunE:    commandServerStart,
 }
 
@@ -44,7 +45,7 @@ func commandServerStart(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	agentURL = result.AgentURL
-	if err := getAgentClient(cmd, args); err != nil {
+	if err := commandInit(cmd, args); err != nil {
 		return err
 	}
 
