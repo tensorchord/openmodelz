@@ -22,6 +22,8 @@ require (
 	github.com/swaggo/gin-swagger v1.6.0
 	github.com/tensorchord/openmodelz/agent v0.0.0-00010101000000-000000000000
 	github.com/toorop/gin-logrus v0.0.0-20210225092905-2c785434f26f
+	golang.org/x/term v0.8.0
+	k8s.io/apimachinery v0.27.3
 )
 
 require (
@@ -47,6 +49,7 @@ require (
 	github.com/go-playground/validator/v10 v10.14.0 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
+	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
@@ -80,5 +83,4 @@ require (
 	golang.org/x/tools v0.7.0 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	k8s.io/apimachinery v0.26.3 // indirect
 )

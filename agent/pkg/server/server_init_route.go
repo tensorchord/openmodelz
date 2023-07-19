@@ -56,6 +56,8 @@ func (s *Server) registerRoutes() {
 	// instances
 	controlPlane.GET(endpointInference+"/:name/instances",
 		WrapHandler(s.handleInferenceInstance))
+	controlPlane.GET(endpointInference+"/:name/instance/:instance/exec",
+		WrapHandler(s.handleInferenceInstanceExec))
 
 	// info
 	controlPlane.GET(endpointInfo, WrapHandler(s.handleInfo))
