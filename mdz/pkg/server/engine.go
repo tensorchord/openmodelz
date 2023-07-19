@@ -29,7 +29,7 @@ func NewStart(o Options) (*Engine, error) {
 			&k3sInstallStep{
 				options: o,
 			},
-			&helmStep{
+			&openModelZInstallStep{
 				options: o,
 			},
 		},
