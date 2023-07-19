@@ -13,13 +13,14 @@ const defaultAddr = "0.0.0.0:8080"
 const apiBasePath = ""
 
 const (
-	gatewayInferControlPlanePath         = "/system/inferences"
-	gatewayInferScaleControlPath         = "/system/scale-inference"
-	gatewayInferInstanceControlPlanePath = "/system/inference/%s/instances"
-	gatewayServerControlPlanePath        = "/system/servers"
-	gatewayNamespaceControlPlanePath     = "/system/namespaces"
-	gatewayBuildControlPlanePath         = "/system/build"
-	gatewayBuildInstanceControlPlanePath = "/system/build/%s"
+	gatewayInferControlPlanePath             = "/system/inferences"
+	gatewayInferScaleControlPath             = "/system/scale-inference"
+	gatewayInferInstanceControlPlanePath     = "/system/inference/%s/instances"
+	gatewayInferInstanceExecControlPlanePath = "/system/inference/%s/instance/%s/exec"
+	gatewayServerControlPlanePath            = "/system/servers"
+	gatewayNamespaceControlPlanePath         = "/system/namespaces"
+	gatewayBuildControlPlanePath             = "/system/build"
+	gatewayBuildInstanceControlPlanePath     = "/system/build/%s"
 )
 
 const (

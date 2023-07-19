@@ -88,7 +88,7 @@ func (s *Server) initKubernetesResources() error {
 		s.logger.Errorf("failed to wait for cache to sync")
 	}
 
-	runtime, err := runtime.New(
+	runtime, err := runtime.New(clientCmdConfig,
 		endpoints, deployments, inferences, pods,
 		kubeClient, ingressClient, inferenceClient, s.eventRecorder,
 		s.config.Ingress.IngressEnabled, s.config.DB.EventEnabled,

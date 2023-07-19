@@ -283,7 +283,7 @@ type podLoggerEventHandler struct {
 	deleted chan<- string
 }
 
-func (h *podLoggerEventHandler) OnAdd(obj interface{}) {
+func (h *podLoggerEventHandler) OnAdd(obj interface{}, isInitialList bool) {
 	pod := obj.(*corev1.Pod)
 	logrus.WithField("pod", pod.Name).Debugf("log pod informer added a pod")
 	h.added <- pod.Name
