@@ -3,14 +3,11 @@ package cmd
 import (
 	"fmt"
 	"io"
-	"log"
-	"net/url"
 	"os"
 
 	"github.com/cockroachdb/errors"
-	"github.com/gorilla/websocket"
 	"github.com/spf13/cobra"
-	"golang.org/x/crypto/ssh/terminal"
+	terminal "golang.org/x/term"
 	"k8s.io/apimachinery/pkg/util/rand"
 )
 
@@ -63,23 +60,56 @@ func commandExec(cmd *cobra.Command, args []string) error {
 	}
 
 	if execTTY {
-		u := url.URL{Scheme: "ws", Host: "localhost:8081", Path: "/system/inference/llm/instance/llm-8598f68565-45zmn/exec", RawQuery: "namespace=default&tty=true&command=bash"}
-		c, _, err := websocket.DefaultDialer.DialContext(cmd.Context(), u.String(), nil)
-		if err != nil {
-			log.Fatal("dial:", err)
+		shell := "sh"
+		if len(args) > 1 {
+			shell = args[1]
+		} else if len(args) > 2 {
+			return fmt.Errorf("too many arguments")
 		}
-		defer c.Close()
 
-		cmd.Printf("Connected to %s\n", execInstance)
+		if !isAvailableShell(shell) {
+			return fmt.Errorf("shell %s is not available, try `sh` or `bash`", shell)
+		}
+
+		resp, err := agentClient.InstanceExecTTY(cmd.Context(), namespace, name, execInstance, []string{shell})
+		if err != nil {
+			return err
+		}
+		defer resp.Conn.Close()
 
 		if !terminal.IsTerminal(0) || !terminal.IsTerminal(1) {
 			return fmt.Errorf("stdin/stdout should be terminal")
 		}
+		c := resp.Conn
+
 		oldState, err := terminal.MakeRaw(0)
 		if err != nil {
 			return err
 		}
-		defer terminal.Restore(0, oldState)
+		oldOutState, err := terminal.MakeRaw(1)
+		if err != nil {
+			return err
+		}
+		defer func() {
+			terminal.Restore(0, oldState)
+			terminal.Restore(1, oldOutState)
+		}()
+
+		// Send terminal size.
+		w, h, err := terminal.GetSize(0)
+		if err != nil {
+			return err
+		}
+		msg := &TerminalMessage{
+			ID:   rand.String(5),
+			Op:   "resize",
+			Data: "",
+			Rows: uint16(h),
+			Cols: uint16(w),
+		}
+		if err := c.WriteJSON(msg); err != nil {
+			return err
+		}
 
 		screen := struct {
 			io.Reader
@@ -90,7 +120,9 @@ func commandExec(cmd *cobra.Command, args []string) error {
 			for {
 				line, err := term.ReadLine()
 				if err != nil {
-					panic(err)
+					if err == io.EOF {
+						return
+					}
 				}
 				if line == "" {
 					continue
@@ -121,6 +153,15 @@ func commandExec(cmd *cobra.Command, args []string) error {
 
 		cmd.Printf("%s", res)
 		return nil
+	}
+}
+
+func isAvailableShell(shell string) bool {
+	switch shell {
+	case "sh", "bash", "zsh", "fish":
+		return true
+	default:
+		return false
 	}
 }
 

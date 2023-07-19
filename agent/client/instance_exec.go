@@ -49,7 +49,7 @@ func (cli *Client) InstanceExecTTY(ctx context.Context,
 
 	urlPath := fmt.Sprintf(gatewayInferInstanceExecControlPlanePath, inferenceName, instance)
 
-	resp, err := cli.postHijacked(ctx, urlPath, urlValues, nil, nil)
+	resp, err := cli.websocket(ctx, urlPath, urlValues, nil)
 	if err != nil {
 		return HijackedResponse{}, wrapResponseError(err, serverResponse{}, "instances with namespace", namespace)
 	}
