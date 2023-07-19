@@ -221,7 +221,7 @@ dockers:
 docker_manifests:
 - name_template: modelzai/openmodelz-modelzetes:v{{ .Version }}
   image_templates:
-  - modelzai/modelzetes:v{{ .Version }}-amd64
+  - modelzai/openmodelz-modelzetes:v{{ .Version }}-amd64
   # - modelzai/modelzetes:v{{ .Version }}-arm64v8
 - name_template: modelzai/openmodelz-agent:v{{ .Version }}
   image_templates:
@@ -231,10 +231,6 @@ docker_manifests:
   image_templates:
   - modelzai/openmodelz-autoscaler:v{{ .Version }}-amd64
   # - modelzai/modelz-autoscaler:v{{ .Version }}-arm64v8
-- name_template: modelzai/modelz-apiserver:v{{ .Version }}
-  image_templates:
-  - modelzai/modelz-apiserver:v{{ .Version }}-amd64
-  # - modelzai/modelz-apiserver:v{{ .Version }}-arm64v8
 - name_template: modelzai/openmodelz-ingress-operator:v{{ .Version }}
   image_templates:
   - modelzai/openmodelz-ingress-operator:v{{ .Version }}-amd64
