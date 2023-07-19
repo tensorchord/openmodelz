@@ -11,8 +11,9 @@ var serverJoinCmd = &cobra.Command{
 	Use:     "join",
 	Short:   "Join to the cluster",
 	Long:    `Join to the cluster`,
-	Example: `  mdz server join --`,
+	Example: `  mdz server join 192.168.31.192`,
 	PreRunE: commandInitLog,
+	Args:    cobra.ExactArgs(1),
 	RunE:    commandServerJoin,
 }
 

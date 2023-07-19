@@ -620,6 +620,9 @@ rules:
   - apiGroups: [""]
     resources: ["namespaces"]
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get", "watch", "list"]
 ---
 # Source: openmodelz/templates/prometheus-rbac.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -931,7 +934,7 @@ spec:
             requests:
               cpu: 100m
               memory: 120Mi
-        image: modelzai/openmodelz-agent:v0.0.1-next-amd64
+        image: modelzai/openmodelz-agent:v0.0.4
         imagePullPolicy: Always
         command:
           - /usr/bin/agent
@@ -1014,7 +1017,7 @@ spec:
             requests:
               cpu: 100m
               memory: 128Mi
-        image: modelzai/openmodelz-autoscaler:v0.0.1-next-amd64
+        image: modelzai/openmodelz-autoscaler:v0.0.4
         imagePullPolicy: Always
         command:
           - "/usr/bin/autoscaler"
@@ -1082,7 +1085,7 @@ spec:
           requests:
             cpu: 50m
             memory: 128Mi
-        image: modelzai/openmodelz-ingress-operator:v0.0.1-next-amd64
+        image: modelzai/openmodelz-ingress-operator:v0.0.4
         imagePullPolicy: Always
 ---
 # Source: openmodelz/templates/modelzetes-dep.yaml
@@ -1122,7 +1125,7 @@ spec:
             requests:
               cpu: 100m
               memory: 120Mi
-        image: modelzai/openmodelz-modelzetes:v0.0.1-next-amd64
+        image: modelzai/openmodelz-modelzetes:v0.0.4
         imagePullPolicy: Always
         command:
           - /usr/bin/modelzetes

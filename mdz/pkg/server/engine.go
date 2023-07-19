@@ -9,6 +9,7 @@ type Options struct {
 	Verbose       bool
 	OutputStream  io.Writer
 	RetryInternal time.Duration
+	ServerIP      string
 }
 
 type Engine struct {
@@ -53,7 +54,7 @@ func NewJoin(o Options) (*Engine, error) {
 		options: o,
 		Steps: []Step{
 			// Kill all k3s and related tools.
-			&k3sKillAllStep{
+			&k3sJoinStep{
 				options: o,
 			},
 		},
