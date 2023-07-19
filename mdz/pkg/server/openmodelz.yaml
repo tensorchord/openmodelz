@@ -1249,24 +1249,3 @@ value: 1e+07
 preemptionPolicy: Never
 globalDefault: false
 description: "This priority class should be used for modelz only."
----
-# Source: openmodelz/templates/tests/test-connection.yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: "release-name-openmodelz-test-connection"
-  labels:
-    helm.sh/chart: openmodelz-0.0.1
-    app.kubernetes.io/name: openmodelz
-    app.kubernetes.io/instance: release-name
-    app.kubernetes.io/version: "1.16.0"
-    app.kubernetes.io/managed-by: Helm
-  annotations:
-    "helm.sh/hook": test
-spec:
-  containers:
-    - name: wget
-      image: busybox
-      command: ['wget']
-      args: ['agent:8080/healthz']
-  restartPolicy: Never
