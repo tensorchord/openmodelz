@@ -34,6 +34,7 @@ func commandServerJoin(cmd *cobra.Command, args []string) error {
 		Verbose:       serverVerbose,
 		OutputStream:  cmd.ErrOrStderr(),
 		RetryInternal: serverPollingInterval,
+		ServerIP:      args[0],
 	})
 	if err != nil {
 		return err
