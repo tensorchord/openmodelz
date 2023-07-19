@@ -56,7 +56,7 @@ func init() {
 	// will be global for your application.
 
 	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.mdz.yaml)")
-	rootCmd.PersistentFlags().StringVarP(&agentURL, "agent", "a", "", "URL of the OpenModelZ agent (MDZ_AGENT) (default http://localhost:8081)")
+	rootCmd.PersistentFlags().StringVarP(&agentURL, "agent", "a", "", "URL of the OpenModelZ agent (MDZ_AGENT) (default http://localhost:31112)")
 	rootCmd.PersistentFlags().StringVarP(&namespace, "namespace", "n", "default", "Namespace to use for OpenModelZ inferences")
 	rootCmd.PersistentFlags().BoolVarP(&debug, "debug", "", false, "Enable debug logging")
 
