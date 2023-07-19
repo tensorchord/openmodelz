@@ -40,6 +40,23 @@ builds:
       - linux
     goarch:
       - amd64
+    id: mdz
+    main: ./cmd/mdz/main.go
+    dir: ./mdz
+    binary: mdz
+    ldflags:
+      - -s -w
+      - -X github.com/tensorchord/openmodelz/mdz/pkg/version.version={{ .Version }}
+      - -X github.com/tensorchord/openmodelz/mdz/pkg/version.buildDate={{ .Date }}
+      - -X github.com/tensorchord/openmodelz/mdz/pkg/version.gitCommit={{ .Commit }}
+      - -X github.com/tensorchord/openmodelz/mdz/pkg/version.gitTreeState=clean
+      - -X github.com/tensorchord/openmodelz/mdz/pkg/version.gitTag={{ .Tag }}
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+    goarch:
+      - amd64
     id: autoscaler
     main: ./cmd/autoscaler/main.go
     dir: ./autoscaler
@@ -82,6 +99,15 @@ archives:
     format: binary
     builds:
       - agent
+    name_template: >-
+      {{ .Binary }}_{{ .Version }}_{{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+  - id: mdz
+    format: binary
+    builds:
+      - mdz
     name_template: >-
       {{ .Binary }}_{{ .Version }}_{{- title .Os }}_
       {{- if eq .Arch "amd64" }}x86_64
