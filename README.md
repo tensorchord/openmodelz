@@ -22,6 +22,10 @@ You could use OpenModelZ to:
 - Share your models with teammates or collaborators easily. OpenModelZ abstracts away the complexity of Kubernetes, giving your collaborators a simple way to access and provide feedback on your models.
 - Gain insights into your models' performance and reliability. OpenModelZ exposes Prometheus metrics and health checks for your deployed models, providing insight into latency, throughput, errors and other key indicators.
 
+## This is for you if...
+
+You need a simple system for your ML models, to run on tens of GPU servers you own. Priorities are **ease of use**, **fast deployments**, flexible orchestration, monitoring from a dashboard, and stable rollouts via testing. Avoid complex systems; focus on streamlined, simple, and efficient model deployments.
+
 ## Quick Start
 
 Once you've installed the `mdz` you can start deploying models and experimenting with them.
