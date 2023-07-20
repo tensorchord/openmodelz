@@ -1,6 +1,7 @@
 package runtime
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -9,11 +10,14 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
-	"github.com/tensorchord/openmodelz/agent/errdefs"
 	v1 "k8s.io/api/core/v1"
+	k8serrors "k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/rand"
 	clientsetscheme "k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/tools/remotecommand"
+
+	"github.com/tensorchord/openmodelz/agent/errdefs"
 )
 
 const (
@@ -25,6 +29,19 @@ const (
 
 func (r Runtime) InferenceExec(ctx *gin.Context, namespace, instance string,
 	commands []string, tty bool) error {
+	pod, err := r.kubeClient.CoreV1().Pods(namespace).Get(
+		ctx.Request.Context(), instance, metav1.GetOptions{})
+	if err != nil {
+		if k8serrors.IsNotFound(err) {
+			return errdefs.NotFound(errors.New("inference instance not found"))
+		}
+		return errdefs.System(err)
+	}
+
+	if pod.Status.Phase != v1.PodRunning {
+		return errdefs.Unavailable(errors.New("inference instance is not running"))
+	}
+
 	req := r.kubeClient.CoreV1().RESTClient().Post().
 		Resource("pods").
 		Name(instance).

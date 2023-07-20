@@ -13,15 +13,14 @@ import (
 
 // portForwardCmd represents the port-forward command
 var portForwardCmd = &cobra.Command{
-	Use:           "port-forward",
-	Short:         "Forward one local port to an inference",
-	Long:          `Forward one local port to an inference`,
-	Example:       `  mdz port-forward blomdz-560m 7860`,
-	GroupID:       "debug",
-	SilenceErrors: true,
-	PreRunE:       commandInit,
-	Args:          cobra.ExactArgs(2),
-	RunE:          commandForward,
+	Use:     "port-forward",
+	Short:   "Forward one local port to an inference",
+	Long:    `Forward one local port to an inference`,
+	Example: `  mdz port-forward blomdz-560m 7860`,
+	GroupID: "debug",
+	PreRunE: commandInit,
+	Args:    cobra.ExactArgs(2),
+	RunE:    commandForward,
 }
 
 func init() {

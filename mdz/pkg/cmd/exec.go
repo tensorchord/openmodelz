@@ -6,7 +6,10 @@ import (
 	"os"
 
 	"github.com/cockroachdb/errors"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"github.com/tensorchord/openmodelz/agent/client"
+	"github.com/tensorchord/openmodelz/mdz/pkg/cmd/streams"
 	terminal "golang.org/x/term"
 	"k8s.io/apimachinery/pkg/util/rand"
 )
@@ -82,27 +85,26 @@ func commandExec(cmd *cobra.Command, args []string) error {
 			return err
 		}
 		defer resp.Conn.Close()
+		c := resp.Conn
 
 		if !terminal.IsTerminal(0) || !terminal.IsTerminal(1) {
 			cmd.PrintErrf("stdin/stdout should be terminal\n")
 			return fmt.Errorf("stdin/stdout should be terminal")
 		}
-		c := resp.Conn
-
-		oldState, err := terminal.MakeRaw(0)
-		if err != nil {
-			cmd.PrintErrf("Failed to make raw terminal: %s\n", errors.Cause(err))
-			return err
-		}
-		oldOutState, err := terminal.MakeRaw(1)
-		if err != nil {
-			cmd.PrintErrf("Failed to make raw terminal: %s\n", errors.Cause(err))
-			return err
-		}
-		defer func() {
-			terminal.Restore(0, oldState)
-			terminal.Restore(1, oldOutState)
-		}()
+		// oldState, err := terminal.MakeRaw(0)
+		// if err != nil {
+		// 	cmd.PrintErrf("Failed to make raw terminal: %s\n", errors.Cause(err))
+		// 	return err
+		// }
+		// oldOutState, err := terminal.MakeRaw(1)
+		// if err != nil {
+		// 	cmd.PrintErrf("Failed to make raw terminal: %s\n", errors.Cause(err))
+		// 	return err
+		// }
+		// defer func() {
+		// 	terminal.Restore(0, oldState)
+		// 	terminal.Restore(1, oldOutState)
+		// }()
 
 		// Send terminal size.
 		w, h, err := terminal.GetSize(0)
@@ -110,7 +112,7 @@ func commandExec(cmd *cobra.Command, args []string) error {
 			cmd.PrintErrf("Failed to get terminal size: %s\n", errors.Cause(err))
 			return err
 		}
-		msg := &TerminalMessage{
+		msg := &client.TerminalMessage{
 			ID:   rand.String(5),
 			Op:   "resize",
 			Data: "",
@@ -122,41 +124,32 @@ func commandExec(cmd *cobra.Command, args []string) error {
 			return err
 		}
 
-		screen := struct {
-			io.Reader
-			io.Writer
-		}{os.Stdin, os.Stdout}
-		term := terminal.NewTerminal(screen, "")
+		errCh := make(chan error, 1)
+		cli := newMDZCLI()
+
 		go func() {
-			for {
-				line, err := term.ReadLine()
-				if err != nil {
-					if err == io.EOF {
-						return
-					}
+			defer close(errCh)
+			errCh <- func() error {
+				streamer := hijackedIOStreamer{
+					streams:      cli,
+					inputStream:  cli.In(),
+					outputStream: cli.Out(),
+					errorStream:  cli.Err(),
+					resp:         resp,
+					tty:          true,
+					detachKeys:   "",
 				}
-				if line == "" {
-					continue
-				}
-				msg := &TerminalMessage{
-					ID:   rand.String(5),
-					Op:   "stdin",
-					Data: line + "\n",
-				}
-				if err := c.WriteJSON(msg); err != nil {
-					panic(err)
-				}
-			}
+
+				return streamer.stream(cmd.Context())
+			}()
 		}()
 
-		for {
-			var msg TerminalMessage
-			if err := c.ReadJSON(&msg); err != nil {
-				cmd.PrintErrf("Failed to read terminal message: %s\n", errors.Cause(err))
-				return err
-			}
-			cmd.Printf("%s", msg.Data)
+		if err := <-errCh; err != nil {
+			logrus.Debugf("Error hijack: %s", err)
+			return err
 		}
+
+		return nil
 	} else {
 		res, err := agentClient.InstanceExec(cmd.Context(), namespace, name, execInstance, args[1:], false)
 		if err != nil {
@@ -178,19 +171,28 @@ func isAvailableShell(shell string) bool {
 	}
 }
 
-// TerminalMessage is the messaging protocol between ShellController and TerminalSession.
-//
-// OP      DIRECTION  FIELD(S) USED  DESCRIPTION
-// ---------------------------------------------------------------------
-// bind    fe->be     SessionID      Id sent back from TerminalResponse
-// stdin   fe->be     Data           Keystrokes/paste buffer
-// resize  fe->be     Rows, Cols     New terminal size
-// stdout  be->fe     Data           Output from the process
-// toast   be->fe     Data           OOB message to be shown to the user
-type TerminalMessage struct {
-	ID   string `json:"id,omitempty"`
-	Op   string `json:"op,omitempty"`
-	Data string `json:"data,omitempty"`
-	Rows uint16 `json:"rows,omitempty"`
-	Cols uint16 `json:"cols,omitempty"`
+type mdzCli struct {
+	in  *streams.In
+	out *streams.Out
+	err io.Writer
+}
+
+func newMDZCLI() *mdzCli {
+	return &mdzCli{
+		in:  streams.NewIn(os.Stdin),
+		out: streams.NewOut(os.Stdout),
+		err: os.Stderr,
+	}
+}
+
+func (c mdzCli) In() *streams.In {
+	return c.in
+}
+
+func (c mdzCli) Out() *streams.Out {
+	return c.out
+}
+
+func (c mdzCli) Err() io.Writer {
+	return c.err
 }
