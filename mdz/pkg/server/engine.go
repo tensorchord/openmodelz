@@ -55,6 +55,9 @@ func NewStart(o Options) (*Engine, error) {
 				&k3sInstallStep{
 					options: o,
 				},
+				&nginxInstallStep{
+					options: o,
+				},
 				&openModelZInstallStep{
 					options: o,
 				},
