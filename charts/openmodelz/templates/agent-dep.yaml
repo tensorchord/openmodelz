@@ -45,7 +45,6 @@ spec:
           - /usr/bin/agent
           {{- if .Values.debug }}
           - --debug
-          - --dev
           {{- end }}
         {{- if .Values.securityContext }}
         securityContext:

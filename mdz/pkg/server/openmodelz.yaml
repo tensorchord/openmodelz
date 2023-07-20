@@ -939,7 +939,6 @@ spec:
         command:
           - /usr/bin/agent
           - --debug
-          - --dev
         securityContext:
           readOnlyRootFilesystem: true
           runAsUser: 10001
