@@ -43,7 +43,7 @@ tolerations: []
 affinity: {}
 
 autoscaler:
-  image: modelzai/openmodelz-autoscaler:v0.0.5
+  image: modelzai/openmodelz-autoscaler:v0.0.6
   replicas: 1
   enabled: true
   resources:
@@ -74,7 +74,7 @@ priorityClass:
   inferenceValue: 1000000
 
 ingressOperator:
-  image: modelzai/openmodelz-ingress-operator:v0.0.5
+  image: modelzai/openmodelz-ingress-operator:v0.0.6
   replicas: 1
   create: true
   resources:
@@ -86,7 +86,7 @@ ingressOperator:
       memory: "2Gi"
 
 modelzetes:
-  image: modelzai/openmodelz-modelzetes:v0.0.5
+  image: modelzai/openmodelz-modelzetes:v0.0.6
   resources:
     requests:
       memory: "120Mi"
@@ -112,7 +112,7 @@ modelzetes:
     enabled: false
 
 agent:
-  image: modelzai/openmodelz-agent:v0.0.5
+  image: modelzai/openmodelz-agent:v0.0.6
   readTimeout: "305s"
   writeTimeout: "305s"
   replicas: 1
