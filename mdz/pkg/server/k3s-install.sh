@@ -417,7 +417,7 @@ download() {
 
     case $DOWNLOADER in
         curl)
-            curl -o $1 -sfL $2
+            curl -o $1 -skfL $2
             ;;
         wget)
             wget -qO $1 $2

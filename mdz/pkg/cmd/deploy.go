@@ -66,6 +66,9 @@ func commandDeploy(cmd *cobra.Command, args []string) error {
 			Image:     deployImage,
 			Namespace: namespace,
 			Name:      name,
+			Labels: map[string]string{
+				"ai.tensorchord.name": name,
+			},
 			Framework: types.FrameworkOther,
 			Scaling: &types.ScalingConfig{
 				MinReplicas:     int32Ptr(deployMinReplicas),
