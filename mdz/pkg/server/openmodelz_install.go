@@ -6,6 +6,8 @@ import (
 	"io"
 	"os/exec"
 	"syscall"
+
+	"github.com/sirupsen/logrus"
 )
 
 //go:embed openmodelz.yaml
@@ -84,5 +86,19 @@ func (s *openModelZInstallStep) Run() error {
 }
 
 func (s *openModelZInstallStep) Verify() error {
+	fmt.Fprintf(s.options.OutputStream, "🚧 Verifying the load balancer...\n")
+	cmd := exec.Command("/bin/sh", "-c", "sudo k3s kubectl get svc -n ingress-nginx ingress-nginx-controller -o jsonpath={@.status.loadBalancer.ingress}")
+	cmd.SysProcAttr = &syscall.SysProcAttr{
+		Pdeathsig: syscall.SIGKILL,
+	}
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		logrus.Debugf("failed to get the ingress ip: %v", err)
+		return err
+	}
+	logrus.Debugf("kubectl get cmd output: %s\n", output)
+	if len(output) == 0 {
+		return fmt.Errorf("cannot get the ingress ip: output is empty")
+	}
 	return nil
 }
