@@ -92,6 +92,7 @@ func (s *Server) initKubernetesResources() error {
 		endpoints, deployments, inferences, pods,
 		kubeClient, ingressClient, inferenceClient, s.eventRecorder,
 		s.config.Ingress.IngressEnabled, s.config.DB.EventEnabled,
+		s.config.Ingress.AnyIPToDomain,
 	)
 	if err != nil {
 		return err

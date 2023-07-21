@@ -75,6 +75,7 @@ priorityClass:
 
 ingressOperator:
   image: modelzai/openmodelz-ingress-operator:v0.0.6
+  host: agent
   replicas: 1
   create: true
   resources:
@@ -113,6 +114,10 @@ modelzetes:
 
 agent:
   image: modelzai/openmodelz-agent:v0.0.6
+  ingress:
+    enabled: false
+    ipToDomain: false
+    domain: ""
   readTimeout: "305s"
   writeTimeout: "305s"
   replicas: 1

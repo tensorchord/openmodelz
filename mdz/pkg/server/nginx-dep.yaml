@@ -23,6 +23,9 @@ spec:
         enabled: true
       service:
         enabled: true
+        ports:
+          http: 9000
+          https: 9001
       publishService:
         enabled: false
       metrics:

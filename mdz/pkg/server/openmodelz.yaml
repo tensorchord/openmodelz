@@ -974,7 +974,11 @@ spec:
         - name: MODELZ_AGENT_EVENT_ENABLED
           value: "false"
         - name: MODELZ_AGENT_INGRESS_ENABLED
-          value: "false"
+          value: "true"
+        - name: MODELZ_AGENT_INGRESS_NAMESPACE
+          value: "openmodelz"
+        - name: MODELZ_AGENT_INGRESS_ANY_IP_TO_DOMAIN
+          value: "true"
         volumeMounts:
         ports:
         - name: http
@@ -1077,6 +1081,13 @@ spec:
       serviceAccountName: ingress-operator
       containers:
       - name: operator
+        command:
+          - /usr/bin/ingress-operator
+          - --host
+          - "agent"
+          - --namespace
+          - "openmodelz"
+          - --debug
         resources:
           limits:
             cpu: 500m

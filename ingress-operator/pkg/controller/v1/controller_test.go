@@ -21,7 +21,7 @@ func Test_makeRules_Nginx_RootPath_HasRegex(t *testing.T) {
 		},
 	}
 
-	rules := makeRules(&ingress)
+	rules := makeRules(&ingress, "apiserver")
 
 	if len(rules) == 0 {
 		t.Errorf("Ingress should give at least one rule")
@@ -56,7 +56,7 @@ func Test_makeRules_Nginx_RootPath_IsRootWithBypassMode(t *testing.T) {
 		},
 	}
 
-	rules := makeRules(&ingress)
+	rules := makeRules(&ingress, "apiserver")
 
 	if len(rules) == 0 {
 		t.Errorf("Ingress should give at least one rule")
@@ -88,7 +88,7 @@ func Test_makeRules_Nginx_PathOverride(t *testing.T) {
 		},
 	}
 
-	rules := makeRules(&ingress)
+	rules := makeRules(&ingress, "apiserver")
 
 	if len(rules) == 0 {
 		t.Errorf("Ingress should give at least one rule")
@@ -113,7 +113,7 @@ func Test_makeRules_Traefik_RootPath_TrimsRegex(t *testing.T) {
 		},
 	}
 
-	rules := makeRules(&ingress)
+	rules := makeRules(&ingress, "apiserver")
 
 	if len(rules) == 0 {
 		t.Errorf("Ingress should give at least one rule")
@@ -138,7 +138,7 @@ func Test_makeRules_Traefik_NestedPath_TrimsRegex_And_TrailingSlash(t *testing.T
 		},
 	}
 
-	rules := makeRules(&ingress)
+	rules := makeRules(&ingress, "apiserver")
 
 	if len(rules) == 0 {
 		t.Errorf("Ingress should give at least one rule")

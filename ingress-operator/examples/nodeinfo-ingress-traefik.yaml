@@ -1,9 +1,0 @@
-apiVersion: openfaas.com/v1
-kind: FunctionIngress
-metadata:
-  name: nodeinfo
-  namespace: openfaas
-spec:
-  domain: "nodeinfo.myfaas.club"
-  function: "nodeinfo"
-  ingressType: "traefik"
