@@ -58,7 +58,7 @@ func New(c config.Config, stopCh <-chan struct{}) (*controller.BaseController, e
 		stopCh, inferenceIngresses.Informer().HasSynced); !ok {
 		return nil, errors.New("failed to wait for inferenceingresses caches to sync")
 	}
-	ingresses := kubeInformerFactory.Networking().V1().IngressClasses()
+	ingresses := kubeInformerFactory.Networking().V1().Ingresses()
 	go ingresses.Informer().Run(stopCh)
 	if ok := cache.WaitForNamedCacheSync(
 		fmt.Sprintf("%s:ingresses", "networking"),
