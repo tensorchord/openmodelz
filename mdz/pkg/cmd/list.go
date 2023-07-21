@@ -122,7 +122,7 @@ func (a byName) Less(i, j int) bool { return a[i].Spec.Name < a[j].Spec.Name }
 func getEndpoint(inf types.InferenceDeployment) string {
 	endpoint := fmt.Sprintf("%s/inference/%s.%s", agentURL, inf.Spec.Name, inf.Spec.Namespace)
 	if d, ok := inf.Spec.Annotations[annotationDomain]; ok {
-		endpoint = d
+		endpoint = fmt.Sprintf("%s\n%s", d, endpoint)
 	}
 	return endpoint
 }
