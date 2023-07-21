@@ -75,7 +75,7 @@ builds:
     goarch:
       - amd64
     id: ingress-operator
-    main: ./main.go
+    main: ./cmd/ingress-operator/main.go
     dir: ./ingress-operator
     binary: ingress-operator
     ldflags:

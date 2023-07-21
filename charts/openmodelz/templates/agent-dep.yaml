@@ -108,8 +108,20 @@ spec:
           value: "prometheus.{{ .Release.Namespace }}"
         - name: MODELZ_AGENT_EVENT_ENABLED
           value: "false"
+        {{- if .Values.agent.ingress.enabled }}
         - name: MODELZ_AGENT_INGRESS_ENABLED
-          value: "false"
+          value: "true"
+        - name: MODELZ_AGENT_INGRESS_NAMESPACE
+          value: "{{ .Release.Namespace }}"
+        {{- end }}
+        {{- if .Values.agent.ingress.ipToDomain }}
+        - name: MODELZ_AGENT_INGRESS_ANY_IP_TO_DOMAIN
+          value: "true"
+        {{- end }}
+        {{- if .Values.agent.ingress.domain }}
+        - name: MODELZ_AGENT_INGRESS_DOMAIN
+          value: "{{ .Values.agent.ingress.domain }}"
+        {{- end }}
         {{- if .Values.basicAuth }}
         - name: basic_auth
           value: "true"

@@ -25,6 +25,7 @@ func configFromCLI(c *cli.Context) config.Config {
 	// inference ingress
 	cfg.Ingress.IngressEnabled = c.Bool(flagIngressEnabled)
 	cfg.Ingress.Domain = c.String(flagIngressDomain)
+	cfg.Ingress.AnyIPToDomain = c.Bool(flagIngressAnyIPToDomain)
 	cfg.Ingress.Namespace = c.String(flagIngressNamespace)
 
 	// inference

@@ -9,6 +9,10 @@ import (
 	"github.com/tensorchord/openmodelz/agent/api/types"
 )
 
+const (
+	annotationDomain = "ai.tensorchord.domain"
+)
+
 var (
 	// Used for flags.
 	listQuiet   bool
@@ -75,7 +79,7 @@ func commandList(cmd *cobra.Command, args []string) error {
 			}
 			t.AppendRow(table.Row{
 				inf.Spec.Name,
-				fmt.Sprintf("%s/inference/%s.%s", agentURL, inf.Spec.Name, inf.Spec.Namespace),
+				getEndpoint(inf),
 				functionImage,
 				inf.Status.Phase,
 				int64(inf.Status.InvocationCount),
@@ -99,7 +103,7 @@ func commandList(cmd *cobra.Command, args []string) error {
 		for _, inf := range infs {
 			t.AppendRow(table.Row{
 				inf.Spec.Name,
-				fmt.Sprintf("%s/inference/%s.%s", agentURL, inf.Spec.Name, inf.Spec.Namespace),
+				getEndpoint(inf),
 				inf.Status.Phase,
 				fmt.Sprintf("%d/%d", inf.Status.AvailableReplicas, inf.Status.Replicas),
 			})
@@ -114,3 +118,11 @@ type byName []types.InferenceDeployment
 func (a byName) Len() int           { return len(a) }
 func (a byName) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a byName) Less(i, j int) bool { return a[i].Spec.Name < a[j].Spec.Name }
+
+func getEndpoint(inf types.InferenceDeployment) string {
+	endpoint := fmt.Sprintf("%s/inference/%s.%s", agentURL, inf.Spec.Name, inf.Spec.Namespace)
+	if d, ok := inf.Spec.Annotations[annotationDomain]; ok {
+		endpoint = d
+	}
+	return endpoint
+}

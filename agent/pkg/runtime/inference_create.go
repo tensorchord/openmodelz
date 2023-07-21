@@ -7,6 +7,7 @@ import (
 	ingressv1 "github.com/tensorchord/openmodelz/ingress-operator/pkg/apis/modelzetes/v1"
 	v2alpha1 "github.com/tensorchord/openmodelz/modelzetes/pkg/apis/modelzetes/v2alpha1"
 	"github.com/tensorchord/openmodelz/modelzetes/pkg/consts"
+	v1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
@@ -37,6 +38,30 @@ func (r Runtime) InferenceCreate(ctx context.Context,
 	// TODO: Move it to apiserver.
 	if r.ingressEnabled {
 		name := req.Spec.Labels[localconsts.LabelName]
+
+		if r.ingressAnyIPToDomain {
+			// Get the service with type=loadbalancer.
+			svcs, err := r.kubeClient.CoreV1().Services("").List(ctx, metav1.ListOptions{})
+			if err != nil {
+				return errdefs.System(fmt.Errorf("failed to list services: %v", err))
+			}
+
+			if len(svcs.Items) == 0 {
+				return errdefs.System(fmt.Errorf("no service with type=LoadBalancer"))
+			}
+			var externalIP string
+			for _, s := range svcs.Items {
+				if s.Spec.Type == v1.ServiceTypeLoadBalancer {
+					if len(s.Status.LoadBalancer.Ingress) == 0 {
+						continue
+					}
+					externalIP = s.Status.LoadBalancer.Ingress[0].IP
+					break
+				}
+			}
+			// Set the domain to nip.io
+			ingressDomain = fmt.Sprintf("%s.nip.io", externalIP)
+		}
 
 		domain, err := makeDomain(name, ingressDomain)
 		if err != nil {

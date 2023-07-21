@@ -4,15 +4,16 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"os"
 	"strings"
 
 	pkgerrors "github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 
 	faasv1 "github.com/tensorchord/openmodelz/ingress-operator/pkg/apis/modelzetes/v1"
 	clientset "github.com/tensorchord/openmodelz/ingress-operator/pkg/client/clientset/versioned"
 	informers "github.com/tensorchord/openmodelz/ingress-operator/pkg/client/informers/externalversions"
 	listers "github.com/tensorchord/openmodelz/ingress-operator/pkg/client/listers/modelzetes/v1"
+	"github.com/tensorchord/openmodelz/ingress-operator/pkg/config"
 	"github.com/tensorchord/openmodelz/ingress-operator/pkg/controller"
 	corev1 "k8s.io/api/core/v1"
 	netv1 "k8s.io/api/networking/v1"
@@ -25,11 +26,12 @@ import (
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/tools/record"
 	"k8s.io/client-go/util/workqueue"
-	klog "k8s.io/klog"
 )
 
 // SyncHandler is the controller implementation for Function resources
 type SyncHandler struct {
+	config config.Config
+
 	// kubeclientset is a standard kubernetes clientset
 	kubeclientset kubernetes.Interface
 
@@ -43,7 +45,7 @@ type SyncHandler struct {
 }
 
 // NewController returns a new OpenFaaS controller
-func NewController(
+func NewController(cfg config.Config,
 	kubeclientset kubernetes.Interface,
 	faasclientset clientset.Interface,
 	kubeInformerFactory kubeinformers.SharedInformerFactory,
@@ -56,6 +58,7 @@ func NewController(
 	ingressLister := ingressInformer.Lister()
 
 	syncer := SyncHandler{
+		config:          cfg,
 		kubeclientset:   kubeclientset,
 		functionsLister: functionIngress.Lister(),
 		ingressLister:   ingressLister,
@@ -68,7 +71,7 @@ func NewController(
 		Workqueue:       workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "FunctionIngresses"),
 		SyncHandler:     syncer.handler,
 	}
-	klog.Info("Setting up event handlers")
+	logrus.Info("Setting up event handlers")
 	ctrl.SetupEventHandlers(functionIngress, kubeInformerFactory)
 	ingressInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		DeleteFunc: ctrl.HandleObject,
@@ -100,44 +103,46 @@ func (h SyncHandler) handler(ctx context.Context, key string) error {
 		return err
 	}
 
-	fniName := fni.ObjectMeta.Name
-	klog.Infof("FunctionIngress name: %v", fniName)
+	logger := logrus.WithFields(logrus.Fields{
+		"inference": fni.Name,
+		"namespace": fni.Namespace,
+	})
 
 	ingresses := h.ingressLister.Ingresses(namespace)
 	ingress, getIngressErr := ingresses.Get(fni.Name)
 	createIngress := errors.IsNotFound(getIngressErr)
+
 	if !createIngress && ingress == nil {
-		klog.Errorf("cannot get ingress: %s in %s, error: %s", fni.Name, namespace, getIngressErr.Error())
+		logrus.Errorf("cannot get ingress: %s in %s, error: %s", fni.Name, namespace, getIngressErr.Error())
 	}
 
-	klog.Info("fni.Spec.UseTLS() ", fni.Spec.UseTLS())
-	klog.Info("createIngress ", createIngress)
+	logger.Debugf("createIngress: %v", createIngress)
 
 	if createIngress {
-		rules := makeRules(fni)
+		host := h.config.Controller.Host
+
+		rules := makeRules(fni, host)
 		tls := makeTLS(fni)
 
-		ns := namespace
-		if mns, exists := os.LookupEnv("MODELZ_NAMESPACE"); exists {
-			ns = mns
-		}
+		ns := h.config.Controller.Namespace
 
 		newIngress := netv1.Ingress{
 			ObjectMeta: metav1.ObjectMeta{
 				Name:            name,
 				Namespace:       ns,
-				Annotations:     controller.MakeAnnotations(fni),
+				Annotations:     controller.MakeAnnotations(fni, host),
 				OwnerReferences: controller.MakeOwnerRef(fni),
 			},
 			Spec: netv1.IngressSpec{
-				Rules: rules,
-				TLS:   tls,
+				Rules:            rules,
+				IngressClassName: &fni.Spec.IngressType,
+				TLS:              tls,
 			},
 		}
 
 		_, createErr := h.kubeclientset.NetworkingV1().Ingresses(ns).Create(ctx, &newIngress, metav1.CreateOptions{})
 		if createErr != nil {
-			klog.Errorf("cannot create ingress: %v in %v, error: %v", name, namespace, createErr.Error())
+			logger.Errorf("cannot create ingress: %v in %v, error: %v", name, namespace, createErr.Error())
 		}
 
 		h.recorder.Event(fni, corev1.EventTypeNormal, controller.SuccessSynced, controller.MessageResourceSynced)
@@ -155,7 +160,7 @@ func (h SyncHandler) handler(ctx context.Context, key string) error {
 
 	// Update the Deployment resource if the fni definition differs
 	if controller.IngressNeedsUpdate(&old, fni) {
-		klog.Infof("Updating FunctionIngress: %s", fniName)
+		logger.Debugf("updating ingress: %s in %s", fni.Name, namespace)
 
 		if old.ObjectMeta.Name != fni.ObjectMeta.Name {
 			return fmt.Errorf("cannot rename object")
@@ -163,9 +168,10 @@ func (h SyncHandler) handler(ctx context.Context, key string) error {
 
 		updated := ingress.DeepCopy()
 
-		rules := makeRules(fni)
+		rules := makeRules(fni, h.config.Controller.Host)
 
-		annotations := controller.MakeAnnotations(fni)
+		annotations := controller.MakeAnnotations(fni,
+			h.config.Controller.Host)
 		for k, v := range annotations {
 			updated.Annotations[k] = v
 		}
@@ -175,7 +181,7 @@ func (h SyncHandler) handler(ctx context.Context, key string) error {
 
 		_, updateErr := h.kubeclientset.NetworkingV1().Ingresses(namespace).Update(ctx, updated, metav1.UpdateOptions{})
 		if updateErr != nil {
-			klog.Errorf("error updating ingress: %v", updateErr)
+			logrus.Errorf("error updating ingress: %v", updateErr)
 			return updateErr
 		}
 	}
@@ -191,7 +197,7 @@ func (h SyncHandler) handler(ctx context.Context, key string) error {
 	return nil
 }
 
-func makeRules(fni *faasv1.InferenceIngress) []netv1.IngressRule {
+func makeRules(fni *faasv1.InferenceIngress, host string) []netv1.IngressRule {
 	path := "/(.*)"
 
 	if fni.Spec.BypassGateway {
@@ -211,11 +217,6 @@ func makeRules(fni *faasv1.InferenceIngress) []netv1.IngressRule {
 		}
 	}
 
-	serviceHost := "apiserver"
-	if fni.Spec.BypassGateway {
-		serviceHost = fni.Spec.Function
-	}
-
 	pathType := netv1.PathTypeImplementationSpecific
 
 	return []netv1.IngressRule{
@@ -229,7 +230,7 @@ func makeRules(fni *faasv1.InferenceIngress) []netv1.IngressRule {
 							PathType: &pathType,
 							Backend: netv1.IngressBackend{
 								Service: &netv1.IngressServiceBackend{
-									Name: serviceHost,
+									Name: host,
 									Port: netv1.ServiceBackendPort{
 										Number: controller.OpenfaasWorkloadPort,
 									},

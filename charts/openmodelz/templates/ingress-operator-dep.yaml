@@ -30,6 +30,15 @@ spec:
       {{- end }}
       containers:
       - name: operator
+        command:
+          - /usr/bin/ingress-operator
+          - --host
+          - {{ .Values.ingressOperator.host | quote }}
+          - --namespace
+          - {{ .Release.Namespace | quote }}
+          {{- if .Values.debug }}
+          - --debug
+          {{- end }}
         resources:
           {{- .Values.ingressOperator.resources | toYaml | nindent 10 }}
         image: {{ .Values.ingressOperator.image }}
