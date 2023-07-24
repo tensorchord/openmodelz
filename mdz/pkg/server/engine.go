@@ -113,7 +113,7 @@ func (e *Engine) Run() (*Result, error) {
 	}
 	if e.options.Domain != nil {
 		return &Result{
-			AgentURL: fmt.Sprintf("https://%s", *e.options.Domain),
+			AgentURL: fmt.Sprintf("http://%s", *e.options.Domain),
 		}, nil
 	}
 	return &Result{
