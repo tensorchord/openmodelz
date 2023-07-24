@@ -16,6 +16,7 @@ type Options struct {
 	Runtime       Runtime
 	RetryInternal time.Duration
 	ServerIP      string
+	Domain        *string
 }
 
 type Runtime string
@@ -109,6 +110,11 @@ func (e *Engine) Run() (*Result, error) {
 				break
 			}
 		}
+	}
+	if e.options.Domain != nil {
+		return &Result{
+			AgentURL: fmt.Sprintf("https://%s", *e.options.Domain),
+		}, nil
 	}
 	return &Result{
 		AgentURL: fmt.Sprintf("http://0.0.0.0:%d", AgentPort),

@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/cockroachdb/errors"
@@ -11,15 +12,19 @@ import (
 
 var (
 	serverStartRuntime string
+	serverStartDomain  string = "nip.io"
 )
 
 // serverStartCmd represents the server start command
 var serverStartCmd = &cobra.Command{
-	Use:     "start",
-	Short:   "Start the server",
-	Long:    `Start the server`,
-	Example: `  mdz server start`,
+	Use:   "start",
+	Short: "Start the server",
+	Long:  `Start the server with the public IP of the machine. If not provided, the internal IP will be used automatically.`,
+	Example: `  mdz server start
+  mdz server start -v
+  mdz server start 1.2.3.4`,
 	PreRunE: commandInitLog,
+	Args:    cobra.RangeArgs(0, 1),
 	RunE:    commandServerStart,
 }
 
@@ -37,11 +42,17 @@ func init() {
 }
 
 func commandServerStart(cmd *cobra.Command, args []string) error {
+	var domain *string
+	if len(args) > 0 {
+		domainWithSuffix := fmt.Sprintf("%s.%s", args[0], serverStartDomain)
+		domain = &domainWithSuffix
+	}
 	engine, err := server.NewStart(server.Options{
 		Verbose:       serverVerbose,
 		Runtime:       server.Runtime(serverStartRuntime),
 		OutputStream:  cmd.ErrOrStderr(),
 		RetryInternal: serverPollingInterval,
+		Domain:        domain,
 	})
 	if err != nil {
 		cmd.PrintErrf("Failed to start the server: %s\n", errors.Cause(err))
