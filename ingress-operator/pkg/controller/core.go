@@ -263,11 +263,13 @@ func MakeAnnotations(fni *faasv1.InferenceIngress, host string) map[string]strin
 			case "apiserver":
 				annotations["nginx.ingress.kubernetes.io/rewrite-target"] = "/api/v1/" + fni.Spec.Framework +
 					"/" + fni.Spec.Function + "/$1"
+				annotations["nginx.ingress.kubernetes.io/use-regex"] = "true"
 			default:
 				annotations["nginx.ingress.kubernetes.io/rewrite-target"] = "/inference/" + fni.Name + ".default" + "/$1"
+				annotations["nginx.ingress.kubernetes.io/ssl-redirect"] = "false"
+				annotations["nginx.ingress.kubernetes.io/use-regex"] = "true"
 			}
-			annotations["nginx.ingress.kubernetes.io/use-regex"] = "true"
-			break
+
 		}
 	}
 
