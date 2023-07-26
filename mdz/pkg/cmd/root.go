@@ -34,8 +34,7 @@ var rootCmd = &cobra.Command{
   mdz exec llm --tty bash
   mdz delete llm
 `,
-	SilenceUsage:  true,
-	SilenceErrors: true,
+	SilenceUsage: true,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
@@ -56,7 +55,7 @@ func init() {
 	// will be global for your application.
 
 	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.mdz.yaml)")
-	rootCmd.PersistentFlags().StringVarP(&mdzURL, "url", "a", "", "URL to use for the server (MDZ_URL) (default http://localhost:80)")
+	rootCmd.PersistentFlags().StringVarP(&mdzURL, "url", "u", "", "URL to use for the server (MDZ_URL) (default http://localhost:80)")
 
 	rootCmd.PersistentFlags().StringVarP(&namespace, "namespace", "n", "default", "Namespace to use for OpenModelZ inferences")
 	rootCmd.PersistentFlags().MarkHidden("namespace")

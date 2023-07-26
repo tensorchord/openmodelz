@@ -60,7 +60,7 @@ func commandServerList(cmd *cobra.Command, args []string) error {
 			Options: table.OptionsNoBordersAndSeparators,
 			Title:   table.TitleOptionsDefault,
 		})
-		t.AppendHeader(table.Row{"Name", "Phase", "Allocatable", "Capacity", "Distribution", "OS", "Kernel"})
+		t.AppendHeader(table.Row{"Name", "Phase", "Allocatable", "Capacity", "Distribution", "OS", "Kernel", "Labels"})
 
 		for _, server := range servers {
 			t.AppendRow(table.Row{server.Spec.Name, server.Status.Phase,
@@ -68,7 +68,9 @@ func commandServerList(cmd *cobra.Command, args []string) error {
 				resourceListString(server.Status.Capacity),
 				server.Status.System.OSImage,
 				server.Status.System.OperatingSystem,
-				server.Status.System.KernelVersion})
+				server.Status.System.KernelVersion,
+				labelsString(server.Spec.Labels),
+			})
 		}
 		cmd.Println(t.Render())
 	} else {
@@ -91,6 +93,14 @@ func commandServerList(cmd *cobra.Command, args []string) error {
 		cmd.Println(t.Render())
 	}
 	return nil
+}
+
+func labelsString(labels map[string]string) string {
+	res := ""
+	for k, v := range labels {
+		res += fmt.Sprintf("%s=%s\n", k, v)
+	}
+	return res[:len(res)-1]
 }
 
 func resourceListString(l types.ResourceList) string {
