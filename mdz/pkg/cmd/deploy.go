@@ -22,8 +22,8 @@ var (
 // deployCmd represents the deploy command
 var deployCmd = &cobra.Command{
 	Use:   "deploy",
-	Short: "Deploy OpenModelz inferences",
-	Long:  `Deploys OpenModelZ inferences directly via flags.`,
+	Short: "Deploy a new deployment",
+	Long:  `Deploys a new deployment directly via flags.`,
 	Example: `  mdz deploy --image=modelzai/llm-blomdz-560m:23.06.13
   mdz deploy --image=modelzai/llm-blomdz-560m:23.06.13 --name blomdz-560m`,
 	GroupID: "basic",

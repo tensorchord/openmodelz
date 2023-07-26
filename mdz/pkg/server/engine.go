@@ -32,8 +32,7 @@ type Engine struct {
 }
 
 type Result struct {
-	AgentURL string
-	Command  string
+	MDZURL string
 }
 
 func NewStart(o Options) (*Engine, error) {
@@ -113,10 +112,10 @@ func (e *Engine) Run() (*Result, error) {
 	}
 	if e.options.Domain != nil {
 		return &Result{
-			AgentURL: fmt.Sprintf("http://%s", *e.options.Domain),
+			MDZURL: fmt.Sprintf("http://%s", *e.options.Domain),
 		}, nil
 	}
 	return &Result{
-		AgentURL: fmt.Sprintf("http://0.0.0.0:%d", AgentPort),
+		MDZURL: fmt.Sprintf("http://0.0.0.0:%d", AgentPort),
 	}, nil
 }

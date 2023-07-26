@@ -14,8 +14,8 @@ import (
 // portForwardCmd represents the port-forward command
 var portForwardCmd = &cobra.Command{
 	Use:     "port-forward",
-	Short:   "Forward one local port to an inference",
-	Long:    `Forward one local port to an inference`,
+	Short:   "Forward one local port to a deployment",
+	Long:    `Forward one local port to a deployment`,
 	Example: `  mdz port-forward blomdz-560m 7860`,
 	GroupID: "debug",
 	PreRunE: commandInit,
@@ -44,7 +44,7 @@ func commandForward(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	url, err := url.Parse(fmt.Sprintf("%s/inference/%s.%s", agentURL, name, namespace))
+	url, err := url.Parse(fmt.Sprintf("%s/inference/%s.%s", mdzURL, name, namespace))
 	if err != nil {
 		cmd.PrintErrf("Failed to parse URL: %s\n", errors.Cause(err))
 		return errors.Newf("failed to parse URL: %s\n", errors.Cause(err))

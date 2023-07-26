@@ -13,7 +13,7 @@ import (
 
 var (
 	// Used for flags.
-	agentURL  string
+	mdzURL    string
 	namespace string
 	debug     bool
 
@@ -56,14 +56,15 @@ func init() {
 	// will be global for your application.
 
 	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.mdz.yaml)")
-	rootCmd.PersistentFlags().StringVarP(&agentURL, "agent", "a", "", "URL of the OpenModelZ agent (MDZ_AGENT) (default http://localhost:31112)")
+	rootCmd.PersistentFlags().StringVarP(&mdzURL, "url", "a", "", "URL to use for the server (MDZ_URL) (default http://localhost:80)")
+
 	rootCmd.PersistentFlags().StringVarP(&namespace, "namespace", "n", "default", "Namespace to use for OpenModelZ inferences")
+	rootCmd.PersistentFlags().MarkHidden("namespace")
+
 	rootCmd.PersistentFlags().BoolVarP(&debug, "debug", "", false, "Enable debug logging")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-
 	rootCmd.AddGroup(&cobra.Group{ID: "basic", Title: "Basic Commands:"})
 	rootCmd.AddGroup(&cobra.Group{ID: "debug", Title: "Troubleshooting and Debugging Commands:"})
 	rootCmd.AddGroup(&cobra.Group{ID: "management", Title: "Management Commands:"})
@@ -75,15 +76,15 @@ func commandInit(cmd *cobra.Command, args []string) error {
 	}
 
 	if agentClient == nil {
-		if agentURL == "" {
+		if mdzURL == "" {
 			// Checkout environment variable MDZ_AGENT.
-			agentURL = os.Getenv("MDZ_AGENT")
+			mdzURL = os.Getenv("MDZ_AGENT")
 		}
-		if agentURL == "" {
-			agentURL = "http://localhost:31112"
+		if mdzURL == "" {
+			mdzURL = "http://localhost:80"
 		}
 		var err error
-		agentClient, err = client.NewClientWithOpts(client.WithHost(agentURL))
+		agentClient, err = client.NewClientWithOpts(client.WithHost(mdzURL))
 		if err != nil {
 			cmd.PrintErrf("Failed to connect to agent: %s\n", errors.Cause(err))
 			return err

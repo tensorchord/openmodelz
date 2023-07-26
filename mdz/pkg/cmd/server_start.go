@@ -64,7 +64,7 @@ func commandServerStart(cmd *cobra.Command, args []string) error {
 		cmd.PrintErrf("Failed to start the server: %s\n", errors.Cause(err))
 		return err
 	}
-	agentURL = result.AgentURL
+	mdzURL = result.MDZURL
 	if err := commandInit(cmd, args); err != nil {
 		cmd.PrintErrf("Failed to start the server: %s\n", errors.Cause(err))
 		return err
@@ -74,14 +74,14 @@ func commandServerStart(cmd *cobra.Command, args []string) error {
 	// Retry until verify success.
 	ticker := time.NewTicker(serverPollingInterval)
 	for range ticker.C {
-		if err := printAgentVersion(cmd); err != nil {
+		if err := printServerVersion(cmd); err != nil {
 			cmd.Printf("🐋 The server is not ready yet, retrying...\n")
 			continue
 		}
 		break
 	}
-	cmd.Printf("🐳 The server is running at %s\n", result.AgentURL)
+	cmd.Printf("🐳 The server is running at %s\n", mdzURL)
 	cmd.Printf("🎉 You could set the environment variable to get started!\n\n")
-	cmd.Printf("export MDZ_AGENT=%s\n", result.AgentURL)
+	cmd.Printf("export MDZ_AGENT=%s\n", mdzURL)
 	return nil
 }

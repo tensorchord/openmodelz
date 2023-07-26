@@ -17,4 +17,4 @@ TODO
 
 ## CLI Reference
 
-Please check out our [CLI Documentation](./docs/mdz.md)
+Please check out our [CLI Documentation](./docs/cli/mdz.md)
