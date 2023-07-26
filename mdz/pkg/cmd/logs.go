@@ -14,8 +14,8 @@ var (
 // logCmd represents the log command
 var logsCmd = &cobra.Command{
 	Use:     "logs",
-	Short:   "Print the logs for a inference",
-	Long:    `Print the logs for a inference`,
+	Short:   "Print the logs for a deployment",
+	Long:    `Print the logs for a deployment`,
 	Example: `  mdz logs blomdz-560m`,
 	GroupID: "debug",
 	PreRunE: commandInit,

@@ -23,8 +23,8 @@ var (
 // listCommand represents the list command
 var listCommand = &cobra.Command{
 	Use:   "list",
-	Short: "List OpenModelz inferences",
-	Long:  `Lists OpenModelZ inferences either on a local or remote agent`,
+	Short: "List the deployments",
+	Long:  `List the deployments`,
 	Example: `  mdz list
   mdz list -v
   mdz list -q`,
@@ -121,7 +121,7 @@ func (a byName) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a byName) Less(i, j int) bool { return a[i].Spec.Name < a[j].Spec.Name }
 
 func getEndpoint(inf types.InferenceDeployment) string {
-	endpoint := fmt.Sprintf("%s/inference/%s.%s", agentURL, inf.Spec.Name, inf.Spec.Namespace)
+	endpoint := fmt.Sprintf("%s/inference/%s.%s", mdzURL, inf.Spec.Name, inf.Spec.Namespace)
 	if d, ok := inf.Spec.Annotations[annotationDomain]; ok {
 		// Replace https with http now.
 		rawHTTPDomain := strings.Replace(d, "https://", "http://", 1)

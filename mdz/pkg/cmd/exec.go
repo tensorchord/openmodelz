@@ -15,17 +15,20 @@ import (
 )
 
 var (
-	execInstance string
-	execTTY      bool
+	execInstance    string
+	execTTY         bool
+	execInteractive bool
 )
 
 // execCommand represents the exec command
 var execCommand = &cobra.Command{
 	Use:   "exec",
-	Short: "Execute a command in an inference",
-	Long:  `Execute a command in an inference`,
+	Short: "Execute a command in a deployment",
+	Long:  `Execute a command in a deployment. If no instance is specified, the first instance is used.`,
 	Example: `  mdz exec bloomz-560m ps
-  mdz exec bloomz-560m -i bloomz-560m-abcde-abcde ps`,
+  mdz exec bloomz-560m --instance bloomz-560m-abcde-abcde ps
+  mdz exec bllomz-560m -ti bash
+  mdz exec bloomz-560m --instance bloomz-560m-abcde-abcde -ti bash`,
 	GroupID: "debug",
 	PreRunE: commandInit,
 	Args:    cobra.MinimumNArgs(1),
@@ -42,8 +45,9 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	execCommand.Flags().StringVarP(&execInstance, "instance", "i", "", "Instance name")
+	execCommand.Flags().StringVarP(&execInstance, "instance", "s", "", "Instance name")
 	execCommand.Flags().BoolVarP(&execTTY, "tty", "t", false, "Allocate a TTY for the container")
+	execCommand.Flags().BoolVarP(&execInteractive, "interactive", "i", false, "Keep stdin open even if not attached")
 }
 
 func commandExec(cmd *cobra.Command, args []string) error {

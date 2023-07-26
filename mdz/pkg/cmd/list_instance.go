@@ -17,8 +17,8 @@ var (
 // listInstanceCmd represents the list instance command
 var listInstanceCmd = &cobra.Command{
 	Use:   "instance",
-	Short: "List OpenModelz inference instances",
-	Long:  `Lists OpenModelZ inference instances`,
+	Short: "List all instances for the given deployment",
+	Long:  `List all instances for the given deployment`,
 	Example: `  mdz list instance bloomz-560m
   mdz list instance bloomz-560m -v
   mdz list instance bloomz-560m -q`,
@@ -37,8 +37,8 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	listInstanceCmd.Flags().BoolVarP(&listInstanceQuiet, "quiet", "q", false, "Quiet mode - print out only the inference instance names")
-	listInstanceCmd.Flags().BoolVarP(&listInstanceVerbose, "verbose", "v", false, "Verbose mode - print out all inference instance details")
+	listInstanceCmd.Flags().BoolVarP(&listInstanceQuiet, "quiet", "q", false, "Quiet mode - print out only the instance names")
+	listInstanceCmd.Flags().BoolVarP(&listInstanceVerbose, "verbose", "v", false, "Verbose mode - print out all instance details")
 }
 
 func commandListInstance(cmd *cobra.Command, args []string) error {
