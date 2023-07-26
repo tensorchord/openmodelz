@@ -17,6 +17,7 @@ var (
 	deployMinReplicas int32
 	deployMaxReplicas int32
 	deployName        string
+	deployNodeLabel   []string
 )
 
 // deployCmd represents the deploy command
@@ -25,7 +26,7 @@ var deployCmd = &cobra.Command{
 	Short: "Deploy a new deployment",
 	Long:  `Deploys a new deployment directly via flags.`,
 	Example: `  mdz deploy --image=modelzai/llm-blomdz-560m:23.06.13
-  mdz deploy --image=modelzai/llm-blomdz-560m:23.06.13 --name blomdz-560m`,
+  mdz deploy --image=modelzai/llm-blomdz-560m:23.06.13 --name blomdz-560m --node-labels gpu=true,name=node-name`,
 	GroupID: "basic",
 	PreRunE: commandInit,
 	RunE:    commandDeploy,
@@ -48,6 +49,7 @@ func init() {
 	deployCmd.Flags().Int32Var(&deployMinReplicas, "min-replicas", 1, "Minimum number of replicas (can be 0)")
 	deployCmd.Flags().Int32Var(&deployMaxReplicas, "max-replicas", 1, "Maximum number of replicas")
 	deployCmd.Flags().StringVar(&deployName, "name", "", "Name of inference")
+	deployCmd.Flags().StringSliceVarP(&deployNodeLabel, "node-labels", "l", []string{}, "Node labels")
 }
 
 func commandDeploy(cmd *cobra.Command, args []string) error {
@@ -80,6 +82,13 @@ func commandDeploy(cmd *cobra.Command, args []string) error {
 			},
 			Port: int32Ptr(deployPort),
 		},
+	}
+
+	if len(deployNodeLabel) > 0 {
+		inf.Spec.Constraints = []string{}
+		for _, label := range deployNodeLabel {
+			inf.Spec.Constraints = append(inf.Spec.Constraints, "tensorchord.ai/"+label)
+		}
 	}
 
 	if _, err := agentClient.InferenceCreate(

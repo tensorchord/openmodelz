@@ -61,7 +61,7 @@ export SHELL := bash
 # It's necessary to set the errexit flags for the bash shell.
 export SHELLOPTS := errexit
 
-PACKAGE_NAME := github.com/tensorchord/envd-server
+PACKAGE_NAME := github.com/tensorchord/openmodelz/mdz
 GOLANG_CROSS_VERSION  ?= v1.17.6
 
 # Project main package location (can be multiple ones).
@@ -173,9 +173,6 @@ fmt: swag-install ## Run go fmt against code.
 
 vet: ## Run go vet against code.
 	go vet ./...
-
-swag: swag-install
-	swag init -g ./cmd/envd-server/main.go --parseDependency --output ./pkg/docs 
 
 build-image: build-local
 	docker build -t ${BASE_REGISTRY}/${BASE_REGISTRY_USER}/modelz-autoscaler:dev -f Dockerfile ./bin

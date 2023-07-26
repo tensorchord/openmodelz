@@ -31,11 +31,11 @@ mdz helps you deploy applications, manage servers, and troubleshoot issues.
 ### SEE ALSO
 
 * [mdz delete](mdz_delete.md)	 - Delete OpenModelz inferences
-* [mdz deploy](mdz_deploy.md)	 - Deploy OpenModelz inferences
-* [mdz exec](mdz_exec.md)	 - Execute a command in an inference
-* [mdz list](mdz_list.md)	 - List OpenModelz inferences
-* [mdz logs](mdz_logs.md)	 - Print the logs for a inference
-* [mdz port-forward](mdz_port-forward.md)	 - Forward one local port to an inference
+* [mdz deploy](mdz_deploy.md)	 - Deploy a new deployment
+* [mdz exec](mdz_exec.md)	 - Execute a command in a deployment
+* [mdz list](mdz_list.md)	 - List the deployments
+* [mdz logs](mdz_logs.md)	 - Print the logs for a deployment
+* [mdz port-forward](mdz_port-forward.md)	 - Forward one local port to a deployment
 * [mdz server](mdz_server.md)	 - Manage the servers
 * [mdz version](mdz_version.md)	 - Print the client and agent version information
 

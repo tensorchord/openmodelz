@@ -31,6 +31,7 @@ Manage the servers
 
 * [mdz](mdz.md)	 - mdz manages your deployments
 * [mdz server join](mdz_server_join.md)	 - Join to the cluster
+* [mdz server label](mdz_server_label.md)	 - Update the labels on a server
 * [mdz server list](mdz_server_list.md)	 - List all servers in the cluster
 * [mdz server start](mdz_server_start.md)	 - Start the server
 * [mdz server stop](mdz_server_stop.md)	 - Stop the server

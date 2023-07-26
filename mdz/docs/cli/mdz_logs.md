@@ -1,10 +1,10 @@
 ## mdz logs
 
-Print the logs for a inference
+Print the logs for a deployment
 
 ### Synopsis
 
-Print the logs for a inference
+Print the logs for a deployment
 
 ```
 mdz logs [flags]

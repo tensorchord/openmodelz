@@ -1,10 +1,10 @@
 ## mdz port-forward
 
-Forward one local port to an inference
+Forward one local port to a deployment
 
 ### Synopsis
 
-Forward one local port to an inference
+Forward one local port to a deployment
 
 ```
 mdz port-forward [flags]

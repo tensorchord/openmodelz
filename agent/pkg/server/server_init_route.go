@@ -11,8 +11,9 @@ import (
 
 const (
 	endpointInferencePlural = "/inferences"
-	endpointServerPlural    = "/servers"
 	endpointInference       = "/inference"
+	endpointServerPlural    = "/servers"
+	endpointServer          = "/server"
 	endpointScaleInference  = "/scale-inference"
 	endpointInfo            = "/info"
 	endpointLogPlural       = "/logs"
@@ -64,6 +65,7 @@ func (s *Server) registerRoutes() {
 
 	// servers
 	controlPlane.GET(endpointServerPlural, WrapHandler(s.handleServerList))
+	controlPlane.POST(endpointServer+"/:name/labels", WrapHandler(s.handleServerLabelCreate))
 
 	// logs
 	controlPlane.GET(endpointLogPlural+endpointInference,

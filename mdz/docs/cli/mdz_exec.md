@@ -1,10 +1,10 @@
 ## mdz exec
 
-Execute a command in an inference
+Execute a command in a deployment
 
 ### Synopsis
 
-Execute a command in an inference
+Execute a command in a deployment. If no instance is specified, the first instance is used.
 
 ```
 mdz exec [flags]
@@ -14,14 +14,17 @@ mdz exec [flags]
 
 ```
   mdz exec bloomz-560m ps
-  mdz exec bloomz-560m -i bloomz-560m-abcde-abcde ps
+  mdz exec bloomz-560m --instance bloomz-560m-abcde-abcde ps
+  mdz exec bllomz-560m -ti bash
+  mdz exec bloomz-560m --instance bloomz-560m-abcde-abcde -ti bash
 ```
 
 ### Options
 
 ```
   -h, --help              help for exec
-  -i, --instance string   Instance name
+  -s, --instance string   Instance name
+  -i, --interactive       Keep stdin open even if not attached
   -t, --tty               Allocate a TTY for the container
 ```
 
