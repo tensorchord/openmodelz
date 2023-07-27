@@ -100,12 +100,13 @@ func commandList(cmd *cobra.Command, args []string) error {
 			Options: table.OptionsNoBordersAndSeparators,
 			Title:   table.TitleOptionsDefault,
 		})
-		t.AppendHeader(table.Row{"Name", "Endpoint", "Status", "Replicas"})
+		t.AppendHeader(table.Row{"Name", "Endpoint", "Status", "Invocations", "Replicas"})
 		for _, inf := range infs {
 			t.AppendRow(table.Row{
 				inf.Spec.Name,
 				getEndpoint(inf),
 				inf.Status.Phase,
+				int64(inf.Status.InvocationCount),
 				fmt.Sprintf("%d/%d", inf.Status.AvailableReplicas, inf.Status.Replicas),
 			})
 		}
