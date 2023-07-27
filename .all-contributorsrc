@@ -20,6 +20,15 @@
         "review",
         "tutorial"
       ]
+    },
+    {
+      "login": "tddschn",
+      "name": "Teddy Xinyuan Chen",
+      "avatar_url": "https://avatars.githubusercontent.com/u/45612704?v=4",
+      "profile": "https://github.com/tddschn",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,

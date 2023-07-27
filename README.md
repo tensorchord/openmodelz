@@ -1,6 +1,6 @@
 <div align="center">
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 # OpenModelZ
@@ -170,6 +170,7 @@ We welcome all kinds of contributions from the open-source community, individual
   <tbody>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/gaocegege"><img src="https://avatars.githubusercontent.com/u/5100735?v=4?s=70" width="70px;" alt="Ce Gao"/><br /><sub><b>Ce Gao</b></sub></a><br /><a href="https://github.com/tensorchord/openmodelz/commits?author=gaocegege" title="Code">💻</a> <a href="https://github.com/tensorchord/openmodelz/pulls?q=is%3Apr+reviewed-by%3Agaocegege" title="Reviewed Pull Requests">👀</a> <a href="#tutorial-gaocegege" title="Tutorials">✅</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/tddschn"><img src="https://avatars.githubusercontent.com/u/45612704?v=4?s=70" width="70px;" alt="Teddy Xinyuan Chen"/><br /><sub><b>Teddy Xinyuan Chen</b></sub></a><br /><a href="https://github.com/tensorchord/openmodelz/commits?author=tddschn" title="Documentation">📖</a></td>
     </tr>
   </tbody>
   <tfoot>
