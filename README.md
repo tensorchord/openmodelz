@@ -70,18 +70,18 @@ $ mdz deploy --image aikain/simplehttpserver:0.1 --name simple-server --port 80
 Inference simple-server is created
 $ mdz list
  NAME          ENDPOINT                                                    STATUS  REPLICAS 
- skilled-slug  http://skilled-slug-crxm19s3602d1zlg.192.168.71.93.nip.io   Ready   1/1      
-               http://192.168.71.93.nip.io/inference/skilled-slug.default                               
+ simple-server  http://simple-server-crxm19s3602d1zlg.192.168.71.93.nip.io   Ready   1/1      
+               http://192.168.71.93.nip.io/inference/simple-server.default                               
 ```
 
-You could access the deployment by visiting the endpoint URL. It will be `http://skilled-slug-crxm19s3602d1zlg.192.168.71.93.nip.io` in this case. The endpoint could be accessed from the outside world as well if you've provided the public IP address of your server to the `mdz server start` command.
+You could access the deployment by visiting the endpoint URL. It will be `http://simple-server-crxm19s3602d1zlg.192.168.71.93.nip.io` in this case. The endpoint could be accessed from the outside world as well if you've provided the public IP address of your server to the `mdz server start` command.
 
 ### Scale your deployment
 
 You could scale your deployment by using the `mdz scale` command.
 
 ```bash
-$ mdz scale skilled-slug --replicas 3
+$ mdz scale simple-server --replicas 3
 ```
 
 The requests will be load balanced between the replicas of your deployment.
@@ -91,22 +91,22 @@ The requests will be load balanced between the replicas of your deployment.
 Sometimes you may want to debug your deployment. You could use the `mdz logs` command to get the logs of your deployment.
 
 ```bash
-$ mdz logs skilled-slug
-skilled-slug-6756dd67ff-4bf4g: 10.42.0.1 - - [27/Jul/2023 02:32:16] "GET / HTTP/1.1" 200 -
-skilled-slug-6756dd67ff-4bf4g: 10.42.0.1 - - [27/Jul/2023 02:32:16] "GET / HTTP/1.1" 200 -
-skilled-slug-6756dd67ff-4bf4g: 10.42.0.1 - - [27/Jul/2023 02:32:17] "GET / HTTP/1.1" 200 -
+$ mdz logs simple-server
+simple-server-6756dd67ff-4bf4g: 10.42.0.1 - - [27/Jul/2023 02:32:16] "GET / HTTP/1.1" 200 -
+simple-server-6756dd67ff-4bf4g: 10.42.0.1 - - [27/Jul/2023 02:32:16] "GET / HTTP/1.1" 200 -
+simple-server-6756dd67ff-4bf4g: 10.42.0.1 - - [27/Jul/2023 02:32:17] "GET / HTTP/1.1" 200 -
 ```
 
 You could also use the `mdz exec` command to execute a command in the container of your deployment. You do not need to ssh into the server to do that.
 
 ```
-$ mdz exec skilled-slug ps
+$ mdz exec simple-server ps
 PID   USER     TIME   COMMAND
     1 root       0:00 /usr/bin/dumb-init /bin/sh -c python3 -m http.server 80
     7 root       0:00 /bin/sh -c python3 -m http.server 80
     8 root       0:00 python3 -m http.server 80
     9 root       0:00 ps
-$ mdz exec skilled-slug -ti bash
+$ mdz exec simple-server -ti bash
 bash-4.4# uname -r
 5.19.0-46-generic
 bash-4.4# 
@@ -115,8 +115,8 @@ bash-4.4#
 Or you could port-forward the deployment to your local machine and debug it locally.
 
 ```bash
-$ mdz port-forward skilled-slug 7860
-Forwarding inference skilled-slug to local port 7860
+$ mdz port-forward simple-server 7860
+Forwarding inference simple-server to local port 7860
 ```
 
 ### Add more servers
