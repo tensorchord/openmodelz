@@ -1,4 +1,7 @@
 <div align="center">
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 # OpenModelZ
 
@@ -11,108 +14,187 @@ Turn Any Cloud (Or HomeLab) Into Your Personal AI Lab
 <a href="https://twitter.com/TensorChord"><img src="https://img.shields.io/twitter/follow/tensorchord?style=social" alt="trackgit-views" /></a>
 </p>
 
-OpenModelZ provides a simple CLI to deploy and manage your machine learning workloads on any cloud or home lab.
+OpenModelZ (MDZ) provides a simple CLI to deploy and manage your machine learning workloads on any cloud or home lab.
 
-# Where to use OpenModelZ?
+## Why use MDZ?
 
-You could use OpenModelZ to:
+OpenModelZ is the ideal solution for practitioners who want to quickly deploy their machine learning models to an endpoint without the hassle of spending excessive time, money, and effort to figure out the entire end-to-end process.
 
-- Quickly prototype new machine learning models. OpenModelZ allows you to deploy a Gradio or Streamlit application. This lets you focus on experimenting with and improving your models, without getting bogged down in infrastructure.
-- Serve and test your models in a production environment. OpenModelZ provides a simple interface for deploying your models in a production environment. It also allows you to easily scale your models up or down based on demand.
-- Share your models with teammates or collaborators easily. OpenModelZ abstracts away the complexity of Kubernetes, giving your collaborators a simple way to access and provide feedback on your models.
-- Gain insights into your models' performance and reliability. OpenModelZ exposes Prometheus metrics and health checks for your deployed models, providing insight into latency, throughput, errors and other key indicators.
+We created OpenModelZ in response to the difficulties of finding a simple, cost-effective way to get models into production fast. Traditional deployment methods can be complex and time-consuming, requiring significant effort and resources to get models up and running.
 
-## Quick Start
+- Kubernetes: Setting up and maintaining Kubernetes and Kubeflow can be challenging due to their technical complexity. Data scientists spend significant time configuring and debugging infrastructure instead of focusing on model development.
+- Managed services: Alternatively, using a managed service like AWS SageMaker can be expensive and inflexible, limiting the ability to customize deployment options.
+- Virtual machines: As an alternative, setting up a cloud VM-based solution requires learning complex infrastructure concepts like load balancers, ingress controllers, and other components. This takes a lot of specialized knowledge and resources.
+
+With OpenModelZ, we take care of the underlying technical details for you, and provide a simple and easy-to-use CLI to deploy your models to any cloud (GCP, AWS, or others), your home lab, or even a single machine.
+
+## Quick Start 🚀
 
 Once you've installed the `mdz` you can start deploying models and experimenting with them.
 
-### Deploy OpenAI API compatible inferences
+### Bootstrap `mdz`
 
-You could deploy OpenAI API compatible inferences with `mdz deploy openai-chat` command. A OpenAI API compatible server will be deployed with the model serverlessly.
+It's super easy to bootstrap the `mdz` server. You just need to find a server (could be a cloud VM, a home lab, or even a single machine) and run the `mdz server start` command. The `mdz` server will be bootstrapped on the server and you could start deploying your models.
 
 ```bash
-# Deploy blomdz with OpenAI compatible API
-mdz deploy openai-chat --model blomdz-560m
+$ mdz server start
+🚧 Initializing the server...
+🚧 Waiting for the server to be ready...
+🐋 Checking if the server is running...
+Agent:
+ Version:       v0.0.5
+ Build Date:    2023-07-19T09:12:55Z
+ Git Commit:    84d0171640453e9272f78a63e621392e93ef6bbb
+ Git State:     clean
+ Go Version:    go1.19.10
+ Compiler:      gc
+ Platform:      linux/amd64
+🐳 The server is running at http://192.168.71.93.nip.io
+🎉 You could set the environment variable to get started!
+
+export MDZ_AGENT=http://192.168.71.93.nip.io
 ```
 
-After that, you could use `mdz list` to check the status of your deployment. And you could use `mdz infer openai-chat blomdz` to experiment with it.
+The internal IP address will be used as the default endpoint of your deployments. You could provide the public IP address of your server to the `mdz server start` command to make it accessible from the outside world.
 
+```bash
+# Provide the public IP as an argument
+$ mdz server start 1.2.3.4
 ```
+
+### Create your first deployment
+
+Once you've bootstrapped the `mdz` server, you can start deploying your first applications.
+
+```bash
+$ mdz deploy --image aikain/simplehttpserver:0.1 --name simple-server --port 80
+Inference simple-server is created
 $ mdz list
-$ mdz infer openai-chat blomdz --interactive
-> user: Hello, who are you?
-> blomdz: I am an AI. How can I help you today?
-...
+ NAME          ENDPOINT                                                    STATUS  REPLICAS 
+ skilled-slug  http://skilled-slug-crxm19s3602d1zlg.192.168.71.93.nip.io   Ready   1/1      
+               http://192.168.71.93.nip.io/inference/skilled-slug.default                               
 ```
 
-Besides, you could use OpenAI python package to interact with the deployed model.
+You could access the deployment by visiting the endpoint URL. It will be `http://skilled-slug-crxm19s3602d1zlg.192.168.71.93.nip.io` in this case. The endpoint could be accessed from the outside world as well if you've provided the public IP address of your server to the `mdz server start` command.
 
-```python
-import openai
-openai.api_base="<your agent url>/inference/blomdz.default"
-openai.api_key="any"
-openai.debug = True
+### Autoscale your deployment
 
-# create a chat completion
-chat_completion = openai.ChatCompletion.create(model="", messages=[
-    {"role": "user", "content": "Who are you?"},
-    {"role": "assistant", "content": "I am a student"},
-    {"role": "user", "content": "What do you learn?"},
-], max_tokens=100)
-```
-
-### Deploy Civitai models
-
-You could deploy Civitai models with `mdz deploy civitai` command. A stable diffusion web ui will be deployed with the model serverlessly.
+You could scale your deployment by using the `mdz scale` command.
 
 ```bash
-# Deploy stable diffusion web ui with base models on civitai
-mdz deploy civitai https://civitai.com/models/25694 --name epicrealism
+$ mdz scale skilled-slug --replicas 3
+Inference skilled-slug is scaled
 ```
 
-After that, you could use `mdz infer civitai epicrealism` to experiment with it.
+You could configure the autoscaler to scale your deployment based on the the number of requests in flight.
 
 ```bash
-mdz infer civitai epicrealism --prompt "A photo of a cat"
+$ mdz scale skilled-slug --min 2 --max 5 --target-inflight-requests 10
+Inference skilled-slug is scaled
 ```
 
-### Deploy Huggingface spaces
+### Debug your deployment
 
-You could deploy Huggingface spaces with `mdz deploy huggingface` command. A Huggingface spaces will be deployed with the model serverlessly.
+Sometimes you may want to debug your deployment. You could use the `mdz logs` command to get the logs of your deployment.
 
 ```bash
-# Deploy Huggingface space application.
-mdz deploy huggingface Manjushri/Music-Genie-GPU --name music-genie
+$ mdz logs skilled-slug
+skilled-slug-6756dd67ff-4bf4g: 10.42.0.1 - - [27/Jul/2023 02:32:16] "GET / HTTP/1.1" 200 -
+skilled-slug-6756dd67ff-4bf4g: 10.42.0.1 - - [27/Jul/2023 02:32:16] "GET / HTTP/1.1" 200 -
+skilled-slug-6756dd67ff-4bf4g: 10.42.0.1 - - [27/Jul/2023 02:32:17] "GET / HTTP/1.1" 200 -
 ```
 
-### Share any deployed model with your teammates
+You could also use the `mdz exec` command to execute a command in the container of your deployment. You do not need to ssh into the server to do that.
 
-You could share your deployed models with your teammates with `mdz share` command. A shareable link will be generated for your teammates to access your deployed models.
+```
+$ mdz exec skilled-slug ps
+PID   USER     TIME   COMMAND
+    1 root       0:00 /usr/bin/dumb-init /bin/sh -c python3 -m http.server 80
+    7 root       0:00 /bin/sh -c python3 -m http.server 80
+    8 root       0:00 python3 -m http.server 80
+    9 root       0:00 ps
+$ mdz exec skilled-slug -ti bash
+bash-4.4# uname -r
+5.19.0-46-generic
+bash-4.4# 
+```
+
+Or you could port-forward the deployment to your local machine and debug it locally.
 
 ```bash
-# Share your deployed models with your teammates
-mdz share blomdz
-https://3860-101-87-90-254.ngrok.io -> blomdz
+$ mdz port-forward skilled-slug 7860
+Forwarding inference skilled-slug to local port 7860
 ```
 
-### Local experiment
+### Add more servers
 
-OpenModelZ runs your models in your cluster by default. But you could also run your models locally with docker.
+You could add more servers to your cluster by using the `mdz server join` command. The `mdz` server will be bootstrapped on the server and join the cluster automatically.
 
 ```bash
-mdz local-run openai-chat blomdz
+ NAME   PHASE  ALLOCATABLE      CAPACITY        
+ node1  Ready  cpu: 16          cpu: 16         
+               mem: 32784748Ki  mem: 32784748Ki 
+ node2  Ready  cpu: 16          cpu: 16         
+               mem: 32784748Ki  mem: 32784748Ki 
 ```
 
-### Observe your models
+# Label your servers
 
-You could use `mdz logs` to get the logs.
+You could label your servers to deploy your models to specific servers. For example, you could label your servers with `gpu=true` and deploy your models to servers with GPUs.
 
-```bash
-mdz logs blomdz
+```
+$ mdz server label node3 gpu=true type=nvidia-a100
+$ mdz deploy --image aikain/simplehttpserver:0.1 --name simple-server --port 80 --node-labels gpu=true,type=nvidia-a100
 ```
 
-# Acknowledgements
+## More on documentation 📝
 
+See [OpenModelZ documentation]().
+
+## Roadmap 🗂️
+
+Please checkout [ROADMAP]().
+
+## Contribute 😊
+
+We welcome all kinds of contributions from the open-source community, individuals, and partners.
+
+- Join our [discord community](https://discord.gg/KqswhpVgdU)!
+
+## Contributors ✨
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/gaocegege"><img src="https://avatars.githubusercontent.com/u/5100735?v=4?s=70" width="70px;" alt="Ce Gao"/><br /><sub><b>Ce Gao</b></sub></a><br /><a href="https://github.com/tensorchord/openmodelz/commits?author=gaocegege" title="Code">💻</a> <a href="https://github.com/tensorchord/openmodelz/pulls?q=is%3Apr+reviewed-by%3Agaocegege" title="Reviewed Pull Requests">👀</a> <a href="#tutorial-gaocegege" title="Tutorials">✅</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/VoVAllen"><img src="https://avatars.githubusercontent.com/u/8686776?v=4?s=70" width="70px;" alt="Jinjing Zhou"/><br /><sub><b>Jinjing Zhou</b></sub></a><br /><a href="#question-VoVAllen" title="Answering Questions">💬</a> <a href="https://github.com/tensorchord/openmodelz/issues?q=author%3AVoVAllen" title="Bug reports">🐛</a> <a href="#ideas-VoVAllen" title="Ideas, Planning, & Feedback">🤔</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://blog.mapotofu.org/"><img src="https://avatars.githubusercontent.com/u/12974685?v=4?s=70" width="70px;" alt="Keming"/><br /><sub><b>Keming</b></sub></a><br /><a href="https://github.com/tensorchord/openmodelz/commits?author=kemingy" title="Code">💻</a> <a href="#design-kemingy" title="Design">🎨</a> <a href="#infra-kemingy" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/tddschn"><img src="https://avatars.githubusercontent.com/u/45612704?v=4?s=70" width="70px;" alt="Teddy Xinyuan Chen"/><br /><sub><b>Teddy Xinyuan Chen</b></sub></a><br /><a href="https://github.com/tensorchord/openmodelz/commits?author=tddschn" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/cutecutecat"><img src="https://avatars.githubusercontent.com/u/19801166?v=4?s=70" width="70px;" alt="cutecutecat"/><br /><sub><b>cutecutecat</b></sub></a><br /><a href="#ideas-cutecutecat" title="Ideas, Planning, & Feedback">🤔</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://xieydd.github.io/"><img src="https://avatars.githubusercontent.com/u/20329697?v=4?s=70" width="70px;" alt="xieydd"/><br /><sub><b>xieydd</b></sub></a><br /><a href="#ideas-xieydd" title="Ideas, Planning, & Feedback">🤔</a></td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td align="center" size="13px" colspan="7">
+        <img src="https://raw.githubusercontent.com/all-contributors/all-contributors-cli/1b8533af435da9854653492b1327a23a4dbd0a10/assets/logo-small.svg">
+          <a href="https://all-contributors.js.org/docs/en/bot/usage">Add your contributions</a>
+        </img>
+      </td>
+    </tr>
+  </tfoot>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+## Acknowledgements 🙏
+
+- [K3s](https://github.com/k3s-io/k3s) for the single control-plane binary and process.
 - [OpenFaaS](https://github.com/openfaas) for their work on serverless function services. It laid the foundation for OpenModelZ.
-- [Kubeflow](https://github.com/kubeflow) gives us a lot of insights on simplifying the machine learning deployments.
-- [LocalAI](https://github.com/go-skynet/LocalAI) for their work on OpenAI API compatible inferences.
+- [nip.io](https://nip.io/) for the wildcard DNS service. It makes it possible to access the server from the outside world without any setup.

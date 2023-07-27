@@ -47,6 +47,6 @@ func commandServerJoin(cmd *cobra.Command, args []string) error {
 		cmd.PrintErrf("Failed to join the cluster: %s\n", errors.Cause(err))
 		return err
 	}
-	cmd.Printf("✅ Server Joined\n")
+	cmd.Printf("✅ Server joined\n")
 	return nil
 }
