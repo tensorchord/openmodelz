@@ -15,9 +15,9 @@ Simplify machine learning deployment for any environment.
 
 OpenModelZ (MDZ) provides a simple CLI to deploy and manage your machine learning workloads on any cloud or home lab.
 
-## Why use MDZ?
+## Why use OpenModelZ
 
-OpenModelZ is the ideal solution for practitioners who want to quickly deploy their machine learning models to an endpoint without the hassle of spending excessive time, money, and effort to figure out the entire end-to-end process.
+OpenModelZ is the ideal solution for practitioners who want to quickly deploy their machine learning models to a (public or private) endpoint without the hassle of spending excessive time, money, and effort to figure out the entire end-to-end process.
 
 We created OpenModelZ in response to the difficulties of finding a simple, cost-effective way to get models into production fast. Traditional deployment methods can be complex and time-consuming, requiring significant effort and resources to get models up and running.
 
@@ -25,17 +25,24 @@ We created OpenModelZ in response to the difficulties of finding a simple, cost-
 - Managed services: Alternatively, using a managed service like AWS SageMaker can be expensive and inflexible, limiting the ability to customize deployment options.
 - Virtual machines: As an alternative, setting up a cloud VM-based solution requires learning complex infrastructure concepts like load balancers, ingress controllers, and other components. This takes a lot of specialized knowledge and resources.
 
-With OpenModelZ, we take care of the underlying technical details for you, and provide a simple and easy-to-use CLI to deploy your models to any cloud (GCP, AWS, or others), your home lab, or even a single machine.
+With OpenModelZ, we take care of the underlying technical details for you, and provide a simple and easy-to-use CLI to deploy your models to **any cloud (GCP, AWS, or others), your home lab, or even a single machine**.
+
+You could **start from a single machine and scale it up to a cluster of machines** without any hassle. OpenModelZ lies at the heart of our [ModelZ](https://modelz.ai), which is a serverless inference platform. It's used in production to deploy models for our customers.
 
 ## Quick Start 🚀
 
 Once you've installed the `mdz` you can start deploying models and experimenting with them.
 
+There are only two concepts in `mdz`:
+
+- **Deployment**: A deployment is a running inference service. You could configure the number of replicas, the port, and the image, and some other parameters.
+- **Server**: A server is a machine that could run the deployments. It could be a cloud VM, a PC, or even a Raspberry Pi. You could start from a single server and scale it up to a cluster of machines without any hassle.
+
 ### Bootstrap `mdz`
 
 It's super easy to bootstrap the `mdz` server. You just need to find a server (could be a cloud VM, a home lab, or even a single machine) and run the `mdz server start` command. The `mdz` server will be bootstrapped on the server and you could start deploying your models.
 
-```bash
+```
 $ mdz server start
 🚧 Initializing the server...
 🚧 Waiting for the server to be ready...
@@ -65,12 +72,12 @@ $ mdz server start 1.2.3.4
 
 Once you've bootstrapped the `mdz` server, you can start deploying your first applications.
 
-```bash
+```
 $ mdz deploy --image aikain/simplehttpserver:0.1 --name simple-server --port 80
 Inference simple-server is created
 $ mdz list
  NAME          ENDPOINT                                                    STATUS  REPLICAS 
- simple-server  http://simple-server-crxm19s3602d1zlg.192.168.71.93.nip.io   Ready   1/1      
+ simple-server http://simple-server-crxm19s3602d1zlg.192.168.71.93.nip.io   Ready   1/1      
                http://192.168.71.93.nip.io/inference/simple-server.default                               
 ```
 
@@ -114,7 +121,7 @@ bash-4.4#
 
 Or you could port-forward the deployment to your local machine and debug it locally.
 
-```bash
+```
 $ mdz port-forward simple-server 7860
 Forwarding inference simple-server to local port 7860
 ```
@@ -123,7 +130,8 @@ Forwarding inference simple-server to local port 7860
 
 You could add more servers to your cluster by using the `mdz server join` command. The `mdz` server will be bootstrapped on the server and join the cluster automatically.
 
-```bash
+```
+$ mdz server list
  NAME   PHASE  ALLOCATABLE      CAPACITY        
  node1  Ready  cpu: 16          cpu: 16         
                mem: 32784748Ki  mem: 32784748Ki 
@@ -131,7 +139,7 @@ You could add more servers to your cluster by using the `mdz server join` comman
                mem: 32784748Ki  mem: 32784748Ki 
 ```
 
-# Label your servers
+### Label your servers
 
 You could label your servers to deploy your models to specific servers. For example, you could label your servers with `gpu=true` and deploy your models to servers with GPUs.
 
@@ -142,11 +150,11 @@ $ mdz deploy --image aikain/simplehttpserver:0.1 --name simple-server --port 80 
 
 ## More on documentation 📝
 
-See [OpenModelZ documentation]().
+See [OpenModelZ documentation](https://docs.open.modelz.ai/).
 
 ## Roadmap 🗂️
 
-Please checkout [ROADMAP]().
+Please checkout [ROADMAP](https://docs.open.modelz.ai/community).
 
 ## Contribute 😊
 
