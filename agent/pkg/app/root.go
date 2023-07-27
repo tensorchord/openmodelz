@@ -169,7 +169,7 @@ func New() App {
 		&cli.BoolFlag{
 			Name: flagIngressAnyIPToDomain,
 			Usage: "Enable any ip to domain. " +
-				"If enabled, the agent will create ingress with nip.io for each inference",
+				"If enabled, the agent will create ingress for each inference",
 			Value:   false,
 			EnvVars: []string{"MODELZ_AGENT_INGRESS_ANY_IP_TO_DOMAIN"},
 			Aliases: []string{"iad"},

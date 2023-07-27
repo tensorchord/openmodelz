@@ -7,12 +7,13 @@ import (
 	"github.com/cockroachdb/errors"
 	"github.com/spf13/cobra"
 
+	"github.com/tensorchord/openmodelz/agent/pkg/consts"
 	"github.com/tensorchord/openmodelz/mdz/pkg/server"
 )
 
 var (
 	serverStartRuntime string
-	serverStartDomain  string = "nip.io"
+	serverStartDomain  string = consts.Domain
 )
 
 // serverStartCmd represents the server start command
