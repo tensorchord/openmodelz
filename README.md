@@ -11,20 +11,19 @@ Turn Any Cloud (Or HomeLab) Into Your Personal AI Lab
 <a href="https://twitter.com/TensorChord"><img src="https://img.shields.io/twitter/follow/tensorchord?style=social" alt="trackgit-views" /></a>
 </p>
 
-OpenModelZ provides a simple CLI to deploy and manage your machine learning workloads on any cloud or home lab.
+OpenModelZ (MDZ) provides a simple CLI to deploy and manage your machine learning workloads on any cloud or home lab.
 
-# Where to use OpenModelZ?
+## Why use MDZ?
 
-You could use OpenModelZ to:
+OpenModelZ is the ideal solution for practitioners who want to quickly deploy their machine learning models to an endpoint without the hassle of spending excessive time, money, and effort to figure out the entire end-to-end process.
 
-- Quickly prototype new machine learning models. OpenModelZ allows you to deploy a Gradio or Streamlit application. This lets you focus on experimenting with and improving your models, without getting bogged down in infrastructure.
-- Serve and test your models in a production environment. OpenModelZ provides a simple interface for deploying your models in a production environment. It also allows you to easily scale your models up or down based on demand.
-- Share your models with teammates or collaborators easily. OpenModelZ abstracts away the complexity of Kubernetes, giving your collaborators a simple way to access and provide feedback on your models.
-- Gain insights into your models' performance and reliability. OpenModelZ exposes Prometheus metrics and health checks for your deployed models, providing insight into latency, throughput, errors and other key indicators.
+We created OpenModelZ in response to the difficulties of finding a simple, cost-effective way to get models into production fast. Traditional deployment methods can be complex and time-consuming, requiring significant effort and resources to get models up and running.
 
-## This is for you if...
+- Kubernetes: Setting up and maintaining Kubernetes and Kubeflow can be challenging due to their technical complexity. Data scientists spend significant time configuring and debugging infrastructure instead of focusing on model development.
+- Managed services: Alternatively, using a managed service like AWS SageMaker can be expensive and inflexible, limiting the ability to customize deployment options.
+- Virtual machines: As an alternative, setting up a cloud VM-based solution requires learning complex infrastructure concepts like load balancers, ingress controllers, and other components. This takes a lot of specialized knowledge and resources.
 
-You need a simple system for your ML models, to run on tens of GPU servers you own. Priorities are **ease of use**, **fast deployments**, flexible orchestration, monitoring from a dashboard, and stable rollouts via testing. Avoid complex systems; focus on streamlined, simple, and efficient model deployments.
+With OpenModelZ, we take care of the underlying technical details for you, and provide a simple and easy-to-use CLI to deploy your models to any cloud (GCP, AWS, or others), your home lab, or even a single machine.
 
 ## Quick Start
 
