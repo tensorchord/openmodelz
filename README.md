@@ -2,7 +2,7 @@
 
 # OpenModelZ
 
-Turn Any Cloud (Or HomeLab) Into Your Personal AI Lab
+Simplify machine learning deployment for any environment.
 
 </div>
 
@@ -76,21 +76,15 @@ $ mdz list
 
 You could access the deployment by visiting the endpoint URL. It will be `http://skilled-slug-crxm19s3602d1zlg.192.168.71.93.nip.io` in this case. The endpoint could be accessed from the outside world as well if you've provided the public IP address of your server to the `mdz server start` command.
 
-### Autoscale your deployment
+### Scale your deployment
 
 You could scale your deployment by using the `mdz scale` command.
 
 ```bash
 $ mdz scale skilled-slug --replicas 3
-Inference skilled-slug is scaled
 ```
 
-You could configure the autoscaler to scale your deployment based on the the number of requests in flight.
-
-```bash
-$ mdz scale skilled-slug --min 2 --max 5 --target-inflight-requests 10
-Inference skilled-slug is scaled
-```
+The requests will be load balanced between the replicas of your deployment.
 
 ### Debug your deployment
 
