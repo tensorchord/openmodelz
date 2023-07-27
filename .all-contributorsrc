@@ -40,6 +40,17 @@
         "bug",
         "ideas"
       ]
+    },
+    {
+      "login": "kemingy",
+      "name": "Keming",
+      "avatar_url": "https://avatars.githubusercontent.com/u/12974685?v=4",
+      "profile": "https://blog.mapotofu.org/",
+      "contributions": [
+        "code",
+        "design",
+        "infra"
+      ]
     }
   ],
   "contributorsPerLine": 7,
