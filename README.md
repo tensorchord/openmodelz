@@ -1,7 +1,4 @@
 <div align="center">
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 # OpenModelZ
 
@@ -12,6 +9,8 @@ Turn Any Cloud (Or HomeLab) Into Your Personal AI Lab
 <p align=center>
 <a href="https://discord.gg/KqswhpVgdU"><img alt="discord invitation link" src="https://dcbadge.vercel.app/api/server/KqswhpVgdU?style=flat"></a>
 <a href="https://twitter.com/TensorChord"><img src="https://img.shields.io/twitter/follow/tensorchord?style=social" alt="trackgit-views" /></a>
+<a href="https://github.com/tensorchord/openmodelz#contributors-"><img alt="all-contributors" src="https://img.shields.io/github/all-contributors/tensorchord/openmodelz/main"></a>
+
 </p>
 
 OpenModelZ (MDZ) provides a simple CLI to deploy and manage your machine learning workloads on any cloud or home lab.
@@ -177,15 +176,6 @@ We welcome all kinds of contributions from the open-source community, individual
       <td align="center" valign="top" width="14.28%"><a href="https://xieydd.github.io/"><img src="https://avatars.githubusercontent.com/u/20329697?v=4?s=70" width="70px;" alt="xieydd"/><br /><sub><b>xieydd</b></sub></a><br /><a href="#ideas-xieydd" title="Ideas, Planning, & Feedback">🤔</a></td>
     </tr>
   </tbody>
-  <tfoot>
-    <tr>
-      <td align="center" size="13px" colspan="7">
-        <img src="https://raw.githubusercontent.com/all-contributors/all-contributors-cli/1b8533af435da9854653492b1327a23a4dbd0a10/assets/logo-small.svg">
-          <a href="https://all-contributors.js.org/docs/en/bot/usage">Add your contributions</a>
-        </img>
-      </td>
-    </tr>
-  </tfoot>
 </table>
 
 <!-- markdownlint-restore -->
