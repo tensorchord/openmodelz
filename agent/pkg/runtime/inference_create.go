@@ -59,8 +59,8 @@ func (r Runtime) InferenceCreate(ctx context.Context,
 					break
 				}
 			}
-			// Set the domain to nip.io
-			ingressDomain = fmt.Sprintf("%s.nip.io", externalIP)
+			// Set the domain to
+			ingressDomain = fmt.Sprintf("%s.%s", externalIP, localconsts.Domain)
 		}
 
 		domain, err := makeDomain(name, ingressDomain)
