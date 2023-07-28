@@ -55,10 +55,10 @@ Agent:
  Go Version:    go1.19.10
  Compiler:      gc
  Platform:      linux/amd64
-🐳 The server is running at http://192.168.71.93.nip.io
+🐳 The server is running at http://192.168.71.93.modelz.live
 🎉 You could set the environment variable to get started!
 
-export MDZ_AGENT=http://192.168.71.93.nip.io
+export MDZ_AGENT=http://192.168.71.93.modelz.live
 ```
 
 The internal IP address will be used as the default endpoint of your deployments. You could provide the public IP address of your server to the `mdz server start` command to make it accessible from the outside world.
@@ -76,12 +76,12 @@ Once you've bootstrapped the `mdz` server, you can start deploying your first ap
 $ mdz deploy --image aikain/simplehttpserver:0.1 --name simple-server --port 80
 Inference simple-server is created
 $ mdz list
- NAME          ENDPOINT                                                    STATUS  REPLICAS 
- simple-server http://simple-server-crxm19s3602d1zlg.192.168.71.93.nip.io   Ready   1/1      
-               http://192.168.71.93.nip.io/inference/simple-server.default                               
+ NAME           ENDPOINT                                                          STATUS  INVOCATIONS  REPLICAS 
+ simple-server  http://simple-server-4k2epq5lynxbaayn.192.168.71.93.modelz.live   Ready             2  1/1      
+                http://192.168.71.93.modelz.live/inference/simple-server.default                                                           
 ```
 
-You could access the deployment by visiting the endpoint URL. It will be `http://simple-server-crxm19s3602d1zlg.192.168.71.93.nip.io` in this case. The endpoint could be accessed from the outside world as well if you've provided the public IP address of your server to the `mdz server start` command.
+You could access the deployment by visiting the endpoint URL. It will be `http://simple-server-4k2epq5lynxbaayn.192.168.71.93.modelz.live` in this case. The endpoint could be accessed from the outside world as well if you've provided the public IP address of your server to the `mdz server start` command.
 
 ### Scale your deployment
 
@@ -189,4 +189,4 @@ We welcome all kinds of contributions from the open-source community, individual
 
 - [K3s](https://github.com/k3s-io/k3s) for the single control-plane binary and process.
 - [OpenFaaS](https://github.com/openfaas) for their work on serverless function services. It laid the foundation for OpenModelZ.
-- [nip.io](https://nip.io/) for the wildcard DNS service. It makes it possible to access the server from the outside world without any setup.
+- [sslip.io](https://github.com/cunnie/sslip.io) for the wildcard DNS service. It makes it possible to access the server from the outside world without any setup.
