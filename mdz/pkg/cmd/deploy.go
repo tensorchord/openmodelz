@@ -18,7 +18,7 @@ var (
 	deployMinReplicas int32
 	deployMaxReplicas int32
 	deployName        string
-	deployGPU		  int
+	deployGPU         int
 	deployNodeLabel   []string
 )
 
@@ -93,7 +93,7 @@ func commandDeploy(cmd *cobra.Command, args []string) error {
 			inf.Spec.Constraints = append(inf.Spec.Constraints, "tensorchord.ai/"+label)
 		}
 	}
-	
+
 	if deployGPU > 0 {
 		GPUNum := types.Quantity(strconv.Itoa(deployGPU))
 		inf.Spec.Resources = &types.ResourceRequirements{
