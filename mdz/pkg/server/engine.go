@@ -58,6 +58,9 @@ func NewStart(o Options) (*Engine, error) {
 				&nginxInstallStep{
 					options: o,
 				},
+				&gpuInstallStep{
+					options: o,
+				},
 				&openModelZInstallStep{
 					options: o,
 				},
