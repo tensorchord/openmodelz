@@ -11,7 +11,7 @@ import (
 //go:embed gpu-resource.yaml
 var gpuYamlContent string
 
-// GPUInstallStep installs the nginx deployment.
+// gpuInstallStep installs the GPU related resources.
 type gpuInstallStep struct {
 	options Options
 }
