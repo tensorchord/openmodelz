@@ -16,7 +16,8 @@ type Config struct {
 }
 
 type InferenceConfig struct {
-	ImagePullPolicy string `json:"image_pull_policy,omitempty"`
+	ImagePullPolicy         string `json:"image_pull_policy,omitempty"`
+	SetUpRuntimeClassNvidia bool   `json:"set_up_runtime_class_nvidia,omitempty"`
 }
 
 type ProbesConfig struct {

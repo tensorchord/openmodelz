@@ -19,6 +19,7 @@ type DeploymentConfig struct {
 	HuggingfacePullThroughCache         bool
 	HuggingfacePullThroughCacheEndpoint string
 	ImagePullPolicy                     string
+	RuntimeClassNvidia                  bool
 	// SetNonRootUser will override the function image user to ensure that it is not root. When
 	// true, the user will set to 12000 for all functions.
 	SetNonRootUser bool
