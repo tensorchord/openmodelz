@@ -23,6 +23,8 @@ const (
 	defaultPort             = 8080
 )
 
+var runtimeClassNvidia = "nvidia"
+
 // newDeployment creates a new Deployment for a Function resource. It also sets
 // the appropriate OwnerReferences on the resource so handleObject can discover
 // the Function resource that 'owns' it.
@@ -160,6 +162,9 @@ func newDeployment(
 			if q.Value() > 0 {
 				// If GPU is requested, add the GPU toleration.
 				deploymentSpec.Spec.Template.Spec.Tolerations = makeTolerationGPU()
+				if factory.Factory.Config.RuntimeClassNvidia {
+					deploymentSpec.Spec.Template.Spec.RuntimeClassName = &runtimeClassNvidia
+				}
 			} else {
 				// If GPU is not requested, set CUDA_VISIBLE_DEVICES to empty string.
 				deploymentSpec.Spec.Template.Spec.Containers[0].Env = append(

@@ -54,8 +54,9 @@ func New(c config.Config, stopCh <-chan struct{}) (*Controller, error) {
 			TimeoutSeconds:      int32(c.Probes.Startup.TimeoutSeconds),
 			PeriodSeconds:       int32(c.Probes.Startup.PeriodSeconds),
 		},
-		ImagePullPolicy:   c.Inference.ImagePullPolicy,
-		ProfilesNamespace: "default",
+		ImagePullPolicy:    c.Inference.ImagePullPolicy,
+		RuntimeClassNvidia: c.Inference.SetUpRuntimeClassNvidia,
+		ProfilesNamespace:  "default",
 	}
 
 	if c.HuggingfaceProxy.Endpoint == "" {

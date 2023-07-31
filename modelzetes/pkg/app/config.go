@@ -37,5 +37,6 @@ func configFromCLI(c *cli.Context) config.Config {
 
 	// inference
 	cfg.Inference.ImagePullPolicy = c.String(flagInferenceImagePullPolicy)
+	cfg.Inference.SetUpRuntimeClassNvidia = c.Bool(flagInferenceSetUpRuntimeClassNvidia)
 	return cfg
 }

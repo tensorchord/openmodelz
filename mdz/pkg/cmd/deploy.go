@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"math/rand"
+	"strconv"
 	"time"
 
 	"github.com/cockroachdb/errors"
@@ -17,6 +18,7 @@ var (
 	deployMinReplicas int32
 	deployMaxReplicas int32
 	deployName        string
+	deployGPU         int
 	deployNodeLabel   []string
 )
 
@@ -48,6 +50,7 @@ func init() {
 	deployCmd.Flags().Int32Var(&deployPort, "port", 8080, "Port to deploy on")
 	deployCmd.Flags().Int32Var(&deployMinReplicas, "min-replicas", 1, "Minimum number of replicas (can be 0)")
 	deployCmd.Flags().Int32Var(&deployMaxReplicas, "max-replicas", 1, "Maximum number of replicas")
+	deployCmd.Flags().IntVar(&deployGPU, "gpu", 0, "Number of GPUs")
 	deployCmd.Flags().StringVar(&deployName, "name", "", "Name of inference")
 	deployCmd.Flags().StringSliceVarP(&deployNodeLabel, "node-labels", "l", []string{}, "Node labels")
 }
@@ -88,6 +91,16 @@ func commandDeploy(cmd *cobra.Command, args []string) error {
 		inf.Spec.Constraints = []string{}
 		for _, label := range deployNodeLabel {
 			inf.Spec.Constraints = append(inf.Spec.Constraints, "tensorchord.ai/"+label)
+		}
+	}
+
+	if deployGPU > 0 {
+		GPUNum := types.Quantity(strconv.Itoa(deployGPU))
+		inf.Spec.Resources = &types.ResourceRequirements{
+			// no need to set Requests for GPU
+			Limits: types.ResourceList{
+				types.ResourceGPU: GPUNum,
+			},
 		}
 	}
 

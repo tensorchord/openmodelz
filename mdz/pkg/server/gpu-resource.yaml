@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gpu-operator
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: nvidia
+  namespace: gpu-operator
+spec:
+  chart: gpu-operator
+  repo: https://helm.ngc.nvidia.com/nvidia
+  targetNamespace: gpu-operator
+  set:
+  valuesContent: |-
+    toolkit:
+      env:
+      - name: CONTAINERD_CONFIG
+        value: /var/lib/rancher/k3s/agent/etc/containerd/config.toml
+      - name: CONTAINERD_SOCKET
+        value: /run/k3s/containerd/containerd.sock
