@@ -66,6 +66,10 @@ The internal IP address will be used as the default endpoint of your deployments
 ```bash
 # Provide the public IP as an argument
 $ mdz server start 1.2.3.4
+...
+🎉 You could set the environment variable to get started!
+
+export MDZ_AGENT=http://1.2.3.4.modelz.live
 ```
 
 ### Create your first deployment
