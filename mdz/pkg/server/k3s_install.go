@@ -57,6 +57,8 @@ func (s *k3sInstallStep) Run() error {
 	if _, err := io.WriteString(stdin, bashContent); err != nil {
 		return err
 	}
+	// Close the input stream to finish the pipe. Then the command will use the
+	// input from the pipe to start the next process.
 	stdin.Close()
 
 	fmt.Fprintf(s.options.OutputStream, "🚧 Waiting for the server to be created...\n")

@@ -78,6 +78,8 @@ func (s *openModelZInstallStep) Run() error {
 	if _, err := io.WriteString(stdin, buf.String()); err != nil {
 		return err
 	}
+	// Close the input stream to finish the pipe. Then the command will use the
+	// input from the pipe to start the next process.
 	stdin.Close()
 
 	fmt.Fprintf(s.options.OutputStream, "🚧 Waiting for the server to be ready...\n")
@@ -103,6 +105,7 @@ func (s *openModelZInstallStep) Verify() error {
 		return fmt.Errorf("cannot get the ingress ip: output is empty")
 	}
 
+	// Get the IP from the output lie this: `[{"ip":"192.168.71.93"}]`
 	re := regexp.MustCompile(`(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}`)
 	found := re.MatchString(string(output))
 	if !found {
