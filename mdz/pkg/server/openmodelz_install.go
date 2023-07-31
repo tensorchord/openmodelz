@@ -47,7 +47,10 @@ func (s *openModelZInstallStep) Run() error {
 	variables := struct {
 		Domain     string
 		IpToDomain bool
-	}{}
+		Version    string
+	}{
+		Version: s.options.Version,
+	}
 	if s.options.Domain != nil {
 		variables.Domain = *s.options.Domain
 		variables.IpToDomain = false
@@ -65,6 +68,9 @@ func (s *openModelZInstallStep) Run() error {
 	if err != nil {
 		panic(err)
 	}
+
+	logrus.WithField("variables", variables).
+		Debugf("Deploying OpenModelZ with the following variables")
 
 	if _, err := io.WriteString(stdin, buf.String()); err != nil {
 		return err

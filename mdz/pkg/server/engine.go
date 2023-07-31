@@ -17,6 +17,7 @@ type Options struct {
 	RetryInternal time.Duration
 	ServerIP      string
 	Domain        *string
+	Version       string
 }
 
 type Runtime string
