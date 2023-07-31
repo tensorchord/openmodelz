@@ -3,10 +3,15 @@ package cmd
 import (
 	"fmt"
 	"sort"
+	"strings"
 
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/spf13/cobra"
 	"github.com/tensorchord/openmodelz/agent/api/types"
+)
+
+const (
+	annotationDomain = "ai.tensorchord.domain"
 )
 
 var (
@@ -18,13 +23,13 @@ var (
 // listCommand represents the list command
 var listCommand = &cobra.Command{
 	Use:   "list",
-	Short: "List OpenModelz inferences",
-	Long:  `Lists OpenModelZ inferences either on a local or remote agent`,
+	Short: "List the deployments",
+	Long:  `List the deployments`,
 	Example: `  mdz list
   mdz list -v
   mdz list -q`,
 	GroupID: "basic",
-	PreRunE: getAgentClient,
+	PreRunE: commandInit,
 	RunE:    commandList,
 }
 
@@ -45,6 +50,7 @@ func init() {
 func commandList(cmd *cobra.Command, args []string) error {
 	infs, err := agentClient.InferenceList(cmd.Context(), namespace)
 	if err != nil {
+		cmd.PrintErrf("Failed to list inferences: %v\n", err)
 		return err
 	}
 
@@ -74,7 +80,7 @@ func commandList(cmd *cobra.Command, args []string) error {
 			}
 			t.AppendRow(table.Row{
 				inf.Spec.Name,
-				fmt.Sprintf("%s/inference/%s.%s", agentURL, inf.Spec.Name, inf.Spec.Namespace),
+				getEndpoint(inf),
 				functionImage,
 				inf.Status.Phase,
 				int64(inf.Status.InvocationCount),
@@ -94,12 +100,13 @@ func commandList(cmd *cobra.Command, args []string) error {
 			Options: table.OptionsNoBordersAndSeparators,
 			Title:   table.TitleOptionsDefault,
 		})
-		t.AppendHeader(table.Row{"Name", "Endpoint", "Status", "Replicas"})
+		t.AppendHeader(table.Row{"Name", "Endpoint", "Status", "Invocations", "Replicas"})
 		for _, inf := range infs {
 			t.AppendRow(table.Row{
 				inf.Spec.Name,
-				fmt.Sprintf("%s/inference/%s.%s", agentURL, inf.Spec.Name, inf.Spec.Namespace),
+				getEndpoint(inf),
 				inf.Status.Phase,
+				int64(inf.Status.InvocationCount),
 				fmt.Sprintf("%d/%d", inf.Status.AvailableReplicas, inf.Status.Replicas),
 			})
 		}
@@ -113,3 +120,13 @@ type byName []types.InferenceDeployment
 func (a byName) Len() int           { return len(a) }
 func (a byName) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a byName) Less(i, j int) bool { return a[i].Spec.Name < a[j].Spec.Name }
+
+func getEndpoint(inf types.InferenceDeployment) string {
+	endpoint := fmt.Sprintf("%s/inference/%s.%s", mdzURL, inf.Spec.Name, inf.Spec.Namespace)
+	if d, ok := inf.Spec.Annotations[annotationDomain]; ok {
+		// Replace https with http now.
+		rawHTTPDomain := strings.Replace(d, "https://", "http://", 1)
+		endpoint = fmt.Sprintf("%s\n%s", rawHTTPDomain, endpoint)
+	}
+	return endpoint
+}

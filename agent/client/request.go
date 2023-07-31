@@ -18,6 +18,7 @@ import (
 
 	"github.com/cockroachdb/errors"
 	"github.com/docker/docker/api/types"
+	"github.com/sirupsen/logrus"
 
 	"github.com/tensorchord/openmodelz/agent/errdefs"
 )
@@ -117,6 +118,10 @@ func (cli *Client) buildRequest(method, path string, body io.Reader, headers hea
 	if expectedPayload && req.Header.Get("Content-Type") == "" {
 		req.Header.Set("Content-Type", "text/plain")
 	}
+
+	logrus.Debugf("Sending HTTP request to %s\n", req.URL.String())
+	logrus.Debugf("Request Headers: %v\n", req.Header)
+	logrus.Debugf("Request Body: %v\n", body)
 	return req, nil
 }
 

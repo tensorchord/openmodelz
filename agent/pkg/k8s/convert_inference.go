@@ -43,6 +43,10 @@ func AsInferenceDeployment(inf *v2alpha1.Inference, item *appsv1.Deployment) *ty
 		}
 	}
 
+	if inf.Spec.Port != nil {
+		res.Spec.Port = inf.Spec.Port
+	}
+
 	var replicas int32 = 0
 	// Get status according to the deployment.
 	if item != nil {

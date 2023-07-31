@@ -114,3 +114,7 @@ const (
 )
 
 type Quantity string
+
+const (
+	RuntimeClassNvidia string = "nvidia"
+)

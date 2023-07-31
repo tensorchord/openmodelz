@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/cockroachdb/errors"
 	"github.com/spf13/cobra"
 
 	"github.com/tensorchord/openmodelz/mdz/pkg/server"
@@ -12,6 +13,7 @@ var serverStopCmd = &cobra.Command{
 	Short:   "Stop the server",
 	Long:    `Stop the server`,
 	Example: `  mdz server stop`,
+	PreRunE: commandInitLog,
 	RunE:    commandServerStop,
 }
 
@@ -34,11 +36,13 @@ func commandServerStop(cmd *cobra.Command, args []string) error {
 		RetryInternal: serverPollingInterval,
 	})
 	if err != nil {
+		cmd.PrintErrf("Failed to stop the server: %s\n", errors.Cause(err))
 		return err
 	}
 
 	_, err = engine.Run()
 	if err != nil {
+		cmd.PrintErrf("Failed to stop the server: %s\n", errors.Cause(err))
 		return err
 	}
 	cmd.Printf("✅ Server stopped\n")

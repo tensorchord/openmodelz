@@ -1,15 +1,30 @@
 package server
 
 import (
+	"fmt"
 	"io"
 	"time"
+)
+
+const (
+	AgentPort = 31112
 )
 
 type Options struct {
 	Verbose       bool
 	OutputStream  io.Writer
+	Runtime       Runtime
 	RetryInternal time.Duration
+	ServerIP      string
+	Domain        *string
 }
+
+type Runtime string
+
+var (
+	RuntimeK3s    Runtime = "k3s"
+	RuntimeDocker Runtime = "docker"
+)
 
 type Engine struct {
 	options Options
@@ -17,23 +32,42 @@ type Engine struct {
 }
 
 type Result struct {
-	AgentURL string
-	Command  string
+	MDZURL string
 }
 
 func NewStart(o Options) (*Engine, error) {
-	return &Engine{
-		options: o,
-		Steps: []Step{
-			// Install k3s and related tools.
-			&k3sInstallStep{
-				options: o,
+	var engine *Engine
+	switch o.Runtime {
+	case RuntimeDocker:
+		engine = &Engine{
+			options: o,
+			Steps: []Step{
+				&agentDRunStep{
+					options: o,
+				},
 			},
-			&openModelZInstallStep{
-				options: o,
+		}
+	default:
+		engine = &Engine{
+			options: o,
+			Steps: []Step{
+				// Install k3s and related tools.
+				&k3sInstallStep{
+					options: o,
+				},
+				&nginxInstallStep{
+					options: o,
+				},
+				&gpuInstallStep{
+					options: o,
+				},
+				&openModelZInstallStep{
+					options: o,
+				},
 			},
-		},
-	}, nil
+		}
+	}
+	return engine, nil
 }
 
 func NewStop(o Options) (*Engine, error) {
@@ -53,7 +87,7 @@ func NewJoin(o Options) (*Engine, error) {
 		options: o,
 		Steps: []Step{
 			// Kill all k3s and related tools.
-			&k3sKillAllStep{
+			&k3sJoinStep{
 				options: o,
 			},
 		},
@@ -79,7 +113,12 @@ func (e *Engine) Run() (*Result, error) {
 			}
 		}
 	}
+	if e.options.Domain != nil {
+		return &Result{
+			MDZURL: fmt.Sprintf("http://%s", *e.options.Domain),
+		}, nil
+	}
 	return &Result{
-		AgentURL: "http://localhost:31112",
+		MDZURL: fmt.Sprintf("http://0.0.0.0:%d", AgentPort),
 	}, nil
 }

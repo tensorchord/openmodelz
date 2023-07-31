@@ -14,11 +14,11 @@ var (
 // logCmd represents the log command
 var logsCmd = &cobra.Command{
 	Use:     "logs",
-	Short:   "Print the logs for a inference",
-	Long:    `Print the logs for a inference`,
+	Short:   "Print the logs for a deployment",
+	Long:    `Print the logs for a deployment`,
 	Example: `  mdz logs blomdz-560m`,
 	GroupID: "debug",
-	PreRunE: getAgentClient,
+	PreRunE: commandInit,
 	Args:    cobra.ExactArgs(1),
 	RunE:    commandLogs,
 }
@@ -41,6 +41,7 @@ func init() {
 func commandLogs(cmd *cobra.Command, args []string) error {
 	logs, err := agentClient.DeploymentLogGet(cmd.Context(), namespace, args[0], since, tail, end)
 	if err != nil {
+		cmd.PrintErrf("Failed to get logs: %s\n", err)
 		return err
 	}
 	for _, log := range logs {

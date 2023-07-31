@@ -13,8 +13,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("Generating docs in", filepath.Join(path, "docs"))
-	if err := cmd.GenMarkdownTree(filepath.Join(path, "docs")); err != nil {
+	fmt.Println("Generating docs in", filepath.Join(path, "docs", "cli"))
+	if err := cmd.GenMarkdownTree(filepath.Join(path, "docs", "cli")); err != nil {
 		panic(err)
 	}
 }

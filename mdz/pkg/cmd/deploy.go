@@ -2,8 +2,10 @@ package cmd
 
 import (
 	"math/rand"
+	"strconv"
 	"time"
 
+	"github.com/cockroachdb/errors"
 	petname "github.com/dustinkirkland/golang-petname"
 	"github.com/spf13/cobra"
 	"github.com/tensorchord/openmodelz/agent/api/types"
@@ -16,17 +18,19 @@ var (
 	deployMinReplicas int32
 	deployMaxReplicas int32
 	deployName        string
+	deployGPU         int
+	deployNodeLabel   []string
 )
 
 // deployCmd represents the deploy command
 var deployCmd = &cobra.Command{
 	Use:   "deploy",
-	Short: "Deploy OpenModelz inferences",
-	Long:  `Deploys OpenModelZ inferences directly via flags.`,
+	Short: "Deploy a new deployment",
+	Long:  `Deploys a new deployment directly via flags.`,
 	Example: `  mdz deploy --image=modelzai/llm-blomdz-560m:23.06.13
-  mdz deploy --image=modelzai/llm-blomdz-560m:23.06.13 --name blomdz-560m`,
+  mdz deploy --image=modelzai/llm-blomdz-560m:23.06.13 --name blomdz-560m --node-labels gpu=true,name=node-name`,
 	GroupID: "basic",
-	PreRunE: getAgentClient,
+	PreRunE: commandInit,
 	RunE:    commandDeploy,
 }
 
@@ -46,7 +50,9 @@ func init() {
 	deployCmd.Flags().Int32Var(&deployPort, "port", 8080, "Port to deploy on")
 	deployCmd.Flags().Int32Var(&deployMinReplicas, "min-replicas", 1, "Minimum number of replicas (can be 0)")
 	deployCmd.Flags().Int32Var(&deployMaxReplicas, "max-replicas", 1, "Maximum number of replicas")
+	deployCmd.Flags().IntVar(&deployGPU, "gpu", 0, "Number of GPUs")
 	deployCmd.Flags().StringVar(&deployName, "name", "", "Name of inference")
+	deployCmd.Flags().StringSliceVarP(&deployNodeLabel, "node-labels", "l", []string{}, "Node labels")
 }
 
 func commandDeploy(cmd *cobra.Command, args []string) error {
@@ -65,6 +71,9 @@ func commandDeploy(cmd *cobra.Command, args []string) error {
 			Image:     deployImage,
 			Namespace: namespace,
 			Name:      name,
+			Labels: map[string]string{
+				"ai.tensorchord.name": name,
+			},
 			Framework: types.FrameworkOther,
 			Scaling: &types.ScalingConfig{
 				MinReplicas:     int32Ptr(deployMinReplicas),
@@ -78,8 +87,26 @@ func commandDeploy(cmd *cobra.Command, args []string) error {
 		},
 	}
 
+	if len(deployNodeLabel) > 0 {
+		inf.Spec.Constraints = []string{}
+		for _, label := range deployNodeLabel {
+			inf.Spec.Constraints = append(inf.Spec.Constraints, "tensorchord.ai/"+label)
+		}
+	}
+
+	if deployGPU > 0 {
+		GPUNum := types.Quantity(strconv.Itoa(deployGPU))
+		inf.Spec.Resources = &types.ResourceRequirements{
+			// no need to set Requests for GPU
+			Limits: types.ResourceList{
+				types.ResourceGPU: GPUNum,
+			},
+		}
+	}
+
 	if _, err := agentClient.InferenceCreate(
 		cmd.Context(), namespace, inf); err != nil {
+		cmd.PrintErrf("Failed to create the inference: %s\n", errors.Cause(err))
 		return err
 	}
 

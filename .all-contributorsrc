@@ -1,0 +1,76 @@
+{
+  "projectName": "openmodelz",
+  "projectOwner": "tensorchord",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 70,
+  "commit": true,
+  "commitConvention": "angular",
+  "contributorsSortAlphabetically": true,
+  "contributors": [
+    {
+      "login": "gaocegege",
+      "name": "Ce Gao",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5100735?v=4",
+      "profile": "https://github.com/gaocegege",
+      "contributions": [
+        "code",
+        "review",
+        "tutorial"
+      ]
+    },
+    {
+      "login": "tddschn",
+      "name": "Teddy Xinyuan Chen",
+      "avatar_url": "https://avatars.githubusercontent.com/u/45612704?v=4",
+      "profile": "https://github.com/tddschn",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "VoVAllen",
+      "name": "Jinjing Zhou",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8686776?v=4",
+      "profile": "https://github.com/VoVAllen",
+      "contributions": [
+        "question",
+        "bug",
+        "ideas"
+      ]
+    },
+    {
+      "login": "kemingy",
+      "name": "Keming",
+      "avatar_url": "https://avatars.githubusercontent.com/u/12974685?v=4",
+      "profile": "https://blog.mapotofu.org/",
+      "contributions": [
+        "code",
+        "design",
+        "infra"
+      ]
+    },
+    {
+      "login": "cutecutecat",
+      "name": "cutecutecat",
+      "avatar_url": "https://avatars.githubusercontent.com/u/19801166?v=4",
+      "profile": "https://github.com/cutecutecat",
+      "contributions": [
+        "ideas"
+      ]
+    },
+    {
+      "login": "xieydd",
+      "name": "xieydd",
+      "avatar_url": "https://avatars.githubusercontent.com/u/20329697?v=4",
+      "profile": "https://xieydd.github.io/",
+      "contributions": [
+        "ideas"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7
+}

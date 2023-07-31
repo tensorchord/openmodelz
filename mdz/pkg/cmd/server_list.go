@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/cockroachdb/errors"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/spf13/cobra"
 	"github.com/tensorchord/openmodelz/agent/api/types"
@@ -20,7 +21,7 @@ var serverListCmd = &cobra.Command{
 	Short:   "List all servers in the cluster",
 	Long:    `List all servers in the cluster`,
 	Example: `  mdz server list`,
-	PreRunE: getAgentClient,
+	PreRunE: commandInit,
 	RunE:    commandServerList,
 }
 
@@ -41,6 +42,7 @@ func init() {
 func commandServerList(cmd *cobra.Command, args []string) error {
 	servers, err := agentClient.ServerList(cmd.Context())
 	if err != nil {
+		cmd.PrintErrf("Failed to list servers: %s\n", errors.Cause(err))
 		return err
 	}
 
@@ -58,7 +60,7 @@ func commandServerList(cmd *cobra.Command, args []string) error {
 			Options: table.OptionsNoBordersAndSeparators,
 			Title:   table.TitleOptionsDefault,
 		})
-		t.AppendHeader(table.Row{"Name", "Phase", "Allocatable", "Capacity", "Distribution", "OS", "Kernel"})
+		t.AppendHeader(table.Row{"Name", "Phase", "Allocatable", "Capacity", "Distribution", "OS", "Kernel", "Labels"})
 
 		for _, server := range servers {
 			t.AppendRow(table.Row{server.Spec.Name, server.Status.Phase,
@@ -66,7 +68,9 @@ func commandServerList(cmd *cobra.Command, args []string) error {
 				resourceListString(server.Status.Capacity),
 				server.Status.System.OSImage,
 				server.Status.System.OperatingSystem,
-				server.Status.System.KernelVersion})
+				server.Status.System.KernelVersion,
+				labelsString(server.Spec.Labels),
+			})
 		}
 		cmd.Println(t.Render())
 	} else {
@@ -89,6 +93,14 @@ func commandServerList(cmd *cobra.Command, args []string) error {
 		cmd.Println(t.Render())
 	}
 	return nil
+}
+
+func labelsString(labels map[string]string) string {
+	res := ""
+	for k, v := range labels {
+		res += fmt.Sprintf("%s=%s\n", k, v)
+	}
+	return res[:len(res)-1]
 }
 
 func resourceListString(l types.ResourceList) string {

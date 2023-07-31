@@ -18,6 +18,7 @@ const (
 	gatewayInferInstanceControlPlanePath     = "/system/inference/%s/instances"
 	gatewayInferInstanceExecControlPlanePath = "/system/inference/%s/instance/%s/exec"
 	gatewayServerControlPlanePath            = "/system/servers"
+	gatewayServerLabelCreateControlPlanePath = "/system/server/%s/labels"
 	gatewayNamespaceControlPlanePath         = "/system/namespaces"
 	gatewayBuildControlPlanePath             = "/system/build"
 	gatewayBuildInstanceControlPlanePath     = "/system/build/%s"

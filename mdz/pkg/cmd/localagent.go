@@ -17,7 +17,7 @@ var localAgentCmd = &cobra.Command{
 	Long:    `Start agent with local docker runtime`,
 	Example: `  mdz local-agent`,
 	GroupID: "basic",
-	PreRunE: getAgentClient,
+	PreRunE: commandInit,
 	RunE:    commandLocalAgent,
 	Hidden:  true,
 }
@@ -32,7 +32,7 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	localAgentCmd.Flags().IntVarP(&localAgentPort, "port", "p", 8081, "Port to listen on")
+	localAgentCmd.Flags().IntVarP(&localAgentPort, "port", "p", 31112, "Port to listen on")
 }
 
 func commandLocalAgent(cmd *cobra.Command, args []string) error {

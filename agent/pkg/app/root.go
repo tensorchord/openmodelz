@@ -33,9 +33,10 @@ const (
 	flagResyncPeriod = "kube-resync-period"
 
 	// inference ingress
-	flagIngressEnabled   = "ingress-enabled"
-	flagIngressDomain    = "ingress-domain"
-	flagIngressNamespace = "ingress-namespace"
+	flagIngressEnabled       = "ingress-enabled"
+	flagIngressDomain        = "ingress-domain"
+	flagIngressNamespace     = "ingress-namespace"
+	flagIngressAnyIPToDomain = "ingress-any-ip-to-domain"
 
 	// inference
 	flagInferenceLogTimeout = "inference-log-timeout"
@@ -164,6 +165,14 @@ func New() App {
 			Value:   "default",
 			EnvVars: []string{"MODELZ_AGENT_INGRESS_NAMESPACE"},
 			Aliases: []string{"in"},
+		},
+		&cli.BoolFlag{
+			Name: flagIngressAnyIPToDomain,
+			Usage: "Enable any ip to domain. " +
+				"If enabled, the agent will create ingress for each inference",
+			Value:   false,
+			EnvVars: []string{"MODELZ_AGENT_INGRESS_ANY_IP_TO_DOMAIN"},
+			Aliases: []string{"iad"},
 		},
 		&cli.DurationFlag{
 			Name: flagInferenceLogTimeout,

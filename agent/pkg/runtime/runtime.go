@@ -30,8 +30,9 @@ type Runtime struct {
 	logger        *logrus.Entry
 	eventRecorder event.Interface
 
-	ingressEnabled bool
-	eventEnabled   bool
+	ingressEnabled       bool
+	ingressAnyIPToDomain bool
+	eventEnabled         bool
 }
 
 func New(clientConfig *rest.Config,
@@ -44,20 +45,22 @@ func New(clientConfig *rest.Config,
 	inferenceClient clientset.Interface,
 	eventRecorder event.Interface,
 	ingressEnabled, eventEnabled bool,
+	ingressAnyIPToDomain bool,
 ) (Runtime, error) {
 	r := Runtime{
-		endpointsInformer:  endpointsInformer,
-		deploymentInformer: deploymentInformer,
-		inferenceInformer:  inferenceInformer,
-		podInformer:        podInformer,
-		kubeClient:         kubeClient,
-		clientConfig:       clientConfig,
-		ingressClient:      ingressClient,
-		inferenceClient:    inferenceClient,
-		logger:             logrus.WithField("component", "runtime"),
-		eventRecorder:      eventRecorder,
-		ingressEnabled:     ingressEnabled,
-		eventEnabled:       eventEnabled,
+		endpointsInformer:    endpointsInformer,
+		deploymentInformer:   deploymentInformer,
+		inferenceInformer:    inferenceInformer,
+		podInformer:          podInformer,
+		kubeClient:           kubeClient,
+		clientConfig:         clientConfig,
+		ingressClient:        ingressClient,
+		inferenceClient:      inferenceClient,
+		logger:               logrus.WithField("component", "runtime"),
+		eventRecorder:        eventRecorder,
+		ingressEnabled:       ingressEnabled,
+		ingressAnyIPToDomain: ingressAnyIPToDomain,
+		eventEnabled:         eventEnabled,
 	}
 	// Ref https://github.com/operator-framework/operator-sdk/issues/1570
 	clientConfig.APIPath = "api"

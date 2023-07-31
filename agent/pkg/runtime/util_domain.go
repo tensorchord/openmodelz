@@ -20,11 +20,11 @@ var stdChars = []byte("abcdefghijklmnopqrstuvwxyz0123456789")
 
 func makeDomain(name, baseDomain string) (string, error) {
 	if baseDomain == "" {
-		return "", fmt.Errorf("baseDomain is required")
+		return "", fmt.Errorf("base domain is required")
 	}
 
 	if name == "" {
-		return "", fmt.Errorf("name is required")
+		return "", fmt.Errorf("domain name is required")
 	}
 
 	hash := uniuri.NewLenChars(stdLen, stdChars)

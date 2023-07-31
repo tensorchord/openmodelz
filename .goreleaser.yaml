@@ -40,6 +40,23 @@ builds:
       - linux
     goarch:
       - amd64
+    id: mdz
+    main: ./cmd/mdz/main.go
+    dir: ./mdz
+    binary: mdz
+    ldflags:
+      - -s -w
+      - -X github.com/tensorchord/openmodelz/mdz/pkg/version.version={{ .Version }}
+      - -X github.com/tensorchord/openmodelz/mdz/pkg/version.buildDate={{ .Date }}
+      - -X github.com/tensorchord/openmodelz/mdz/pkg/version.gitCommit={{ .Commit }}
+      - -X github.com/tensorchord/openmodelz/mdz/pkg/version.gitTreeState=clean
+      - -X github.com/tensorchord/openmodelz/mdz/pkg/version.gitTag={{ .Tag }}
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+    goarch:
+      - amd64
     id: autoscaler
     main: ./cmd/autoscaler/main.go
     dir: ./autoscaler
@@ -58,7 +75,7 @@ builds:
     goarch:
       - amd64
     id: ingress-operator
-    main: ./main.go
+    main: ./cmd/ingress-operator/main.go
     dir: ./ingress-operator
     binary: ingress-operator
     ldflags:
@@ -69,64 +86,10 @@ builds:
       - -X github.com/tensorchord/openmodelz/ingress-operator/pkg/version.gitTreeState=clean
       - -X github.com/tensorchord/openmodelz/ingress-operator/pkg/version.gitTag={{ .Tag }}
 archives:
-  - id: modelzetes
+  - id: mdz
     format: binary
     builds:
-      - modelzetes
-    name_template: >-
-      {{ .Binary }}_{{ .Version }}_{{- title .Os }}_
-      {{- if eq .Arch "amd64" }}x86_64
-      {{- else if eq .Arch "386" }}i386
-      {{- else }}{{ .Arch }}{{ end }}
-  - id: agent
-    format: binary
-    builds:
-      - agent
-    name_template: >-
-      {{ .Binary }}_{{ .Version }}_{{- title .Os }}_
-      {{- if eq .Arch "amd64" }}x86_64
-      {{- else if eq .Arch "386" }}i386
-      {{- else }}{{ .Arch }}{{ end }}
-  - id: autoscaler
-    format: binary
-    builds:
-      - autoscaler
-    name_template: >-
-      {{ .Binary }}_{{ .Version }}_{{- title .Os }}_
-      {{- if eq .Arch "amd64" }}x86_64
-      {{- else if eq .Arch "386" }}i386
-      {{- else }}{{ .Arch }}{{ end }}
-  - id: apiserver
-    format: binary
-    builds:
-      - apiserver
-    name_template: >-
-      {{ .Binary }}_{{ .Version }}_{{- title .Os }}_
-      {{- if eq .Arch "amd64" }}x86_64
-      {{- else if eq .Arch "386" }}i386
-      {{- else }}{{ .Arch }}{{ end }}
-  - id: biller
-    format: binary
-    builds:
-      - biller
-    name_template: >-
-      {{ .Binary }}_{{ .Version }}_{{- title .Os }}_
-      {{- if eq .Arch "amd64" }}x86_64
-      {{- else if eq .Arch "386" }}i386
-      {{- else }}{{ .Arch }}{{ end }}
-  - id: builder
-    format: binary
-    builds:
-      - builder
-    name_template: >-
-      {{ .Binary }}_{{ .Version }}_{{- title .Os }}_
-      {{- if eq .Arch "amd64" }}x86_64
-      {{- else if eq .Arch "386" }}i386
-      {{- else }}{{ .Arch }}{{ end }}
-  - id: due-checker
-    format: binary
-    builds:
-      - due-checker
+      - mdz
     name_template: >-
       {{ .Binary }}_{{ .Version }}_{{- title .Os }}_
       {{- if eq .Arch "amd64" }}x86_64
@@ -221,7 +184,7 @@ dockers:
 docker_manifests:
 - name_template: modelzai/openmodelz-modelzetes:v{{ .Version }}
   image_templates:
-  - modelzai/modelzetes:v{{ .Version }}-amd64
+  - modelzai/openmodelz-modelzetes:v{{ .Version }}-amd64
   # - modelzai/modelzetes:v{{ .Version }}-arm64v8
 - name_template: modelzai/openmodelz-agent:v{{ .Version }}
   image_templates:
@@ -231,10 +194,6 @@ docker_manifests:
   image_templates:
   - modelzai/openmodelz-autoscaler:v{{ .Version }}-amd64
   # - modelzai/modelz-autoscaler:v{{ .Version }}-arm64v8
-- name_template: modelzai/modelz-apiserver:v{{ .Version }}
-  image_templates:
-  - modelzai/modelz-apiserver:v{{ .Version }}-amd64
-  # - modelzai/modelz-apiserver:v{{ .Version }}-arm64v8
 - name_template: modelzai/openmodelz-ingress-operator:v{{ .Version }}
   image_templates:
   - modelzai/openmodelz-ingress-operator:v{{ .Version }}-amd64

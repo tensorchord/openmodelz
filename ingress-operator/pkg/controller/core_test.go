@@ -173,7 +173,7 @@ func TestMakeAnnotations(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			result := MakeAnnotations(&tc.ingress)
+			result := MakeAnnotations(&tc.ingress, "apiserver")
 			for key, value := range tc.expected {
 				found, ok := result[key]
 				if !ok {

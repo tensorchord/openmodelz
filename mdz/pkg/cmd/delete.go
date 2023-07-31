@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/cockroachdb/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -11,7 +12,7 @@ var deleteCmd = &cobra.Command{
 	Long:    `Deletes OpenModelZ inferences`,
 	Example: `  mdz delete blomdz-560m`,
 	GroupID: "basic",
-	PreRunE: getAgentClient,
+	PreRunE: commandInit,
 	Args:    cobra.ExactArgs(1),
 	RunE:    commandDelete,
 }
@@ -33,6 +34,7 @@ func commandDelete(cmd *cobra.Command, args []string) error {
 
 	if err := agentClient.InferenceRemove(
 		cmd.Context(), namespace, name); err != nil {
+		cmd.PrintErrf("Failed to remove the inference: %s\n", errors.Cause(err))
 		return err
 	}
 

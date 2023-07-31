@@ -1,0 +1,36 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: ingress-nginx
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: ingress-nginx
+  namespace: kube-system
+spec:
+  chart: ingress-nginx
+  repo: https://kubernetes.github.io/ingress-nginx
+  targetNamespace: ingress-nginx
+  version: v4.7.0
+  set:
+  valuesContent: |-
+    fullnameOverride: ingress-nginx
+    controller:
+      kind: DaemonSet
+      hostNetwork: true
+      hostPort:
+        enabled: true
+      service:
+        enabled: true
+        ports:
+          http: 9000
+          https: 9001
+      publishService:
+        enabled: false
+      metrics:
+        enabled: false
+        serviceMonitor:
+          enabled: false
+      config:
+        use-forwarded-headers: "true"

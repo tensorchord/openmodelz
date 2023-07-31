@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/**'
+      - '**.go'
+      - 'Makefile'
+      - 'go.**'
+  pull_request:
+    paths:
+      - '.github/workflows/**'
+      - '**.go'
+      - 'Makefile'
+      - 'go.**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: test
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.19
+      - name: Cache Go modules
+        uses: actions/cache@preview
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-build-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.OS }}-build-${{ env.cache-name }}-
+            ${{ runner.OS }}-build-
+            ${{ runner.OS }}-
+      - name: modelzetes test
+        run: |
+          cd modelzetes
+          go test ./...
+          make
+      - name: autoscaler
+        run: |
+          cd ./autoscaler
+          make
+      - name: agent
+        run: |
+          cd ./agent
+          make
+      - name: mdz
+        run: |
+          cd ./mdz
+          make

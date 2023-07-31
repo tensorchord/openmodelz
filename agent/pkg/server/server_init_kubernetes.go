@@ -92,6 +92,7 @@ func (s *Server) initKubernetesResources() error {
 		endpoints, deployments, inferences, pods,
 		kubeClient, ingressClient, inferenceClient, s.eventRecorder,
 		s.config.Ingress.IngressEnabled, s.config.DB.EventEnabled,
+		s.config.Ingress.AnyIPToDomain,
 	)
 	if err != nil {
 		return err
@@ -99,7 +100,7 @@ func (s *Server) initKubernetesResources() error {
 	s.runtime = runtime
 	if s.config.Server.Dev {
 		logrus.Warn("running in dev mode, using port forwarding to access pods, please do not use dev mode in production")
-		s.endpointResolver = k8s.NewPortForwardingResolver(clientCmdConfig)
+		s.endpointResolver = k8s.NewPortForwardingResolver(clientCmdConfig, kubeClient)
 	} else {
 		s.endpointResolver = k8s.NewEndpointResolver(endpoints.Lister())
 	}

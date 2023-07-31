@@ -56,6 +56,7 @@ type IngressConfig struct {
 	IngressEnabled bool   `json:"ingress_enabled,omitempty"`
 	Domain         string `json:"domain,omitempty"`
 	Namespace      string `json:"namespace,omitempty"`
+	AnyIPToDomain  bool   `json:"any_ip_to_domain,omitempty"`
 }
 
 type KubeConfig struct {
@@ -118,6 +119,15 @@ func (c Config) Validate() error {
 	if c.DB.EventEnabled {
 		if c.DB.URL == "" {
 			return errors.New("db config is required")
+		}
+	}
+
+	if c.Ingress.IngressEnabled {
+		if c.Ingress.Namespace == "" {
+			return errors.New("ingress namespace is required")
+		}
+		if !c.Ingress.AnyIPToDomain && c.Ingress.Domain == "" {
+			return errors.New("ingress domain is required")
 		}
 	}
 	return nil

@@ -17,7 +17,6 @@ faas-o6s
 .idea/
 
 bin/
-config
 password.txt
 faas-netes/**
 test.yaml

@@ -50,7 +50,8 @@ const (
 	flagProbeStartupTimeoutSeconds      = "probe-startup-timeout-seconds"
 
 	// inference
-	flagInferenceImagePullPolicy = "inference-image-pull-policy"
+	flagInferenceImagePullPolicy         = "inference-image-pull-policy"
+	flagInferenceSetUpRuntimeClassNvidia = "inference-set-up-runtime-class-nvidia"
 )
 
 type App struct {
@@ -194,6 +195,11 @@ func New() App {
 			Value:   "IfNotPresent",
 			EnvVars: []string{"MODELZETES_INFERENCE_IMAGE_PULL_POLICY"},
 			Aliases: []string{"iipp"},
+		},
+		&cli.BoolFlag{
+			Name:    flagInferenceSetUpRuntimeClassNvidia,
+			Usage:   "If true, will set up the Nvidia RuntimeClassName to the inference deployment.",
+			EnvVars: []string{"MODELZETES_INFERENCE_SET_UP_RUNTIME_CLASS_NVIDIA"},
 		},
 	}
 	internalApp.Action = runServer

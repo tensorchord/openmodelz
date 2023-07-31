@@ -7,17 +7,18 @@ import (
 	"net/url"
 
 	"github.com/cockroachdb/errors"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
 // portForwardCmd represents the port-forward command
 var portForwardCmd = &cobra.Command{
 	Use:     "port-forward",
-	Short:   "Forward one local port to an inference",
-	Long:    `Forward one local port to an inference`,
+	Short:   "Forward one local port to a deployment",
+	Long:    `Forward one local port to a deployment`,
 	Example: `  mdz port-forward blomdz-560m 7860`,
 	GroupID: "debug",
-	PreRunE: getAgentClient,
+	PreRunE: commandInit,
 	Args:    cobra.ExactArgs(2),
 	RunE:    commandForward,
 }
@@ -38,16 +39,21 @@ func commandForward(cmd *cobra.Command, args []string) error {
 	name := args[0]
 	port := args[1]
 
-	url, err := url.Parse(fmt.Sprintf("%s/inference/%s.%s", agentURL, name, namespace))
+	if _, err := agentClient.InferenceGet(cmd.Context(), namespace, name); err != nil {
+		cmd.PrintErrf("Failed to get inference: %s\n", errors.Cause(err))
+		return err
+	}
+
+	url, err := url.Parse(fmt.Sprintf("%s/inference/%s.%s", mdzURL, name, namespace))
 	if err != nil {
-		return errors.Newf("failed to parse url: %s", err.Error())
+		cmd.PrintErrf("Failed to parse URL: %s\n", errors.Cause(err))
+		return errors.Newf("failed to parse URL: %s\n", errors.Cause(err))
 	}
 	rp := httputil.NewSingleHostReverseProxy(url)
 
 	cmd.Printf("Forwarding inference %s to local port %s\n", name, port)
-	if debug {
-		cmd.Println(url)
-	}
+	logrus.WithField("url", url).Debugf(
+		"Forwarding inference %s to local port %s\n", name, port)
 	handler := func(p *httputil.ReverseProxy) func(http.ResponseWriter, *http.Request) {
 		return func(w http.ResponseWriter, r *http.Request) {
 			cmd.Printf("Handling connection for %s\n", port)
@@ -57,7 +63,8 @@ func commandForward(cmd *cobra.Command, args []string) error {
 	http.HandleFunc("/", handler(rp))
 	err = http.ListenAndServe(fmt.Sprintf(":%s", port), nil)
 	if err != nil {
-		return errors.Newf("failed to listen and serve: %s", err.Error())
+		cmd.PrintErrf("Failed to listen and serve: %s\n", errors.Cause(err))
+		return errors.Newf("failed to listen and serve: %s", errors.Cause(err))
 	}
 
 	return nil

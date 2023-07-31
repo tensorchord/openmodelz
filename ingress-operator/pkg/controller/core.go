@@ -174,7 +174,7 @@ func (c BaseController) HandleObject(obj interface{}) {
 
 		fni, err := c.FunctionsLister.InferenceIngresses(object.GetNamespace()).Get(ownerRef.Name)
 		if err != nil {
-			klog.Infof("FunctionIngress '%s' deleted. Ignoring orphaned object '%s'", ownerRef.Name, object.GetSelfLink())
+			klog.Infof("FunctionIngress '%s' deleted. Ignoring orphaned object '%s': %v", ownerRef.Name, object.GetSelfLink(), err)
 			return
 		}
 
@@ -248,21 +248,28 @@ func GetIssuerKind(issuerType string) string {
 	}
 }
 
-func MakeAnnotations(fni *faasv1.InferenceIngress) map[string]string {
+func MakeAnnotations(fni *faasv1.InferenceIngress, host string) map[string]string {
 	class := GetClass(fni.Spec.IngressType)
 	specJSON, _ := json.Marshal(fni)
 	annotations := make(map[string]string)
 
-	annotations["kubernetes.io/ingress.class"] = class
 	annotations["ai.tensorchord.spec"] = string(specJSON)
 
 	if !fni.Spec.BypassGateway {
 		switch class {
 		case "nginx":
-			annotations["nginx.ingress.kubernetes.io/use-regex"] = "true"
-			annotations["nginx.ingress.kubernetes.io/rewrite-target"] =
-				"/api/v1/" + fni.Spec.Framework + "/" + fni.Spec.Function + "/$1"
-			break
+			switch host {
+			// TODO: make this configurable
+			case "apiserver":
+				annotations["nginx.ingress.kubernetes.io/rewrite-target"] = "/api/v1/" + fni.Spec.Framework +
+					"/" + fni.Spec.Function + "/$1"
+				annotations["nginx.ingress.kubernetes.io/use-regex"] = "true"
+			default:
+				annotations["nginx.ingress.kubernetes.io/rewrite-target"] = "/inference/" + fni.Name + ".default" + "/$1"
+				annotations["nginx.ingress.kubernetes.io/ssl-redirect"] = "false"
+				annotations["nginx.ingress.kubernetes.io/use-regex"] = "true"
+			}
+
 		}
 	}
 

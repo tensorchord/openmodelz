@@ -17,13 +17,13 @@ var (
 // listInstanceCmd represents the list instance command
 var listInstanceCmd = &cobra.Command{
 	Use:   "instance",
-	Short: "List OpenModelz inference instances",
-	Long:  `Lists OpenModelZ inference instances`,
+	Short: "List all instances for the given deployment",
+	Long:  `List all instances for the given deployment`,
 	Example: `  mdz list instance bloomz-560m
   mdz list instance bloomz-560m -v
   mdz list instance bloomz-560m -q`,
 	Args:    cobra.ExactArgs(1),
-	PreRunE: getAgentClient,
+	PreRunE: commandInit,
 	RunE:    commandListInstance,
 }
 
@@ -37,13 +37,14 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	listInstanceCmd.Flags().BoolVarP(&listInstanceQuiet, "quiet", "q", false, "Quiet mode - print out only the inference instance names")
-	listInstanceCmd.Flags().BoolVarP(&listInstanceVerbose, "verbose", "v", false, "Verbose mode - print out all inference instance details")
+	listInstanceCmd.Flags().BoolVarP(&listInstanceQuiet, "quiet", "q", false, "Quiet mode - print out only the instance names")
+	listInstanceCmd.Flags().BoolVarP(&listInstanceVerbose, "verbose", "v", false, "Verbose mode - print out all instance details")
 }
 
 func commandListInstance(cmd *cobra.Command, args []string) error {
 	instances, err := agentClient.InstanceList(cmd.Context(), namespace, args[0])
 	if err != nil {
+		cmd.PrintErrf("Failed to list inference instances: %v\n", err)
 		return err
 	}
 
@@ -88,8 +89,6 @@ func commandListInstance(cmd *cobra.Command, args []string) error {
 		cmd.Println(t.Render())
 		return nil
 	}
-
-	return nil
 }
 
 type byInstanceName []types.InferenceDeploymentInstance

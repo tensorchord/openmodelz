@@ -12,7 +12,7 @@ var versionCmd = &cobra.Command{
 	Short:   "Print the client and agent version information",
 	Long:    `Print the client and server version information`,
 	Example: `  mdz version`,
-	PreRunE: getAgentClient,
+	PreRunE: commandInit,
 	RunE:    commandVersion,
 }
 
@@ -39,19 +39,20 @@ func commandVersion(cmd *cobra.Command, args []string) error {
 	cmd.Printf(" Compiler: \t%s\n", v.Compiler)
 	cmd.Printf(" Platform: \t%s\n", v.Platform)
 
-	if err := printAgentVersion(cmd); err != nil {
+	if err := printServerVersion(cmd); err != nil {
+		cmd.PrintErrf("Failed to get server version: %v\n", errors.Cause(err))
 		return err
 	}
 	return nil
 }
 
-func printAgentVersion(cmd *cobra.Command) error {
+func printServerVersion(cmd *cobra.Command) error {
 	info, err := agentClient.InfoGet(cmd.Context())
 	if err != nil {
-		return errors.Newf("failed to get agent info: %v", err)
+		return err
 	}
 
-	cmd.Println("Agent:")
+	cmd.Println("Server:")
 	cmd.Printf(" Name: \t\t%s\n", info.Name)
 	cmd.Printf(" Orchestration: %s\n", info.Orchestration)
 	cmd.Printf(" Version: \t%s\n", info.Version.Version)

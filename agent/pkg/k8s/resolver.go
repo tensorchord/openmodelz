@@ -12,6 +12,8 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/tensorchord/openmodelz/modelzetes/pkg/consts"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes"
 	corelister "k8s.io/client-go/listers/core/v1"
 	"k8s.io/client-go/rest"
 
@@ -23,9 +25,10 @@ type Resolver interface {
 	Close(url url.URL)
 }
 
-func NewPortForwardingResolver(cfg *rest.Config) Resolver {
+func NewPortForwardingResolver(cfg *rest.Config, cli kubernetes.Interface) Resolver {
 	return &PortForwardingResolver{
 		config:  cfg,
+		cli:     cli,
 		results: make(map[int]*forwarder.Result),
 	}
 }
@@ -38,6 +41,7 @@ func NewEndpointResolver(lister corelister.EndpointsLister) Resolver {
 
 type PortForwardingResolver struct {
 	config  *rest.Config
+	cli     kubernetes.Interface
 	results map[int]*forwarder.Result
 }
 
@@ -47,12 +51,20 @@ func (e *PortForwardingResolver) Resolve(namespace, name string) (url.URL, error
 		return url.URL{}, err
 	}
 
+	svc, err := e.cli.CoreV1().Services(namespace).Get(context.Background(), "mdz-"+name, metav1.GetOptions{})
+	if err != nil {
+		return url.URL{}, err
+	}
+	if svc.Spec.Ports == nil || len(svc.Spec.Ports) == 0 {
+		return url.URL{}, errdefs.System(fmt.Errorf("no ports found in service %s", svc.Name))
+	}
+
 	options := []*forwarder.Option{
 		{
 			// the local port for forwarding
 			LocalPort: port,
 			// the k8s pod port
-			RemotePort: 8080,
+			RemotePort: svc.Spec.Ports[0].TargetPort.IntValue(),
 			// the forwarding service name
 			ServiceName: "mdz-" + name,
 			// namespace default is "default"
