@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"io"
 	"os/exec"
+	"regexp"
 	"strings"
 	"syscall"
 
@@ -102,6 +103,12 @@ func (s *openModelZInstallStep) Verify() error {
 		return fmt.Errorf("cannot get the ingress ip: output is empty")
 	}
 
-	resultDomain = string(output)[2 : len(string(output))-2]
+	re := regexp.MustCompile(`(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}`)
+	found := re.MatchString(string(output))
+	if !found {
+		return fmt.Errorf("cannot get the ingress ip")
+	}
+
+	resultDomain = re.FindString(string(output))
 	return nil
 }
