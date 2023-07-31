@@ -119,6 +119,12 @@ func (e *Engine) Run() (*Result, error) {
 			MDZURL: fmt.Sprintf("http://%s", *e.options.Domain),
 		}, nil
 	}
+	// Get the server IP.
+	if resultDomain != "" {
+		return &Result{
+			MDZURL: fmt.Sprintf("http://%s", resultDomain),
+		}, nil
+	}
 	return &Result{
 		MDZURL: fmt.Sprintf("http://0.0.0.0:%d", AgentPort),
 	}, nil

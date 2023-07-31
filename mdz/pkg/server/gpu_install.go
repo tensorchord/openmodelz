@@ -41,6 +41,8 @@ func (s *gpuInstallStep) Run() error {
 	if _, err := io.WriteString(stdin, gpuYamlContent); err != nil {
 		return err
 	}
+	// Close the input stream to finish the pipe. Then the command will use the
+	// input from the pipe to start the next process.
 	stdin.Close()
 
 	if err := cmd.Wait(); err != nil {
