@@ -15,6 +15,8 @@ import (
 //go:embed openmodelz.yaml
 var yamlContent string
 
+var resultDomain string
+
 // openModelZInstallStep installs the OpenModelZ deployments.
 type openModelZInstallStep struct {
 	options Options
@@ -96,8 +98,10 @@ func (s *openModelZInstallStep) Verify() error {
 		return err
 	}
 	logrus.Debugf("kubectl get cmd output: %s\n", output)
-	if len(output) == 0 {
+	if len(output) <= 4 {
 		return fmt.Errorf("cannot get the ingress ip: output is empty")
 	}
+
+	resultDomain = string(output)[2 : len(string(output))-2]
 	return nil
 }
