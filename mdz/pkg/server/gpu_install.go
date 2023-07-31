@@ -4,7 +4,9 @@ import (
 	_ "embed"
 	"fmt"
 	"io"
+	"os"
 	"os/exec"
+	"path/filepath"
 	"syscall"
 )
 
@@ -16,7 +18,32 @@ type gpuInstallStep struct {
 	options Options
 }
 
+// check if the Nvidia Toolkit is installed on the host
+func (s *gpuInstallStep) hasNvidiaToolkit() bool {
+	locations := []string{
+		"/usr/local/nvidia/toolkit",
+		"/usr/bin",
+	}
+	binaryNames := []string{
+		"nvidia-container-runtime",
+		"nvidia-container-runtime-experimental",
+	}
+	for _, location := range locations {
+		for _, name := range binaryNames {
+			path := filepath.Join(location, name)
+			if _, err := os.Stat(path); err == nil {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 func (s *gpuInstallStep) Run() error {
+	if !s.hasNvidiaToolkit() {
+		fmt.Fprintf(s.options.OutputStream, "🚧 Nvidia Toolkit is missing, skip the GPU initialization.\n")
+		return nil
+	}
 	fmt.Fprintf(s.options.OutputStream, "🚧 Initializing the GPU resource...\n")
 
 	cmd := exec.Command("/bin/sh", "-c", "sudo k3s kubectl apply -f -")
