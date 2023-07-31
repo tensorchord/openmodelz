@@ -9,11 +9,13 @@ import (
 
 	"github.com/tensorchord/openmodelz/agent/pkg/consts"
 	"github.com/tensorchord/openmodelz/mdz/pkg/server"
+	"github.com/tensorchord/openmodelz/mdz/pkg/version"
 )
 
 var (
 	serverStartRuntime string
 	serverStartDomain  string = consts.Domain
+	serverStartVersion string
 )
 
 // serverStartCmd represents the server start command
@@ -40,6 +42,9 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// serverStartCmd.Flags().StringVarP(&serverStartRuntime, "runtime", "r", "k3s", "Runtime to use (k3s, docker) in the started server")
+	serverStartCmd.Flags().StringVarP(&serverStartVersion, "version", "",
+		version.HelmChartVersion, "Version of the server to start")
+	serverStartCmd.Flags().MarkHidden("version")
 }
 
 func commandServerStart(cmd *cobra.Command, args []string) error {
@@ -54,6 +59,7 @@ func commandServerStart(cmd *cobra.Command, args []string) error {
 		OutputStream:  cmd.ErrOrStderr(),
 		RetryInternal: serverPollingInterval,
 		Domain:        domain,
+		Version:       serverStartVersion,
 	})
 	if err != nil {
 		cmd.PrintErrf("Failed to start the server: %s\n", errors.Cause(err))
