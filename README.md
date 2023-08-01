@@ -58,7 +58,7 @@ Agent:
 🐳 The server is running at http://192.168.71.93.modelz.live
 🎉 You could set the environment variable to get started!
 
-export MDZ_AGENT=http://192.168.71.93.modelz.live
+export MDZ_URL=http://192.168.71.93.modelz.live
 ```
 
 The internal IP address will be used as the default endpoint of your deployments. You could provide the public IP address of your server to the `mdz server start` command to make it accessible from the outside world.
@@ -69,7 +69,7 @@ $ mdz server start 1.2.3.4
 ...
 🎉 You could set the environment variable to get started!
 
-export MDZ_AGENT=http://1.2.3.4.modelz.live
+export MDZ_URL=http://1.2.3.4.modelz.live
 ```
 
 ### Create your first deployment
