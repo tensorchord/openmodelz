@@ -9,13 +9,13 @@ Simplify machine learning deployment for any environment.
 <p align=center>
 <a href="https://discord.gg/KqswhpVgdU"><img alt="discord invitation link" src="https://dcbadge.vercel.app/api/server/KqswhpVgdU?style=flat"></a>
 <a href="https://twitter.com/TensorChord"><img src="https://img.shields.io/twitter/follow/tensorchord?style=social" alt="trackgit-views" /></a>
+<a href="https://docs.open.modelz.ai"><img src="https://img.shields.io/badge/docs.open.modelz.ai-455946.svg?style=socail&logo=googlechrome&logoColor=white" alt="docs" /></a>
 <a href="https://github.com/tensorchord/openmodelz#contributors-"><img alt="all-contributors" src="https://img.shields.io/github/all-contributors/tensorchord/openmodelz/main"></a>
-
 </p>
 
 OpenModelZ (MDZ) provides a simple CLI to deploy and manage your machine learning workloads on any cloud or home lab.
 
-## Why use OpenModelZ
+## Why use OpenModelZ 🙋
 
 OpenModelZ is the ideal solution for practitioners who want to quickly deploy their machine learning models to a (public or private) endpoint without the hassle of spending excessive time, money, and effort to figure out the entire end-to-end process.
 
@@ -28,6 +28,10 @@ We created OpenModelZ in response to the difficulties of finding a simple, cost-
 With OpenModelZ, we take care of the underlying technical details for you, and provide a simple and easy-to-use CLI to deploy your models to **any cloud (GCP, AWS, or others), your home lab, or even a single machine**.
 
 You could **start from a single machine and scale it up to a cluster of machines** without any hassle. OpenModelZ lies at the heart of our [ModelZ](https://modelz.ai), which is a serverless inference platform. It's used in production to deploy models for our customers.
+
+## Documentation 📝
+
+You can find the documentation at [docs.open.modelz.ai](https://docs.open.modelz.ai).
 
 ## Quick Start 🚀
 
@@ -151,10 +155,6 @@ You could label your servers to deploy your models to specific servers. For exam
 $ mdz server label node3 gpu=true type=nvidia-a100
 $ mdz deploy --image aikain/simplehttpserver:0.1 --name simple-server --port 80 --node-labels gpu=true,type=nvidia-a100
 ```
-
-## More on documentation 📝
-
-See [OpenModelZ documentation](https://docs.open.modelz.ai/).
 
 ## Roadmap 🗂️
 
