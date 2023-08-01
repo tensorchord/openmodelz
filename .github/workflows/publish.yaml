@@ -1,9 +1,8 @@
 name: release
 
 on:
-  push:
-    tags:
-      - 'v*'
+  release:
+    types: [published]
   pull_request:
     paths:
     - '.github/workflows/release.yml'
@@ -64,7 +63,7 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         mkdir -p mdz/bin
-        mv dist/mdz_linux_amd64_v1/mdz mdz/bin/mdz
+        mv dist/mdz mdz/bin/mdz
         chmod +x mdz/bin/mdz
     - name: Build wheels
       uses: pypa/cibuildwheel@v2.14.1
