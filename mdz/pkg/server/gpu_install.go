@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"syscall"
 )
 
@@ -39,10 +40,22 @@ func (s *gpuInstallStep) hasNvidiaToolkit() bool {
 	return false
 }
 
+func (s *gpuInstallStep) hasNvidiaDevice() bool {
+	output, err := exec.Command("/bin/sh", "-c", "lspci").Output()
+	if err != nil {
+		return false
+	}
+	regexNvidia := regexp.MustCompile("(?i)nvidia")
+	return regexNvidia.Match(output)
+}
+
 func (s *gpuInstallStep) Run() error {
-	if !s.hasNvidiaToolkit() {
-		fmt.Fprintf(s.options.OutputStream, "🚧 Nvidia Toolkit is missing, skip the GPU initialization.\n")
-		return nil
+	if !s.options.ForceGPU {
+		// detect GPU
+		if !(s.hasNvidiaDevice() || s.hasNvidiaToolkit()) {
+			fmt.Fprintf(s.options.OutputStream, "🚧 Nvidia Toolkit is missing, skip the GPU initialization.\n")
+			return nil
+		}
 	}
 	fmt.Fprintf(s.options.OutputStream, "🚧 Initializing the GPU resource...\n")
 

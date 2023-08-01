@@ -18,6 +18,7 @@ type Options struct {
 	ServerIP      string
 	Domain        *string
 	Version       string
+	ForceGPU      bool
 }
 
 type Runtime string
