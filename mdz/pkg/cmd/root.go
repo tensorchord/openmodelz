@@ -76,8 +76,8 @@ func commandInit(cmd *cobra.Command, args []string) error {
 
 	if agentClient == nil {
 		if mdzURL == "" {
-			// Checkout environment variable MDZ_AGENT.
-			mdzURL = os.Getenv("MDZ_AGENT")
+			// Checkout environment variable MDZ_URL.
+			mdzURL = os.Getenv("MDZ_URL")
 		}
 		if mdzURL == "" {
 			mdzURL = "http://localhost:80"

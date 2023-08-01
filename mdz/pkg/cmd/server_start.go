@@ -89,6 +89,6 @@ func commandServerStart(cmd *cobra.Command, args []string) error {
 	}
 	cmd.Printf("🐳 The server is running at %s\n", mdzURL)
 	cmd.Printf("🎉 You could set the environment variable to get started!\n\n")
-	cmd.Printf("export MDZ_AGENT=%s\n", mdzURL)
+	cmd.Printf("export MDZ_URL=%s\n", mdzURL)
 	return nil
 }
