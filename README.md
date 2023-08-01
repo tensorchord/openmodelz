@@ -35,9 +35,21 @@ You can find the documentation at [docs.open.modelz.ai](https://docs.open.modelz
 
 ## Quick Start 🚀
 
-Once you've installed the `mdz` you can start deploying models and experimenting with them.
+### Install `mdz`
 
-There are only two concepts in `mdz`:
+You can install OpenModelZ using the following command:
+
+```text
+pip install openmodelz
+```
+
+You could verify the installation by running the following command:
+
+```text
+mdz
+```
+
+Once you've installed the `mdz` you can start deploying models and experimenting with them. There are only two concepts in `mdz`:
 
 - **Deployment**: A deployment is a running inference service. You could configure the number of replicas, the port, and the image, and some other parameters.
 - **Server**: A server is a machine that could run the deployments. It could be a cloud VM, a PC, or even a Raspberry Pi. You could start from a single server and scale it up to a cluster of machines without any hassle.
