@@ -138,8 +138,19 @@ swag-install:
 
 build-local:
 	@for target in $(TARGETS); do                                                      \
-	  CGO_ENABLED=$(CGO_ENABLED) GOOS=$(GOOS) GOARCH=$(GOARCH) go build -tags $(DASHBOARD_BUILD)  -trimpath -v -o $(OUTPUT_DIR)/$${target}     \
+	  CGO_ENABLED=$(CGO_ENABLED) GOOS=$(GOOS) GOARCH=$(GOARCH) go build -trimpath -v -o $(OUTPUT_DIR)/$${target}     \
 	    -ldflags "-s -w -X $(ROOT)/pkg/version.version=$(VERSION) -X $(ROOT)/pkg/version.buildDate=$(BUILD_DATE) -X $(ROOT)/pkg/version.gitCommit=$(GIT_COMMIT) -X $(ROOT)/pkg/version.gitTreeState=$(GIT_TREE_STATE)"                     \
+	    $(CMD_DIR)/$${target};                                                         \
+	done
+
+build-release:
+	@for target in $(TARGETS); do                                                      \
+	  CGO_ENABLED=$(CGO_ENABLED) go build -trimpath -o $(OUTPUT_DIR)/$${target}     \
+	    -ldflags "-s -w -X $(ROOT)/pkg/version.version=$(VERSION) \
+		-X $(ROOT)/pkg/version.buildDate=$(BUILD_DATE) \
+		-X $(ROOT)/pkg/version.gitCommit=$(GIT_COMMIT) \
+		-X $(ROOT)/pkg/version.gitTreeState=$(GIT_TREE_STATE)                     \
+		-X $(ROOT)/pkg/version.gitTag=$(GIT_TAG)" \
 	    $(CMD_DIR)/$${target};                                                         \
 	done
 

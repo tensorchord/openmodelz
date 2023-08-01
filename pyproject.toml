@@ -1,0 +1,51 @@
+[project]
+name = "openmodelz"
+description = "Simplify machine learning deployment for any environments."
+readme = "README.md"
+authors = [
+    {name = "TensorChord", email = "modelz@tensorchord.ai"},
+]
+license = {text = "Apache-2.0"}
+keywords = ["machine learning", "deep learning", "model serving"]
+dynamic = ["version"]
+requires-python = ">=2.7"
+classifiers = [
+    "Environment :: GPU",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 2",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Build Tools",
+]
+
+[project.urls]
+homepage = "https://modelz.ai/"
+documentation = "https://docs.open.modelz.ai/"
+repository = "https://github.com/tensorchord/openmodelz"
+changelog = "https://github.com/tensorchord/openmodelz/releases"
+
+[tool.cibuildwheel]
+build-frontend = "build"
+archs = ["auto64"]
+skip = "pp*" # skip pypy
+before-all = ""
+environment = { PIP_NO_CLEAN="yes" }
+before-build = "ls -la mdz/bin" # help to debug
+
+[project.optional-dependencies]
+
+[project.scripts]
+
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+write_to = "mdz/_version.py"
