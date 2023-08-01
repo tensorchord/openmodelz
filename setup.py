@@ -7,6 +7,9 @@ from setuptools.command.build_ext import build_ext
 from setuptools_scm import get_version
 
 
+with open("README.md", "r", encoding="utf-8") as f:
+    readme = f.read()
+
 class bdist_wheel_universal(bdist_wheel):
     def get_tag(self):
         *_, plat = super().get_tag()
@@ -40,6 +43,13 @@ class ModelzBuildExt(build_ext):
 setup(
     name="openmodelz",
     use_scm_version=True,
+    description="Simplify machine learning deployment for any environments.",
+    long_description=readme,
+    long_description_content_type="text/markdown",
+    url="https://github.com/tensorchord/openmodelz",
+    license="Apache License 2.0",
+    author="TensorChord",
+    author_email="modelz@tensorchord.ai",
     packages=find_packages("mdz"),
     include_package_data=True,
     data_files=[("bin", ["mdz/bin/mdz"])],
