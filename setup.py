@@ -49,7 +49,6 @@ setup(
     ],
     cmdclass=dict(
         build_ext=ModelzBuildExt,
-        # sdist=SdistCommand,
         bdist_wheel=bdist_wheel_universal,
     ),
 )
