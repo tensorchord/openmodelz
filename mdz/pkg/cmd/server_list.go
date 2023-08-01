@@ -105,8 +105,8 @@ func labelsString(labels map[string]string) string {
 
 func resourceListString(l types.ResourceList) string {
 	res := fmt.Sprintf("cpu: %s\nmem: %s", l["cpu"], l["memory"])
-	if l["nvidia.com/gpu"] != "" {
-		res += fmt.Sprintf("\ngpu: %s", l["nvidia.com/gpu"])
+	if l[types.ResourceGPU] != "" {
+		res += fmt.Sprintf("\ngpu: %s", l[types.ResourceGPU])
 	}
 	return res
 }
