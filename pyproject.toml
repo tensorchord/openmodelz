@@ -37,7 +37,7 @@ archs = ["auto64"]
 skip = "pp*" # skip pypy
 before-all = ""
 environment = { PIP_NO_CLEAN="yes" }
-before-build = "ls -la mdz/bin" # help to debug what happened to the setuptools_scm (file changes)
+before-build = "ls -la mdz/bin" # help to debug
 
 [project.optional-dependencies]
 
