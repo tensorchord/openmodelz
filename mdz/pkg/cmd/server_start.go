@@ -16,6 +16,7 @@ var (
 	serverStartRuntime string
 	serverStartDomain  string = consts.Domain
 	serverStartVersion string
+	serverStartWithGPU bool
 )
 
 // serverStartCmd represents the server start command
@@ -45,6 +46,8 @@ func init() {
 	serverStartCmd.Flags().StringVarP(&serverStartVersion, "version", "",
 		version.HelmChartVersion, "Version of the server to start")
 	serverStartCmd.Flags().MarkHidden("version")
+	serverStartCmd.Flags().BoolVarP(&serverStartWithGPU, "force-gpu", "g",
+		false, "Start the server with GPU support (ignore the GPU detection)")
 }
 
 func commandServerStart(cmd *cobra.Command, args []string) error {
@@ -60,6 +63,7 @@ func commandServerStart(cmd *cobra.Command, args []string) error {
 		RetryInternal: serverPollingInterval,
 		Domain:        domain,
 		Version:       serverStartVersion,
+		ForceGPU:      serverStartWithGPU,
 	})
 	if err != nil {
 		cmd.PrintErrf("Failed to start the server: %s\n", errors.Cause(err))
