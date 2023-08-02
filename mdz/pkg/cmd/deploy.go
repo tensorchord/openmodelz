@@ -20,6 +20,7 @@ var (
 	deployName        string
 	deployGPU         int
 	deployNodeLabel   []string
+	deployCommand     string
 )
 
 // deployCmd represents the deploy command
@@ -53,6 +54,7 @@ func init() {
 	deployCmd.Flags().IntVar(&deployGPU, "gpu", 0, "Number of GPUs")
 	deployCmd.Flags().StringVar(&deployName, "name", "", "Name of inference")
 	deployCmd.Flags().StringSliceVarP(&deployNodeLabel, "node-labels", "l", []string{}, "Node labels")
+	deployCmd.Flags().StringVar(&deployCommand, "command", "", "Command to run")
 }
 
 func commandDeploy(cmd *cobra.Command, args []string) error {
@@ -85,6 +87,10 @@ func commandDeploy(cmd *cobra.Command, args []string) error {
 			},
 			Port: int32Ptr(deployPort),
 		},
+	}
+
+	if deployCommand != "" {
+		inf.Spec.Command = &deployCommand
 	}
 
 	if len(deployNodeLabel) > 0 {
