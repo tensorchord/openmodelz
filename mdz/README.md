@@ -13,7 +13,9 @@ CLI for OpenModelZ.
 
 ## Installation
 
-TODO
+```
+pip install openmodelz
+```
 
 ## CLI Reference
 
