@@ -100,6 +100,9 @@ func labelsString(labels map[string]string) string {
 	for k, v := range labels {
 		res += fmt.Sprintf("%s=%s\n", k, v)
 	}
+	if len(res) == 0 {
+		return res
+	}
 	return res[:len(res)-1]
 }
 
