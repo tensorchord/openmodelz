@@ -28,6 +28,10 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
+	serverJoinCmd.Flags().StringVarP(&serverRegistryMirrorName, "mirror-name", "",
+		"", "Mirror name of the registry")
+	serverJoinCmd.Flags().StringArrayVarP(&serverRegistryMirrorEndpoints, "mirror-endpoints", "",
+		[]string{}, "Mirror endpoints of the registry")
 }
 
 func commandServerJoin(cmd *cobra.Command, args []string) error {
@@ -36,6 +40,10 @@ func commandServerJoin(cmd *cobra.Command, args []string) error {
 		OutputStream:  cmd.ErrOrStderr(),
 		RetryInternal: serverPollingInterval,
 		ServerIP:      args[0],
+		Mirror: server.Mirror{
+			Name:      serverRegistryMirrorName,
+			Endpoints: serverRegistryMirrorEndpoints,
+		},
 	})
 	if err != nil {
 		cmd.PrintErrf("Failed to join the cluster: %s\n", errors.Cause(err))

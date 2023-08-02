@@ -14,11 +14,21 @@ type Options struct {
 	Verbose       bool
 	OutputStream  io.Writer
 	Runtime       Runtime
+	Mirror        Mirror
 	RetryInternal time.Duration
 	ServerIP      string
 	Domain        *string
 	Version       string
 	ForceGPU      bool
+}
+
+type Mirror struct {
+	Name      string
+	Endpoints []string
+}
+
+func (m *Mirror) Configured() bool {
+	return m.Name != "" && len(m.Endpoints) > 0
 }
 
 type Runtime string
@@ -38,6 +48,9 @@ type Result struct {
 }
 
 func NewStart(o Options) (*Engine, error) {
+	if o.Verbose {
+		fmt.Fprintf(o.OutputStream, "Starting the server with config: %+v\n", o)
+	}
 	var engine *Engine
 	switch o.Runtime {
 	case RuntimeDocker:
@@ -54,6 +67,9 @@ func NewStart(o Options) (*Engine, error) {
 			options: o,
 			Steps: []Step{
 				// Install k3s and related tools.
+				&k3sPrepare{
+					options: o,
+				},
 				&k3sInstallStep{
 					options: o,
 				},

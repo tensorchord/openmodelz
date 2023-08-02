@@ -7,8 +7,10 @@ import (
 )
 
 var (
-	serverVerbose         bool
-	serverPollingInterval time.Duration = 3 * time.Second
+	serverVerbose                 bool
+	serverPollingInterval         time.Duration = 3 * time.Second
+	serverRegistryMirrorName      string
+	serverRegistryMirrorEndpoints []string
 )
 
 // serverCmd represents the server command
