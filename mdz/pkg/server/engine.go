@@ -100,6 +100,18 @@ func NewStop(o Options) (*Engine, error) {
 	}, nil
 }
 
+func NewDestroy(o Options) (*Engine, error) {
+	return &Engine{
+		options: o,
+		Steps: []Step{
+			// Destroy all k3s and related tools.
+			&k3sDestroyAllStep{
+				options: o,
+			},
+		},
+	}, nil
+}
+
 func NewJoin(o Options) (*Engine, error) {
 	return &Engine{
 		options: o,
