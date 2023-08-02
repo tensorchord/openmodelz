@@ -48,6 +48,10 @@ func init() {
 	serverStartCmd.Flags().MarkHidden("version")
 	serverStartCmd.Flags().BoolVarP(&serverStartWithGPU, "force-gpu", "g",
 		false, "Start the server with GPU support (ignore the GPU detection)")
+	serverStartCmd.Flags().StringVarP(&serverRegistryMirrorName, "mirror-name", "",
+		"", "Mirror name of the registry")
+	serverStartCmd.Flags().StringArrayVarP(&serverRegistryMirrorEndpoints, "mirror-endpoints", "",
+		[]string{}, "Mirror endpoints of the registry")
 }
 
 func commandServerStart(cmd *cobra.Command, args []string) error {
@@ -64,6 +68,10 @@ func commandServerStart(cmd *cobra.Command, args []string) error {
 		Domain:        domain,
 		Version:       serverStartVersion,
 		ForceGPU:      serverStartWithGPU,
+		Mirror: server.Mirror{
+			Name:      serverRegistryMirrorName,
+			Endpoints: serverRegistryMirrorEndpoints,
+		},
 	})
 	if err != nil {
 		cmd.PrintErrf("Failed to start the server: %s\n", errors.Cause(err))
