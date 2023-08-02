@@ -7,6 +7,7 @@ import (
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/spf13/cobra"
 	"github.com/tensorchord/openmodelz/agent/api/types"
+	"github.com/tensorchord/openmodelz/mdz/pkg/telemetry"
 )
 
 var (
@@ -40,6 +41,7 @@ func init() {
 }
 
 func commandServerList(cmd *cobra.Command, args []string) error {
+	telemetry.GetTelemetry().Record("server list")
 	servers, err := agentClient.ServerList(cmd.Context())
 	if err != nil {
 		cmd.PrintErrf("Failed to list servers: %s\n", errors.Cause(err))

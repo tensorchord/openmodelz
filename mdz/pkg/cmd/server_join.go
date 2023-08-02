@@ -5,6 +5,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/tensorchord/openmodelz/mdz/pkg/server"
+	"github.com/tensorchord/openmodelz/mdz/pkg/telemetry"
 )
 
 // serverJoinCmd represents the server join command
@@ -46,9 +47,11 @@ func commandServerJoin(cmd *cobra.Command, args []string) error {
 		},
 	})
 	if err != nil {
-		cmd.PrintErrf("Failed to join the cluster: %s\n", errors.Cause(err))
+		cmd.PrintErrf("Failed to configure before join: %s\n", errors.Cause(err))
 		return err
 	}
+
+	telemetry.GetTelemetry().Record("server join")
 
 	_, err = engine.Run()
 	if err != nil {

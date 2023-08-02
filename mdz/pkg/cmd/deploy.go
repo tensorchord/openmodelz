@@ -9,6 +9,7 @@ import (
 	petname "github.com/dustinkirkland/golang-petname"
 	"github.com/spf13/cobra"
 	"github.com/tensorchord/openmodelz/agent/api/types"
+	"github.com/tensorchord/openmodelz/mdz/pkg/telemetry"
 )
 
 var (
@@ -109,6 +110,12 @@ func commandDeploy(cmd *cobra.Command, args []string) error {
 			},
 		}
 	}
+
+	telemetry.GetTelemetry().Record(
+		"deploy",
+		telemetry.AddField("GPU", deployGPU),
+		telemetry.AddField("FromZero", deployMinReplicas == 0),
+	)
 
 	if _, err := agentClient.InferenceCreate(
 		cmd.Context(), namespace, inf); err != nil {

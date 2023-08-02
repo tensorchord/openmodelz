@@ -44,7 +44,7 @@ var (
 	developmentFlag = "false"
 )
 
-// Version contains envd version information
+// Version contains OpenModelz version information
 type Version struct {
 	Version      string
 	BuildDate    string
@@ -65,8 +65,8 @@ func SetGitTagForE2ETest(tag string) {
 	gitTag = tag
 }
 
-// GetEnvdVersion gets Envd version information
-func GetEnvdVersion() string {
+// GetOpenModelzVersion gets OpenModelz version information
+func GetOpenModelzVersion() string {
 	var versionStr string
 
 	if gitCommit != "" && gitTag != "" &&
@@ -97,7 +97,7 @@ func GetEnvdVersion() string {
 // GetVersion returns the version information
 func GetVersion() Version {
 	return Version{
-		Version:      GetEnvdVersion(),
+		Version:      GetOpenModelzVersion(),
 		BuildDate:    buildDate,
 		GitCommit:    gitCommit,
 		GitTag:       gitTag,
@@ -128,5 +128,5 @@ func UserAgent() string {
 		version = matches[0][1] + "-dev"
 	}
 
-	return "envd/" + version
+	return "modelz/" + version
 }
