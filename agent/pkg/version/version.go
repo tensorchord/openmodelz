@@ -63,8 +63,8 @@ func SetGitTagForE2ETest(tag string) {
 	gitTag = tag
 }
 
-// GetEnvdVersion gets Envd version information
-func GetEnvdVersion() string {
+// GetAgentVersion gets Envd version information
+func GetAgentVersion() string {
 	var versionStr string
 
 	if gitCommit != "" && gitTag != "" &&
@@ -95,7 +95,7 @@ func GetEnvdVersion() string {
 // GetVersion returns the version information
 func GetVersion() Version {
 	return Version{
-		Version:      GetEnvdVersion(),
+		Version:      GetAgentVersion(),
 		BuildDate:    buildDate,
 		GitCommit:    gitCommit,
 		GitTag:       gitTag,
