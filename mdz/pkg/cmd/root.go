@@ -9,13 +9,15 @@ import (
 	"github.com/spf13/cobra/doc"
 
 	"github.com/tensorchord/openmodelz/agent/client"
+	"github.com/tensorchord/openmodelz/mdz/pkg/telemetry"
 )
 
 var (
 	// Used for flags.
-	mdzURL    string
-	namespace string
-	debug     bool
+	mdzURL           string
+	namespace        string
+	debug            bool
+	disableTelemetry bool
 
 	agentClient *client.Client
 )
@@ -62,6 +64,8 @@ func init() {
 
 	rootCmd.PersistentFlags().BoolVarP(&debug, "debug", "", false, "Enable debug logging")
 
+	rootCmd.PersistentFlags().BoolVarP(&disableTelemetry, "disable-telemetry", "", false, "Disable anonymous telemetry")
+
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.AddGroup(&cobra.Group{ID: "basic", Title: "Basic Commands:"})
@@ -88,6 +92,10 @@ func commandInit(cmd *cobra.Command, args []string) error {
 			cmd.PrintErrf("Failed to connect to agent: %s\n", errors.Cause(err))
 			return err
 		}
+	}
+
+	if err := telemetry.Initialize(!disableTelemetry); err != nil {
+		logrus.WithError(err).Debug("Failed to initialize telemetry")
 	}
 	return nil
 }

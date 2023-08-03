@@ -9,6 +9,7 @@ import (
 
 	"github.com/tensorchord/openmodelz/agent/pkg/consts"
 	"github.com/tensorchord/openmodelz/mdz/pkg/server"
+	"github.com/tensorchord/openmodelz/mdz/pkg/telemetry"
 	"github.com/tensorchord/openmodelz/mdz/pkg/version"
 )
 
@@ -60,6 +61,12 @@ func commandServerStart(cmd *cobra.Command, args []string) error {
 		domainWithSuffix := fmt.Sprintf("%s.%s", args[0], serverStartDomain)
 		domain = &domainWithSuffix
 	}
+	defer func(start time.Time) {
+		telemetry.GetTelemetry().Record(
+			"server start",
+			telemetry.AddField("duration", time.Since(start).Seconds()),
+		)
+	}(time.Now())
 	engine, err := server.NewStart(server.Options{
 		Verbose:       serverVerbose,
 		Runtime:       server.Runtime(serverStartRuntime),

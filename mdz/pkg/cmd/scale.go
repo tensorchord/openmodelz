@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
+	"github.com/tensorchord/openmodelz/mdz/pkg/telemetry"
 )
 
 var (
@@ -72,6 +73,8 @@ func commandScale(cmd *cobra.Command, args []string) error {
 	if targetInflightRequests != 0 {
 		deployment.Spec.Scaling.TargetLoad = int32Ptr(targetInflightRequests)
 	}
+
+	telemetry.GetTelemetry().Record("scale")
 
 	if _, err := agentClient.DeploymentUpdate(cmd.Context(), namespace, deployment); err != nil {
 		cmd.PrintErrf("Failed to update deployment: %s\n", err)
