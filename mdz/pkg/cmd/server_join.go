@@ -30,9 +30,9 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	serverJoinCmd.Flags().StringVarP(&serverRegistryMirrorName, "mirror-name", "",
-		"", "Mirror name of the registry")
+		"docker.io", "Mirror domain name of the registry")
 	serverJoinCmd.Flags().StringArrayVarP(&serverRegistryMirrorEndpoints, "mirror-endpoints", "",
-		[]string{}, "Mirror endpoints of the registry")
+		[]string{}, "Mirror URL endpoints of the registry like `https://quay.io`")
 }
 
 func commandServerJoin(cmd *cobra.Command, args []string) error {

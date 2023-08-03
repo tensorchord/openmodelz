@@ -50,9 +50,9 @@ func init() {
 	serverStartCmd.Flags().BoolVarP(&serverStartWithGPU, "force-gpu", "g",
 		false, "Start the server with GPU support (ignore the GPU detection)")
 	serverStartCmd.Flags().StringVarP(&serverRegistryMirrorName, "mirror-name", "",
-		"", "Mirror name of the registry")
+		"docker.io", "Mirror domain name of the registry")
 	serverStartCmd.Flags().StringArrayVarP(&serverRegistryMirrorEndpoints, "mirror-endpoints", "",
-		[]string{}, "Mirror endpoints of the registry")
+		[]string{}, "Mirror URL endpoints of the registry like `https://quay.io`")
 }
 
 func commandServerStart(cmd *cobra.Command, args []string) error {
