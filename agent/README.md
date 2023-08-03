@@ -1,8 +1,20 @@
+<div align="center">
+
 # OpenModelZ Agent
 
-TODO:
+</div>
 
-- Make resolver optional
-- proxy with use case
-- mdz init
-- ai lab
+<p align=center>
+<a href="https://discord.gg/KqswhpVgdU"><img alt="discord invitation link" src="https://dcbadge.vercel.app/api/server/KqswhpVgdU?style=flat"></a>
+<a href="https://twitter.com/TensorChord"><img src="https://img.shields.io/twitter/follow/tensorchord?style=social" alt="trackgit-views" /></a>
+</p>
+
+## Installation
+
+```
+pip install openmodelz
+```
+
+## Architecture
+
+Please check out [Architecture](https://docs.open.modelz.ai/architecture) documentation.
