@@ -53,8 +53,6 @@ func printServerVersion(cmd *cobra.Command) error {
 	}
 
 	cmd.Println("Server:")
-	cmd.Printf(" Name: \t\t%s\n", info.Name)
-	cmd.Printf(" Orchestration: %s\n", info.Orchestration)
 	cmd.Printf(" Version: \t%s\n", info.Version.Version)
 	cmd.Printf(" Build Date: \t%s\n", info.Version.BuildDate)
 	cmd.Printf(" Git Commit: \t%s\n", info.Version.GitCommit)
