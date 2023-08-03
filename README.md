@@ -39,32 +39,32 @@ You can find the documentation at [docs.open.modelz.ai](https://docs.open.modelz
 
 You can install OpenModelZ using the following command:
 
-```text
+```text copy
 pip install openmodelz
 ```
 
 You could verify the installation by running the following command:
 
-```text
+```text copy
 mdz
 ```
 
-Once you've installed the `mdz` you can start deploying models and experimenting with them. There are only two concepts in `mdz`:
-
-- **Deployment**: A deployment is a running inference service. You could configure the number of replicas, the port, and the image, and some other parameters.
-- **Server**: A server is a machine that could run the deployments. It could be a cloud VM, a PC, or even a Raspberry Pi. You could start from a single server and scale it up to a cluster of machines without any hassle.
+Once you've installed the `mdz` you can start deploying models and experimenting with them.
 
 ### Bootstrap `mdz`
 
-It's super easy to bootstrap the `mdz` server. You just need to find a server (could be a cloud VM, a home lab, or even a single machine) and run the `mdz server start` command. The `mdz` server will be bootstrapped on the server and you could start deploying your models.
+It's super easy to bootstrap the `mdz` server. You just need to find a server (could be a cloud VM, a home lab, or even a single machine) and run the `mdz server start` command. The `mdz` server will be bootstrapped on the server as a controller node and you could start deploying your models.
 
 ```
 $ mdz server start
+🚧 Creating the server...
+🚧 Initializing the load balancer...
+🚧 Initializing the GPU resource...
 🚧 Initializing the server...
 🚧 Waiting for the server to be ready...
 🐋 Checking if the server is running...
 Agent:
- Version:       v0.0.5
+ Version:       v0.0.13
  Build Date:    2023-07-19T09:12:55Z
  Git Commit:    84d0171640453e9272f78a63e621392e93ef6bbb
  Git State:     clean
@@ -82,10 +82,12 @@ The internal IP address will be used as the default endpoint of your deployments
 ```bash
 # Provide the public IP as an argument
 $ mdz server start 1.2.3.4
-...
-🎉 You could set the environment variable to get started!
+```
 
-export MDZ_URL=http://1.2.3.4.modelz.live
+You could also specify the registry mirror to speed up the image pulling process. Here is an example:
+
+```bash
+$ mdz server start --mirror-endpoints https://docker.mirrors.sjtug.sjtu.edu.cn
 ```
 
 ### Create your first deployment
