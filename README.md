@@ -2,8 +2,7 @@
 
 # OpenModelZ
 
-Simplify machine learning deployment for any environment.
-
+One-click machine learning deployment at scale on any cluster (GCP, AWS, Lambda labs, your home lab, or even a single machine)
 </div>
 
 <p align=center>
@@ -13,9 +12,7 @@ Simplify machine learning deployment for any environment.
 <a href="https://github.com/tensorchord/openmodelz#contributors-"><img alt="all-contributors" src="https://img.shields.io/github/all-contributors/tensorchord/openmodelz/main"></a>
 </p>
 
-OpenModelZ (MDZ) provides a simple CLI to deploy and manage your machine learning workloads on any cloud or home lab.
-
-## Why use OpenModelZ 🙋
+## Why use OpenModelZ
 
 OpenModelZ is the ideal solution for practitioners who want to quickly deploy their machine learning models to a (public or private) endpoint without the hassle of spending excessive time, money, and effort to figure out the entire end-to-end process.
 
@@ -27,11 +24,9 @@ We created OpenModelZ in response to the difficulties of finding a simple, cost-
 
 With OpenModelZ, we take care of the underlying technical details for you, and provide a simple and easy-to-use CLI to deploy your models to **any cloud (GCP, AWS, or others), your home lab, or even a single machine**.
 
-You could **start from a single machine and scale it up to a cluster of machines** without any hassle. OpenModelZ lies at the heart of our [ModelZ](https://modelz.ai), which is a serverless inference platform. It's used in production to deploy models for our customers.
+You could **start from a single machine and scale it up to a cluster of machines** without any hassle. Besides this, We **provision a separate subdomain for each deployment** without any extra cost and effort, making each deployment easily accessible from the outside.
 
-## Documentation 📝
-
-You can find the documentation at [docs.open.modelz.ai](https://docs.open.modelz.ai).
+OpenModelZ forms the core of our [ModelZ](https://modelz.ai) platform, which is a serverless machine learning inference service. It is utilized in a production environment to provision models for our clients.
 
 ## Quick Start 🚀
 
@@ -86,40 +81,63 @@ $ mdz server start 1.2.3.4
 
 You could also specify the registry mirror to speed up the image pulling process. Here is an example:
 
-```bash
+```bash /--mirror-endpoints/
 $ mdz server start --mirror-endpoints https://docker.mirrors.sjtug.sjtu.edu.cn
 ```
 
-### Create your first deployment
+### Create your first UI-based deployment
 
-Once you've bootstrapped the `mdz` server, you can start deploying your first applications.
+Once you've bootstrapped the `mdz` server, you can start deploying your first applications. We will use jupyter notebook as an example in this tutorial. You could use any docker image as your deployment.
 
+```text
+$ mdz deploy --image jupyter/minimal-notebook:lab-4.0.3 --name jupyter --port 8888 --command "jupyter notebook --ip='*' --NotebookApp.token='' --NotebookApp.password=''"
+Inference jupyter is created
+$ mdz list
+ NAME     ENDPOINT                                                   STATUS  INVOCATIONS  REPLICAS
+ jupyter  http://jupyter-9pnxdkeb6jsfqkmq.192.168.71.93.modelz.live  Ready           488  1/1
+          http://192.168.71.93/inference/jupyter.default                                                                         
 ```
-$ mdz deploy --image aikain/simplehttpserver:0.1 --name simple-server --port 80
+
+You could access the deployment by visiting the endpoint URL. The endpoint will be automatically generated for each deployment with the following format: `<name>-<random-string>.<ip>.modelz.live`.
+
+It is `http://jupyter-9pnxdkeb6jsfqkmq.192.168.71.93.modelz.live` in this case. The endpoint could be accessed from the outside world as well if you've provided the public IP address of your server to the `mdz server start` command. 
+
+![jupyter notebook](./images/jupyter.png)
+
+### Create your first API-based deployment
+
+You could also create API-based deployments. We will use a simple python server as an example in this tutorial. You could use any docker image as your deployment.
+
+```text
+$ mdz deploy --image python:3.9.6-slim-buster --name simple-server --port 8080 --command "python -m http.server 8080"
 Inference simple-server is created
 $ mdz list
- NAME           ENDPOINT                                                          STATUS  INVOCATIONS  REPLICAS 
- simple-server  http://simple-server-4k2epq5lynxbaayn.192.168.71.93.modelz.live   Ready             2  1/1      
-                http://192.168.71.93.modelz.live/inference/simple-server.default                                                           
+ NAME           ENDPOINT                                                         STATUS  INVOCATIONS  REPLICAS 
+ jupyter        http://jupyter-9pnxdkeb6jsfqkmq.192.168.71.93.modelz.live        Ready           488  1/1      
+                http://192.168.71.93/inference/jupyter.default                                                 
+ simple-server  http://simple-server-lagn8m9m8648q6kx.192.168.71.93.modelz.live  Ready             0  1/1      
+                http://192.168.71.93/inference/simple-server.default                                           
+$ curl http://simple-server-lagn8m9m8648q6kx.192.168.71.93.modelz.live
+...
 ```
-
-You could access the deployment by visiting the endpoint URL. It will be `http://simple-server-4k2epq5lynxbaayn.192.168.71.93.modelz.live` in this case. The endpoint could be accessed from the outside world as well if you've provided the public IP address of your server to the `mdz server start` command.
 
 ### Scale your deployment
 
 You could scale your deployment by using the `mdz scale` command.
 
-```bash
+```text /scale/
 $ mdz scale simple-server --replicas 3
 ```
 
-The requests will be load balanced between the replicas of your deployment.
+The requests will be load balanced between the replicas of your deployment. 
+
+You could also tell the `mdz` to **autoscale your deployment** based on the inflight requests. Please check out the [Autoscaling](https://docs.open.modelz.ai/deployment/autoscale) documentation for more details.
 
 ### Debug your deployment
 
 Sometimes you may want to debug your deployment. You could use the `mdz logs` command to get the logs of your deployment.
 
-```bash
+```text /logs/
 $ mdz logs simple-server
 simple-server-6756dd67ff-4bf4g: 10.42.0.1 - - [27/Jul/2023 02:32:16] "GET / HTTP/1.1" 200 -
 simple-server-6756dd67ff-4bf4g: 10.42.0.1 - - [27/Jul/2023 02:32:16] "GET / HTTP/1.1" 200 -
@@ -128,22 +146,23 @@ simple-server-6756dd67ff-4bf4g: 10.42.0.1 - - [27/Jul/2023 02:32:17] "GET / HTTP
 
 You could also use the `mdz exec` command to execute a command in the container of your deployment. You do not need to ssh into the server to do that.
 
-```
+```text /exec/
 $ mdz exec simple-server ps
 PID   USER     TIME   COMMAND
     1 root       0:00 /usr/bin/dumb-init /bin/sh -c python3 -m http.server 80
     7 root       0:00 /bin/sh -c python3 -m http.server 80
     8 root       0:00 python3 -m http.server 80
     9 root       0:00 ps
+```
+
+```text /exec/
 $ mdz exec simple-server -ti bash
-bash-4.4# uname -r
-5.19.0-46-generic
 bash-4.4# 
 ```
 
 Or you could port-forward the deployment to your local machine and debug it locally.
 
-```
+```text /port-forward/
 $ mdz port-forward simple-server 7860
 Forwarding inference simple-server to local port 7860
 ```
@@ -152,22 +171,25 @@ Forwarding inference simple-server to local port 7860
 
 You could add more servers to your cluster by using the `mdz server join` command. The `mdz` server will be bootstrapped on the server and join the cluster automatically.
 
-```
+```text /join/
+$ mdz server join <internal ip address of the previous server>
 $ mdz server list
  NAME   PHASE  ALLOCATABLE      CAPACITY        
  node1  Ready  cpu: 16          cpu: 16         
                mem: 32784748Ki  mem: 32784748Ki 
+               gpu: 1           gpu: 1      
  node2  Ready  cpu: 16          cpu: 16         
                mem: 32784748Ki  mem: 32784748Ki 
+               gpu: 1           gpu: 1      
 ```
 
 ### Label your servers
 
 You could label your servers to deploy your models to specific servers. For example, you could label your servers with `gpu=true` and deploy your models to servers with GPUs.
 
-```
+```text /--node-labels gpu=true,type=nvidia-a100/
 $ mdz server label node3 gpu=true type=nvidia-a100
-$ mdz deploy --image aikain/simplehttpserver:0.1 --name simple-server --port 80 --node-labels gpu=true,type=nvidia-a100
+$ mdz deploy ... --node-labels gpu=true,type=nvidia-a100
 ```
 
 ## Roadmap 🗂️
@@ -192,6 +214,7 @@ We welcome all kinds of contributions from the open-source community, individual
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/VoVAllen"><img src="https://avatars.githubusercontent.com/u/8686776?v=4?s=70" width="70px;" alt="Jinjing Zhou"/><br /><sub><b>Jinjing Zhou</b></sub></a><br /><a href="#question-VoVAllen" title="Answering Questions">💬</a> <a href="https://github.com/tensorchord/openmodelz/issues?q=author%3AVoVAllen" title="Bug reports">🐛</a> <a href="#ideas-VoVAllen" title="Ideas, Planning, & Feedback">🤔</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://blog.mapotofu.org/"><img src="https://avatars.githubusercontent.com/u/12974685?v=4?s=70" width="70px;" alt="Keming"/><br /><sub><b>Keming</b></sub></a><br /><a href="https://github.com/tensorchord/openmodelz/commits?author=kemingy" title="Code">💻</a> <a href="#design-kemingy" title="Design">🎨</a> <a href="#infra-kemingy" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/tddschn"><img src="https://avatars.githubusercontent.com/u/45612704?v=4?s=70" width="70px;" alt="Teddy Xinyuan Chen"/><br /><sub><b>Teddy Xinyuan Chen</b></sub></a><br /><a href="https://github.com/tensorchord/openmodelz/commits?author=tddschn" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://xuanwo.io/"><img src="https://avatars.githubusercontent.com/u/5351546?v=4?s=70" width="70px;" alt="Xuanwo"/><br /><sub><b>Xuanwo</b></sub></a><br /><a href="#content-Xuanwo" title="Content">🖋</a> <a href="#design-Xuanwo" title="Design">🎨</a> <a href="#ideas-Xuanwo" title="Ideas, Planning, & Feedback">🤔</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/cutecutecat"><img src="https://avatars.githubusercontent.com/u/19801166?v=4?s=70" width="70px;" alt="cutecutecat"/><br /><sub><b>cutecutecat</b></sub></a><br /><a href="#ideas-cutecutecat" title="Ideas, Planning, & Feedback">🤔</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://xieydd.github.io/"><img src="https://avatars.githubusercontent.com/u/20329697?v=4?s=70" width="70px;" alt="xieydd"/><br /><sub><b>xieydd</b></sub></a><br /><a href="#ideas-xieydd" title="Ideas, Planning, & Feedback">🤔</a></td>
     </tr>
