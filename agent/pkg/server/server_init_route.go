@@ -38,6 +38,9 @@ func (s *Server) registerRoutes() {
 	// healthz
 	root.GET(endpointHealthz, WrapHandler(s.handleHealthz))
 
+	// landing page
+	root.GET("/", WrapHandler(s.handleRoot))
+
 	// control plane
 	controlPlane := root.Group("/system")
 	// inferences
