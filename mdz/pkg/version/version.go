@@ -30,7 +30,7 @@ var (
 	// Package is filled at linking time
 	Package = "github.com/tensorchord/openmodelz/agent"
 
-	HelmChartVersion = "0.0.11"
+	HelmChartVersion = "0.0.13"
 
 	// Revision is filled with the VCS (e.g. git) revision being used to build
 	// the program at linking time.
