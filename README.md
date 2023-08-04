@@ -30,6 +30,10 @@ OpenModelZ forms the core of our [ModelZ](https://modelz.ai) platform, which is 
 
 ## Quick Start 🚀
 
+Here is a quick demo of how to deploy a model using OpenModelZ.
+
+https://github.com/tensorchord/openmodelz/assets/5100735/0b4845e0-4d3a-4db6-b598-efab1275ce96
+
 ### Install `mdz`
 
 You can install OpenModelZ using the following command:
