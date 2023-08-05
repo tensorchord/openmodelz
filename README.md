@@ -48,7 +48,9 @@ Once you've installed the `mdz` you can start deploying models and experimenting
 
 ### Bootstrap `mdz`
 
-It's super easy to bootstrap the `mdz` server. You just need to find a server (could be a cloud VM, a home lab, or even a single machine) and run the `mdz server start` command. The `mdz` server will be bootstrapped on the server as a controller node and you could start deploying your models.
+It's super easy to bootstrap the `mdz` server. You just need to find a server (could be a cloud VM, a home lab, or even a single machine) and run the `mdz server start` command.
+
+> Notice: We may require the root permission to bootstrap the `mdz` server on port 80.
 
 ```
 $ mdz server start
