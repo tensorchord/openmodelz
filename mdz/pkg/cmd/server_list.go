@@ -124,7 +124,7 @@ func prettyByteSize(quantity string) (string, error) {
 		}
 		bf /= 1024.0
 	}
-	return fmt.Sprintf("%.1fYiB", bf), nil
+	return fmt.Sprintf("%.1fPiB", bf), nil
 }
 
 func resourceListString(l types.ResourceList) string {
