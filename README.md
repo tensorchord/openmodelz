@@ -104,12 +104,12 @@ It is `http://jupyter-9pnxdkeb6jsfqkmq.192.168.71.93.modelz.live` in this case. 
 
 ![jupyter notebook](./images/jupyter.png)
 
-### Create your first API-based deployment
+### Create your first OpenAI compatible API server
 
-You could also create API-based deployments. We will use a simple python server as an example in this tutorial. You could use any docker image as your deployment.
+You could also create API-based deployments. We will use [OpenAI compatible API server with Bloomz 560M](https://github.com/tensorchord/modelz-llm#run-the-self-hosted-api-server) as an example in this tutorial.
 
 ```text
-$ mdz deploy --image python:3.9.6-slim-buster --name simple-server --port 8080 --command "python -m http.server 8080"
+$ mdz deploy --image modelzai/llm-bloomz-560m:23.07.4 --name simple-server
 Inference simple-server is created
 $ mdz list
  NAME           ENDPOINT                                                         STATUS  INVOCATIONS  REPLICAS 
@@ -117,8 +117,21 @@ $ mdz list
                 http://192.168.71.93/inference/jupyter.default                                                 
  simple-server  http://simple-server-lagn8m9m8648q6kx.192.168.71.93.modelz.live  Ready             0  1/1      
                 http://192.168.71.93/inference/simple-server.default                                           
-$ curl http://simple-server-lagn8m9m8648q6kx.192.168.71.93.modelz.live
-...
+```
+
+You could use OpenAI python package and the endpoint `http://simple-server-lagn8m9m8648q6kx.192.168.71.93.modelz.live` in this case, to interact with the deployment.
+
+```python
+import openai
+openai.api_base="http://simple-server-lagn8m9m8648q6kx.192.168.71.93.modelz.live"
+openai.api_key="any"
+
+# create a chat completion
+chat_completion = openai.ChatCompletion.create(model="bloomz", messages=[
+    {"role": "user", "content": "Who are you?"},
+    {"role": "assistant", "content": "I am a student"},
+    {"role": "user", "content": "What do you learn?"},
+], max_tokens=100)
 ```
 
 ### Scale your deployment
