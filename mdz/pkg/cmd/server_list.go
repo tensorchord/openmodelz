@@ -2,10 +2,14 @@ package cmd
 
 import (
 	"fmt"
+	"math"
 
 	"github.com/cockroachdb/errors"
 	"github.com/jedib0t/go-pretty/v6/table"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"k8s.io/apimachinery/pkg/api/resource"
+
 	"github.com/tensorchord/openmodelz/agent/api/types"
 	"github.com/tensorchord/openmodelz/mdz/pkg/telemetry"
 )
@@ -108,8 +112,33 @@ func labelsString(labels map[string]string) string {
 	return res[:len(res)-1]
 }
 
+func prettyByteSize(quantity string) (string, error) {
+	r, err := resource.ParseQuantity(quantity)
+	if err != nil {
+		return "", err
+	}
+	bf := float64(r.Value())
+	for _, unit := range []string{"", "Ki", "Mi", "Gi", "Ti"} {
+		if math.Abs(bf) < 1024.0 {
+			return fmt.Sprintf("%3.1f%sB", bf, unit), nil
+		}
+		bf /= 1024.0
+	}
+	return fmt.Sprintf("%.1fPiB", bf), nil
+}
+
 func resourceListString(l types.ResourceList) string {
-	res := fmt.Sprintf("cpu: %s\nmem: %s", l["cpu"], l["memory"])
+	res := fmt.Sprintf("cpu: %s", l[types.ResourceCPU])
+	memory, ok := l[types.ResourceMemory]
+	if ok {
+		prettyMem, err := prettyByteSize(string(memory))
+		if err != nil {
+			logrus.Infof("failed to parse the memory quantity: %s", memory)
+		} else {
+			memory = types.Quantity(prettyMem)
+		}
+	}
+	res += fmt.Sprintf("\nmemory: %s", memory)
 	if l[types.ResourceGPU] != "" {
 		res += fmt.Sprintf("\ngpu: %s", l[types.ResourceGPU])
 	}
