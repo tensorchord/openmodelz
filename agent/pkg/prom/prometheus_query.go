@@ -77,7 +77,7 @@ func (q PrometheusQuery) Fetch(query string) (*VectorQueryResponse, error) {
 
 	unmarshalErr := json.Unmarshal(bytesOut, &values)
 	if unmarshalErr != nil {
-		return nil, fmt.Errorf("error unmarshaling result: %s, '%s'", unmarshalErr, string(bytesOut))
+		return nil, fmt.Errorf("error unmarshalling result: %s, '%s'", unmarshalErr, string(bytesOut))
 	}
 
 	return &values, nil

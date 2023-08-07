@@ -11,7 +11,7 @@ func configFromCLI(c *cli.Context) config.Config {
 
 	// server
 	cfg.Server.Dev = c.Bool(flagDev)
-	cfg.Server.ServerPort = c.Int(flageServerPort)
+	cfg.Server.ServerPort = c.Int(flagServerPort)
 	cfg.Server.ReadTimeout = c.Duration(flagServerReadTimeout)
 	cfg.Server.WriteTimeout = c.Duration(flagServerWriteTimeout)
 

@@ -152,7 +152,7 @@ func Test_makeRules_Traefik_NestedPath_TrimsRegex_And_TrailingSlash(t *testing.T
 	}
 }
 
-func Test_makTLS(t *testing.T) {
+func Test_makeTLS(t *testing.T) {
 
 	cases := []struct {
 		name     string
