@@ -306,7 +306,7 @@ func (s *Scaler) AutoScale(interval time.Duration) {
 					"service":           service,
 					"replicas":          totalReplicas,
 					"expectedReplicas":  expectedReplicas,
-					"availabelReplicas": availableReplicas,
+					"availableReplicas": availableReplicas,
 					"currentLoad":       lc.CurrentLoad,
 					"targetLoad":        targetLoad,
 					"zeroDuration":      zeroDuration,

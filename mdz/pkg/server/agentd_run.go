@@ -11,7 +11,7 @@ type agentDRunStep struct {
 }
 
 // TODO(gaocegege): There is still a bug, thus it cannot be used actually.
-// The process wil exit after the command returns. We need to put it in systemd.
+// The process will exit after the command returns. We need to put it in systemd.
 func (s *agentDRunStep) Run() error {
 	fmt.Fprintf(s.options.OutputStream, "🚧 Running the agent for docker runtime...\n")
 	cmd := exec.Command("/bin/sh", "-c", "mdz local-agent &")

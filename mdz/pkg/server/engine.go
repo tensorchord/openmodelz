@@ -116,7 +116,6 @@ func NewJoin(o Options) (*Engine, error) {
 	return &Engine{
 		options: o,
 		Steps: []Step{
-			// Kill all k3s and related tools.
 			&k3sJoinStep{
 				options: o,
 			},

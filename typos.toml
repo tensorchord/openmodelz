@@ -1,0 +1,5 @@
+[files]
+extend-exclude = ["CHANGELOG.md", "go.mod", "go.sum"]
+[default.extend-words]
+requestor = "requestor"
+ba = "ba"
