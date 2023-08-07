@@ -63,6 +63,9 @@ func (k *K8sAPIRequestor) Query(ctx context.Context,
 		if err != nil {
 			return nil, errdefs.InvalidParameter(err)
 		}
+	} else if r.Follow {
+		// avoid truncate
+		endTime = time.Now().Add(time.Hour)
 	} else {
 		endTime = time.Now()
 	}
@@ -152,7 +155,7 @@ func podLogs(ctx context.Context, i v1.PodInterface, pod, container,
 		opts.SinceSeconds = parseSince(since)
 	}
 
-	stream, err := i.GetLogs(pod, opts).Stream(context.TODO())
+	stream, err := i.GetLogs(pod, opts).Stream(ctx)
 	if err != nil {
 		return err
 	}
