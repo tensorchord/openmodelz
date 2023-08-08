@@ -12,13 +12,16 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/sirupsen/logrus"
 	"github.com/tensorchord/openmodelz/agent/api/types"
 )
 
+const LogBufferSize = 128
+
 // DeploymentLogGet gets the deployment logs.
 func (cli *Client) DeploymentLogGet(ctx context.Context, namespace, name string,
-	since string, tail int, end string) (
-	[]types.Message, error) {
+	since string, tail int, end string, follow bool) (
+	<-chan types.Message, error) {
 	urlValues := url.Values{}
 	urlValues.Add("namespace", namespace)
 	urlValues.Add("name", name)
@@ -35,26 +38,34 @@ func (cli *Client) DeploymentLogGet(ctx context.Context, namespace, name string,
 		urlValues.Add("tail", fmt.Sprintf("%d", tail))
 	}
 
+	if follow {
+		urlValues.Add("follow", "true")
+	}
+
 	resp, err := cli.get(ctx, "/system/logs/inference", urlValues, nil)
-	defer ensureReaderClosed(resp)
-
+	
 	if err != nil {
-		return nil,
-			wrapResponseError(err, resp, "deployment logs", name)
+		return nil, wrapResponseError(err, resp, "deployment logs", name)
 	}
-
+	
+	stream := make(chan types.Message, LogBufferSize)
 	var log types.Message
-	logs := []types.Message{}
 	scanner := bufio.NewScanner(resp.body)
-	for scanner.Scan() {
-		err = json.NewDecoder(strings.NewReader(scanner.Text())).Decode(&log)
-		if err != nil {
-			return nil, wrapResponseError(err, resp, "deployment logs", name)
+	go func () {
+		defer ensureReaderClosed(resp)
+		defer close(stream)
+		for scanner.Scan() {
+			err = json.Unmarshal(scanner.Bytes(), &log)
+			if err != nil {
+				logrus.Warnf("failed to decode %s log: %v | %s | [%s]", name, err, scanner.Text(), scanner.Err())
+				return
+				// continue
+			}
+			stream <- log
 		}
-		logs = append(logs, log)
-	}
+	}()
 
-	return logs, err
+	return stream, err
 }
 
 func (cli *Client) BuildLogGet(ctx context.Context, namespace, name, since string,

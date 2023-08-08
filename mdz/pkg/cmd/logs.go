@@ -9,6 +9,7 @@ var (
 	tail  int
 	since string
 	end   string
+	follow bool
 )
 
 // logCmd represents the log command
@@ -36,15 +37,16 @@ func init() {
 	logsCmd.Flags().IntVarP(&tail, "tail", "t", 0, "Number of lines to show from the end of the logs")
 	logsCmd.Flags().StringVarP(&since, "since", "s", "2006-01-02T15:04:05Z", "Show logs since timestamp (e.g. 2013-01-02T13:23:37Z) or relative (e.g. 42m for 42 minutes)")
 	logsCmd.Flags().StringVarP(&end, "end", "e", "", "Only return logs before this timestamp (e.g. 2013-01-02T13:23:37Z) or relative (e.g. 42m for 42 minutes)")
+	logsCmd.Flags().BoolVarP(&follow, "follow", "f", false, "Follow log output")
 }
 
 func commandLogs(cmd *cobra.Command, args []string) error {
-	logs, err := agentClient.DeploymentLogGet(cmd.Context(), namespace, args[0], since, tail, end)
+	logStream, err := agentClient.DeploymentLogGet(cmd.Context(), namespace, args[0], since, tail, end, follow)
 	if err != nil {
 		cmd.PrintErrf("Failed to get logs: %s\n", err)
 		return err
 	}
-	for _, log := range logs {
+	for log := range logStream {
 		cmd.Printf("%s: %s\n", log.Instance, log.Text)
 	}
 	return nil
