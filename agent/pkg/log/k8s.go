@@ -2,7 +2,6 @@ package log
 
 import (
 	"bufio"
-	"bytes"
 	"context"
 	"fmt"
 	"io"
@@ -163,14 +162,9 @@ func podLogs(ctx context.Context, i v1.PodInterface, pod, container,
 
 	done := make(chan error)
 	go func() {
-		reader := bufio.NewReader(stream)
-		for {
-			line, err := reader.ReadBytes('\n')
-			if err != nil {
-				done <- err
-				return
-			}
-			msg, ts := extractTimestampAndMsg(string(bytes.Trim(line, "\x00")))
+		scanner := bufio.NewScanner(stream)
+		for scanner.Scan() {
+			msg, ts := extractTimestampAndMsg(scanner.Text())
 			dst <- types.Message{
 				Timestamp: ts,
 				Text:      msg,
@@ -179,13 +173,19 @@ func podLogs(ctx context.Context, i v1.PodInterface, pod, container,
 				Namespace: namespace,
 			}
 		}
+		if err := scanner.Err(); err != nil {
+			done <- err
+			return
+		}
 	}()
 
 	select {
 	case <-ctx.Done():
+		logrus.Debug("get-log context cancelled")
 		return ctx.Err()
 	case err := <-done:
 		if err != io.EOF {
+			logrus.Debugf("failed to read from pod log: %v", err)
 			return err
 		}
 		return nil

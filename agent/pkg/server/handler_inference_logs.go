@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/cockroachdb/errors"
 	"github.com/gin-gonic/gin"
@@ -46,8 +47,13 @@ func (s Server) getLogsFromRequester(c *gin.Context, requester log.Requester) er
 	}
 	_ = cn
 
-	ctx, cancelQuery := context.WithTimeout(c.Request.Context(),
-		s.config.Inference.LogTimeout)
+	timeout := s.config.Inference.LogTimeout
+	if req.Follow {
+		// use a much larger timeout for streaming log
+		timeout = time.Hour
+	}
+
+	ctx, cancelQuery := context.WithTimeout(c.Request.Context(), timeout)
 	defer cancelQuery()
 
 	messages, err := requester.Query(ctx, req)
