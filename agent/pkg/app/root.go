@@ -21,7 +21,7 @@ const (
 	flagDev   = "dev"
 
 	// server
-	flageServerPort        = "server-port"
+	flagServerPort        = "server-port"
 	flagServerReadTimeout  = "server-read-timeout"
 	flagServerWriteTimeout = "server-write-timeout"
 
@@ -89,7 +89,7 @@ func New() App {
 			Usage: "enable development mode",
 		},
 		&cli.IntFlag{
-			Name:    flageServerPort,
+			Name:    flagServerPort,
 			Value:   8081,
 			Usage:   "port to listen on",
 			EnvVars: []string{"MODELZ_AGENT_SERVER_PORT"},

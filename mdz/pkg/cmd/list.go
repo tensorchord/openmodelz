@@ -8,6 +8,7 @@ import (
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/spf13/cobra"
 	"github.com/tensorchord/openmodelz/agent/api/types"
+	"github.com/tensorchord/openmodelz/mdz/pkg/telemetry"
 )
 
 const (
@@ -48,6 +49,7 @@ func init() {
 }
 
 func commandList(cmd *cobra.Command, args []string) error {
+	telemetry.GetTelemetry().Record("list")
 	infs, err := agentClient.InferenceList(cmd.Context(), namespace)
 	if err != nil {
 		cmd.PrintErrf("Failed to list inferences: %v\n", err)

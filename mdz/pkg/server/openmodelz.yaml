@@ -14,7 +14,7 @@ spec:
   chart: openmodelz
   repo: https://tensorchord.github.io/openmodelz-charts
   targetNamespace: openmodelz
-  version: 0.0.8
+  version: {{.Version}}
   set:
   valuesContent: |-
     fullnameOverride: openmodelz

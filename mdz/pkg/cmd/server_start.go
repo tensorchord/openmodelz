@@ -9,11 +9,15 @@ import (
 
 	"github.com/tensorchord/openmodelz/agent/pkg/consts"
 	"github.com/tensorchord/openmodelz/mdz/pkg/server"
+	"github.com/tensorchord/openmodelz/mdz/pkg/telemetry"
+	"github.com/tensorchord/openmodelz/mdz/pkg/version"
 )
 
 var (
 	serverStartRuntime string
 	serverStartDomain  string = consts.Domain
+	serverStartVersion string
+	serverStartWithGPU bool
 )
 
 // serverStartCmd represents the server start command
@@ -40,6 +44,15 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// serverStartCmd.Flags().StringVarP(&serverStartRuntime, "runtime", "r", "k3s", "Runtime to use (k3s, docker) in the started server")
+	serverStartCmd.Flags().StringVarP(&serverStartVersion, "version", "",
+		version.HelmChartVersion, "Version of the server to start")
+	serverStartCmd.Flags().MarkHidden("version")
+	serverStartCmd.Flags().BoolVarP(&serverStartWithGPU, "force-gpu", "g",
+		false, "Start the server with GPU support (ignore the GPU detection)")
+	serverStartCmd.Flags().StringVarP(&serverRegistryMirrorName, "mirror-name", "",
+		"docker.io", "Mirror domain name of the registry")
+	serverStartCmd.Flags().StringArrayVarP(&serverRegistryMirrorEndpoints, "mirror-endpoints", "",
+		[]string{}, "Mirror URL endpoints of the registry like `https://quay.io`")
 }
 
 func commandServerStart(cmd *cobra.Command, args []string) error {
@@ -48,12 +61,24 @@ func commandServerStart(cmd *cobra.Command, args []string) error {
 		domainWithSuffix := fmt.Sprintf("%s.%s", args[0], serverStartDomain)
 		domain = &domainWithSuffix
 	}
+	defer func(start time.Time) {
+		telemetry.GetTelemetry().Record(
+			"server start",
+			telemetry.AddField("duration", time.Since(start).Seconds()),
+		)
+	}(time.Now())
 	engine, err := server.NewStart(server.Options{
 		Verbose:       serverVerbose,
 		Runtime:       server.Runtime(serverStartRuntime),
 		OutputStream:  cmd.ErrOrStderr(),
 		RetryInternal: serverPollingInterval,
 		Domain:        domain,
+		Version:       serverStartVersion,
+		ForceGPU:      serverStartWithGPU,
+		Mirror: server.Mirror{
+			Name:      serverRegistryMirrorName,
+			Endpoints: serverRegistryMirrorEndpoints,
+		},
 	})
 	if err != nil {
 		cmd.PrintErrf("Failed to start the server: %s\n", errors.Cause(err))
@@ -83,6 +108,6 @@ func commandServerStart(cmd *cobra.Command, args []string) error {
 	}
 	cmd.Printf("🐳 The server is running at %s\n", mdzURL)
 	cmd.Printf("🎉 You could set the environment variable to get started!\n\n")
-	cmd.Printf("export MDZ_AGENT=%s\n", mdzURL)
+	cmd.Printf("export MDZ_URL=%s\n", mdzURL)
 	return nil
 }

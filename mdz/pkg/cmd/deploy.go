@@ -9,6 +9,7 @@ import (
 	petname "github.com/dustinkirkland/golang-petname"
 	"github.com/spf13/cobra"
 	"github.com/tensorchord/openmodelz/agent/api/types"
+	"github.com/tensorchord/openmodelz/mdz/pkg/telemetry"
 )
 
 var (
@@ -21,6 +22,8 @@ var (
 	deployGPU         int
 	deployNodeLabel   []string
 	deployDetach      bool
+	deployCommand     string
+	deployProbePath   string
 )
 
 // deployCmd represents the deploy command
@@ -55,6 +58,8 @@ func init() {
 	deployCmd.Flags().StringVar(&deployName, "name", "", "Name of inference")
 	deployCmd.Flags().StringSliceVarP(&deployNodeLabel, "node-labels", "l", []string{}, "Node labels")
 	deployCmd.Flags().BoolVar(&deployDetach, "detach", false, "If set, the command returns immediately without waiting for the deployment to complete")
+	deployCmd.Flags().StringVar(&deployCommand, "command", "", "Command to run")
+	deployCmd.Flags().StringVar(&deployProbePath, "probe-path", "", "HTTP Health probe path")
 }
 
 func waitForDeploymentReady(cmd *cobra.Command, client *Client, namespace, name string, interval time.Duration, timeoutSeconds int) error {
@@ -115,6 +120,13 @@ func commandDeploy(cmd *cobra.Command, args []string) error {
 		},
 	}
 
+	if deployCommand != "" {
+		inf.Spec.Command = &deployCommand
+	}
+	if deployProbePath != "" {
+		inf.Spec.HTTPProbePath = &deployProbePath
+	}
+
 	if len(deployNodeLabel) > 0 {
 		inf.Spec.Constraints = []string{}
 		for _, label := range deployNodeLabel {
@@ -131,6 +143,12 @@ func commandDeploy(cmd *cobra.Command, args []string) error {
 			},
 		}
 	}
+
+	telemetry.GetTelemetry().Record(
+		"deploy",
+		telemetry.AddField("GPU", deployGPU),
+		telemetry.AddField("FromZero", deployMinReplicas == 0),
+	)
 
 	if _, err := agentClient.InferenceCreate(
 		cmd.Context(), namespace, inf); err != nil {

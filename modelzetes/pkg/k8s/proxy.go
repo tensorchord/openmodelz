@@ -109,6 +109,6 @@ func (l *FunctionLookup) verifyNamespace(name string) error {
 	if name != "kube-system" {
 		return nil
 	}
-	// ToDo use global namepace parse and validation
+	// ToDo use global namespace parse and validation
 	return fmt.Errorf("namespace not allowed")
 }

@@ -21,7 +21,7 @@ const (
 	flagDebug = "debug"
 
 	// metrics
-	flageMetricsServerPort = "metrics-server-port"
+	flagMetricsServerPort = "metrics-server-port"
 
 	// kubernetes
 	flagMasterURL    = "master-url"
@@ -73,7 +73,7 @@ func New() App {
 			EnvVars: []string{"DEBUG"},
 		},
 		&cli.IntFlag{
-			Name:    flageMetricsServerPort,
+			Name:    flagMetricsServerPort,
 			Value:   8081,
 			Usage:   "port to listen on",
 			EnvVars: []string{"MODELZETES_SERVER_PORT"},

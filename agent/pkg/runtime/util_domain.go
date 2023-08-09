@@ -11,7 +11,7 @@ const (
 )
 
 const (
-	// stdLen is a standard length of uniuri string to achive ~95 bits of entropy.
+	// stdLen is a standard length of uniuri string to achieve ~95 bits of entropy.
 	stdLen = 16
 )
 

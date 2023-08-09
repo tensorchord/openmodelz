@@ -1,9 +1,8 @@
 name: release
 
 on:
-  push:
-    tags:
-      - 'v*'
+  release:
+    types: [published]
   pull_request:
     paths:
     - '.github/workflows/release.yml'
@@ -36,3 +35,49 @@ jobs:
           args: release --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: upload gobin
+        uses: actions/upload-artifact@v3
+        with:
+          name: gobin_${{ github.event.release.tag_name }}
+          retention-days: 1
+          path: |
+            dist/mdz_linux_amd64_v1/mdz
+          if-no-files-found: error
+  pypi_publish:
+    needs: goreleaser
+    # only trigger on main repo when tag starts with v
+    if: github.repository == 'tensorchord/openmodelz' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      matrix:
+        os: [ubuntu-20.04]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Get gobin
+      uses: actions/download-artifact@v3
+      with:
+        name: gobin_${{ github.event.release.tag_name }}
+        path: dist/
+    - name: Configure linux build environment
+      if: runner.os == 'Linux'
+      run: |
+        mkdir -p mdz/bin
+        mv dist/mdz mdz/bin/mdz
+        chmod +x mdz/bin/mdz
+    - name: Build wheels
+      uses: pypa/cibuildwheel@v2.14.1
+    - name: Build source distribution
+      if: runner.os == 'Linux' # Only release source under linux to avoid conflict
+      run: |
+        python -m pip install wheel setuptools_scm
+        python setup.py sdist
+        mv dist/*.tar.gz wheelhouse/
+    - name: Upload to PyPI
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install twine
+        python -m twine upload wheelhouse/*

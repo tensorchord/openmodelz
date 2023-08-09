@@ -109,12 +109,12 @@ export GOFLAGS ?= -count=1
 
 .DEFAULT_GOAL:=build
 
-build: build-local  ## Build the release version of envd
+build: build-release  ## Build the release version
 
 help:  ## Display this help
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} /^[a-zA-Z0-9_-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 
-debug: debug-local  ## Build the debug version of envd
+debug: debug-local  ## Build the debug version
 
 # more info about `GOGC` env: https://github.com/golangci/golangci-lint#memory-usage-of-golangci-lint
 lint: $(GOLANGCI_LINT)  ## Lint GO code
@@ -138,8 +138,19 @@ swag-install:
 
 build-local:
 	@for target in $(TARGETS); do                                                      \
-	  CGO_ENABLED=$(CGO_ENABLED) GOOS=$(GOOS) GOARCH=$(GOARCH) go build -tags $(DASHBOARD_BUILD)  -trimpath -v -o $(OUTPUT_DIR)/$${target}     \
+	  CGO_ENABLED=$(CGO_ENABLED) GOOS=$(GOOS) GOARCH=$(GOARCH) go build -trimpath -v -o $(OUTPUT_DIR)/$${target}     \
 	    -ldflags "-s -w -X $(ROOT)/pkg/version.version=$(VERSION) -X $(ROOT)/pkg/version.buildDate=$(BUILD_DATE) -X $(ROOT)/pkg/version.gitCommit=$(GIT_COMMIT) -X $(ROOT)/pkg/version.gitTreeState=$(GIT_TREE_STATE)"                     \
+	    $(CMD_DIR)/$${target};                                                         \
+	done
+
+build-release:
+	@for target in $(TARGETS); do                                                      \
+	  CGO_ENABLED=$(CGO_ENABLED) go build -trimpath -o $(OUTPUT_DIR)/$${target}     \
+	    -ldflags "-s -w -X $(ROOT)/pkg/version.version=$(VERSION) \
+		-X $(ROOT)/pkg/version.buildDate=$(BUILD_DATE) \
+		-X $(ROOT)/pkg/version.gitCommit=$(GIT_COMMIT) \
+		-X $(ROOT)/pkg/version.gitTreeState=$(GIT_TREE_STATE)                     \
+		-X $(ROOT)/pkg/version.gitTag=$(GIT_TAG)" \
 	    $(CMD_DIR)/$${target};                                                         \
 	done
 

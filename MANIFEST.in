@@ -1,0 +1,15 @@
+prune autoscaler
+prune ingress-operator
+prune modelzetes
+prune .github
+include LICENSE
+include README.md
+include .goreleaser.yaml
+include mdz/Makefile mdz/go.mod mdz/go.sum mdz/LICENSE
+graft mdz/pkg
+graft mdz/cmd
+prune mdz/bin
+prune mdz/docs
+prune mdz/examples
+graft agent/pkg
+prune agent/bin

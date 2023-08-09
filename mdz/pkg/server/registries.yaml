@@ -1,0 +1,4 @@
+mirrors:
+  {{ .Name }}:
+    endpoint:
+      {{ range $endpoint := .Endpoints }}- "{{ $endpoint }}"{{ end }}
