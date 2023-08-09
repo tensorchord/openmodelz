@@ -2,8 +2,6 @@ module github.com/tensorchord/openmodelz/mdz
 
 go 1.20
 
-replace github.com/tensorchord/openmodelz/agent => ../agent
-
 require (
 	github.com/cockroachdb/errors v1.10.0
 	github.com/docker/docker v23.0.2+incompatible
@@ -16,11 +14,12 @@ require (
 	github.com/moby/moby v24.0.4+incompatible
 	github.com/moby/term v0.5.0
 	github.com/phayes/freeport v0.0.0-20220201140144-74d24b5ae9f5
+	github.com/segmentio/analytics-go/v3 v3.2.1
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.7.0
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.0
-	github.com/tensorchord/openmodelz/agent v0.0.0-00010101000000-000000000000
+	github.com/tensorchord/openmodelz/agent v0.0.0-20230808082244-c23067f08183
 	github.com/toorop/gin-logrus v0.0.0-20210225092905-2c785434f26f
 	golang.org/x/term v0.8.0
 	k8s.io/apimachinery v0.27.3
@@ -30,6 +29,7 @@ require (
 	github.com/Azure/go-ansiterm v0.0.0-20210617225240-d185dfc1b5a1 // indirect
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/Microsoft/go-winio v0.6.1 // indirect
+	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869 // indirect
 	github.com/bytedance/sonic v1.9.1 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
 	github.com/cockroachdb/logtags v0.0.0-20230118201751-21c54148d20b // indirect
@@ -70,7 +70,6 @@ require (
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/rogpeppe/go-internal v1.10.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
-	github.com/segmentio/analytics-go/v3 v3.2.1 // indirect
 	github.com/segmentio/backo-go v1.0.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/swaggo/swag v1.8.12 // indirect
@@ -86,4 +85,5 @@ require (
 	google.golang.org/protobuf v1.30.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
+	gotest.tools/v3 v3.5.0 // indirect
 )
