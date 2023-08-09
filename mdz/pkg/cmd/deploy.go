@@ -9,6 +9,7 @@ import (
 	petname "github.com/dustinkirkland/golang-petname"
 	"github.com/spf13/cobra"
 	"github.com/tensorchord/openmodelz/agent/api/types"
+	"github.com/tensorchord/openmodelz/agent/client"
 	"github.com/tensorchord/openmodelz/mdz/pkg/telemetry"
 )
 
@@ -62,7 +63,7 @@ func init() {
 	deployCmd.Flags().StringVar(&deployProbePath, "probe-path", "", "HTTP Health probe path")
 }
 
-func waitForDeploymentReady(cmd *cobra.Command, client *Client, namespace, name string, interval time.Duration, timeoutSeconds int) error {
+func waitForDeploymentReady(cmd *cobra.Command, client *client.Client, namespace, name string, interval time.Duration, timeoutSeconds int) error {
 	timeout := time.After(time.Duration(timeoutSeconds) * time.Second)
 	tick := time.Tick(interval)
 
