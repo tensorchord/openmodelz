@@ -15,6 +15,7 @@
 .idea
 
 bin/
+debug-bin/
 **/password.txt
 **/gateway-password.txt
 

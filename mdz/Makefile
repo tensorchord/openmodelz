@@ -28,9 +28,6 @@
 # This repo's root import path (under GOPATH).
 ROOT := github.com/tensorchord/openmodelz/mdz
 
-# Target binaries. You can build multiple binaries for a single project.
-TARGETS := mdz
-
 # Container image prefix and suffix added to targets.
 # The final built images are:
 #   $[REGISTRY]/$[IMAGE_PREFIX]$[TARGET]$[IMAGE_SUFFIX]:$[VERSION]
@@ -137,31 +134,23 @@ swag-install:
 	go install github.com/swaggo/swag/cmd/swag@v1.8.7
 
 build-local:
-	@for target in $(TARGETS); do                                                      \
-	  CGO_ENABLED=$(CGO_ENABLED) GOOS=$(GOOS) GOARCH=$(GOARCH) go build -trimpath -v -o $(OUTPUT_DIR)/$${target}     \
-	    -ldflags "-s -w -X $(ROOT)/pkg/version.version=$(VERSION) -X $(ROOT)/pkg/version.buildDate=$(BUILD_DATE) -X $(ROOT)/pkg/version.gitCommit=$(GIT_COMMIT) -X $(ROOT)/pkg/version.gitTreeState=$(GIT_TREE_STATE)"                     \
-	    $(CMD_DIR)/$${target};                                                         \
-	done
+	CGO_ENABLED=$(CGO_ENABLED) GOOS=$(GOOS) GOARCH=$(GOARCH) \
+	VERSION=$(VERSION) BUILD_DATE=$(BUILD_DATE) \
+	GIT_COMMIT=$(GIT_COMMIT) GIT_TREE_STATE=$(GIT_TREE_STATE) GIT_TAG=$(GIT_TAG) \
+	./hack/build.sh build
 
 build-release:
-	@for target in $(TARGETS); do                                                      \
-	  CGO_ENABLED=$(CGO_ENABLED) go build -trimpath -o $(OUTPUT_DIR)/$${target}     \
-	    -ldflags "-s -w -X $(ROOT)/pkg/version.version=$(VERSION) \
-		-X $(ROOT)/pkg/version.buildDate=$(BUILD_DATE) \
-		-X $(ROOT)/pkg/version.gitCommit=$(GIT_COMMIT) \
-		-X $(ROOT)/pkg/version.gitTreeState=$(GIT_TREE_STATE)                     \
-		-X $(ROOT)/pkg/version.gitTag=$(GIT_TAG)" \
-	    $(CMD_DIR)/$${target};                                                         \
-	done
+	CGO_ENABLED=$(CGO_ENABLED) GOOS=$(GOOS) GOARCH=$(GOARCH) \
+	VERSION=$(VERSION) BUILD_DATE=$(BUILD_DATE) \
+	GIT_COMMIT=$(GIT_COMMIT) GIT_TREE_STATE=$(GIT_TREE_STATE) GIT_TAG=$(GIT_TAG) \
+	./hack/build.sh release
 
 # It is used by vscode to attach into the process.
 debug-local:
-	@for target in $(TARGETS); do                                                      \
-	  CGO_ENABLED=$(CGO_ENABLED) go build -tags $(DASHBOARD_BUILD) -trimpath                                    \
-	  	-v -o $(DEBUG_DIR)/$${target}                                                  \
-	  	-gcflags='all=-N -l'                                                           \
-	    $(CMD_DIR)/$${target};                                                         \
-	done
+	CGO_ENABLED=$(CGO_ENABLED) GOOS=$(GOOS) GOARCH=$(GOARCH) \
+	VERSION=$(VERSION) BUILD_DATE=$(BUILD_DATE) \
+	GIT_COMMIT=$(GIT_COMMIT) GIT_TREE_STATE=$(GIT_TREE_STATE) GIT_TAG=$(GIT_TAG) \
+	./hack/build.sh debug local
 
 addlicense: addlicense-install  ## Add license to GO code files
 	addlicense -l mpl -c "TensorChord Inc." $$(find . -type f -name '*.go' | grep -v pkg/docs/docs.go)
