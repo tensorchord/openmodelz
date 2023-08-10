@@ -63,13 +63,13 @@ func init() {
 	deployCmd.Flags().StringVar(&deployProbePath, "probe-path", "", "HTTP Health probe path")
 }
 
-func waitForDeploymentReady(cmd *cobra.Command, client *client.Client, namespace, name string, interval time.Duration, timeoutSeconds int) error {
-	timeout := time.After(time.Duration(timeoutSeconds) * time.Second)
+func waitForDeploymentReady(cmd *cobra.Command, client *client.Client, namespace, name string, interval time.Duration, timeout time.Duration) error {
+	timeoutChan := time.After(timeout)
 	tick := time.Tick(interval)
 
 	for {
 		select {
-		case <-timeout:
+		case <-timeoutChan:
 			cmd.PrintErrf("Timed out while waiting for deployment to be ready\n")
 			return errors.New("deployment readiness timed out")
 		case <-tick:
@@ -160,8 +160,8 @@ func commandDeploy(cmd *cobra.Command, args []string) error {
 	cmd.Printf("Inference %s is created\n", inf.Spec.Name)
 	if !deployDetach {
 		interval := 3 * time.Second
-		timeoutSeconds := 300
-		if err := waitForDeploymentReady(cmd, agentClient, namespace, name, interval, timeoutSeconds); err != nil {
+		timeout := 300 * time.Second
+		if err := waitForDeploymentReady(cmd, agentClient, namespace, name, interval, timeout); err != nil {
 			return err
 		}
 	}
