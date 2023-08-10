@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/cockroachdb/errors v1.10.0
-	github.com/docker/docker v23.0.2+incompatible
+	github.com/docker/docker v23.0.3+incompatible
 	github.com/docker/go-connections v0.4.0
 	github.com/dustinkirkland/golang-petname v0.0.0-20230626224747-e794b9370d49
 	github.com/gin-contrib/cors v1.4.0
