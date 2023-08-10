@@ -7,13 +7,13 @@ on:
     paths:
       - '.github/workflows/**'
       - '**.go'
-      - 'Makefile'
+      - '**/Makefile'
       - 'go.**'
   pull_request:
     paths:
       - '.github/workflows/**'
       - '**.go'
-      - 'Makefile'
+      - '**/Makefile'
       - 'go.**'
 
 concurrency:
