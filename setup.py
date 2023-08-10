@@ -21,7 +21,6 @@ def build_if_not_exist():
         return
     version = get_version()
     print(f"build mdz from source ({version})")
-    subprocess.call(["make", "mdz"])
     errno = subprocess.call(shlex.split(
         f"make build-release GIT_TAG={version}"
     ), cwd="mdz")
