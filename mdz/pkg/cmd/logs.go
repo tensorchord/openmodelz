@@ -6,9 +6,9 @@ import (
 
 var (
 	// Used for flags.
-	tail  int
-	since string
-	end   string
+	tail   int
+	since  string
+	end    string
 	follow bool
 )
 

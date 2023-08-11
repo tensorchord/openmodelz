@@ -120,7 +120,7 @@ func (t *defaultTelemetry) Idnetify() {
 	}
 	v := version.GetOpenModelzVersion()
 	if err := t.client.Enqueue(segmentio.Identify{
-		UserId: t.uid,
+		AnonymousId: t.uid,
 		Context: &segmentio.Context{
 			OS: segmentio.OSInfo{
 				Name:    runtime.GOOS,
@@ -151,9 +151,9 @@ func (t *defaultTelemetry) Record(command string, fields ...TelemetryField) {
 	}
 	logrus.WithField("UID", t.uid).WithField("command", command).Debug("send telemetry")
 	track := segmentio.Track{
-		UserId:     t.uid,
-		Event:      command,
-		Properties: segmentio.NewProperties(),
+		AnonymousId: t.uid,
+		Event:       command,
+		Properties:  segmentio.NewProperties(),
 	}
 	for _, field := range fields {
 		field(&track.Properties)
