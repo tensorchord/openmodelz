@@ -1,25 +1,25 @@
-## mdz server stop
+## mdz server delete
 
-Stop the server
+Delete a node from the cluster
 
 ### Synopsis
 
-Stop the server
+Delete a node from the cluster
 
 ```
-mdz server stop [flags]
+mdz server delete [flags]
 ```
 
 ### Examples
 
 ```
-  mdz server stop
+  mdz server delete gpu-node-1
 ```
 
 ### Options
 
 ```
-  -h, --help   help for stop
+  -h, --help   help for delete
 ```
 
 ### Options inherited from parent commands
