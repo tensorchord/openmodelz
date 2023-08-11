@@ -70,4 +70,4 @@ jobs:
       - name: mdz
         run: |
           cd ./mdz
-          make
+          MDZ_DEPS=local make

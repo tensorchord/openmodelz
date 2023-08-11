@@ -150,7 +150,7 @@ debug-local:
 	CGO_ENABLED=$(CGO_ENABLED) GOOS=$(GOOS) GOARCH=$(GOARCH) \
 	VERSION=$(VERSION) BUILD_DATE=$(BUILD_DATE) \
 	GIT_COMMIT=$(GIT_COMMIT) GIT_TREE_STATE=$(GIT_TREE_STATE) GIT_TAG=$(GIT_TAG) \
-	./hack/build.sh debug local
+	./hack/build.sh debug
 
 addlicense: addlicense-install  ## Add license to GO code files
 	addlicense -l mpl -c "TensorChord Inc." $$(find . -type f -name '*.go' | grep -v pkg/docs/docs.go)

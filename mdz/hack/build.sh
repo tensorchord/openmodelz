@@ -6,7 +6,7 @@ set -o nounset
 set -o pipefail
 
 kind=${1:-"build"}
-deps=${2:-"remote"}
+deps=${MDZ_DEPS:-"remote"}
 
 PROJECT_ROOT=$(realpath "$(dirname "${BASH_SOURCE[@]}")/..")
 PROJECT=github.com/tensorchord/openmodelz/mdz
