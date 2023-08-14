@@ -10,6 +10,8 @@ One-click machine learning deployment at scale on any cluster (GCP, AWS, Lambda 
 <a href="https://twitter.com/TensorChord"><img src="https://img.shields.io/twitter/follow/tensorchord?style=social" alt="trackgit-views" /></a>
 <a href="https://docs.open.modelz.ai"><img src="https://img.shields.io/badge/docs.open.modelz.ai-455946.svg?style=socail&logo=googlechrome&logoColor=white" alt="docs" /></a>
 <a href="https://github.com/tensorchord/openmodelz#contributors-"><img alt="all-contributors" src="https://img.shields.io/github/all-contributors/tensorchord/openmodelz/main"></a>
+<a href="https://github.com/tensorchord/openmodelz/actions/workflows/CI.yaml"><img alt="CI" src="https://github.com/tensorchord/openmodelz/actions/workflows/CI.yaml/badge.svg"></a>
+<a href="https://badge.fury.io/py/openmodelz"><img src="https://badge.fury.io/py/openmodelz.svg" alt="PyPI version" height="20"></a>
 </p>
 
 ## Why use OpenModelZ
