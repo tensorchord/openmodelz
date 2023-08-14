@@ -1,25 +1,25 @@
-## mdz server stop
+## mdz server destroy
 
-Stop the server
+Destroy the cluster
 
 ### Synopsis
 
-Stop the server
+Destroy the cluster
 
 ```
-mdz server stop [flags]
+mdz server destroy [flags]
 ```
 
 ### Examples
 
 ```
-  mdz server stop
+  mdz server destroy
 ```
 
 ### Options
 
 ```
-  -h, --help   help for stop
+  -h, --help   help for destroy
 ```
 
 ### Options inherited from parent commands

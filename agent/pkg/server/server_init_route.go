@@ -69,6 +69,7 @@ func (s *Server) registerRoutes() {
 	// servers
 	controlPlane.GET(endpointServerPlural, WrapHandler(s.handleServerList))
 	controlPlane.POST(endpointServer+"/:name/labels", WrapHandler(s.handleServerLabelCreate))
+	controlPlane.DELETE(endpointServer+"/:name/delete", WrapHandler(s.handleServerDelete))
 
 	// logs
 	controlPlane.GET(endpointLogPlural+endpointInference,

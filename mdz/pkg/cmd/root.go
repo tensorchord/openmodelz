@@ -71,6 +71,11 @@ func init() {
 	rootCmd.AddGroup(&cobra.Group{ID: "basic", Title: "Basic Commands:"})
 	rootCmd.AddGroup(&cobra.Group{ID: "debug", Title: "Troubleshooting and Debugging Commands:"})
 	rootCmd.AddGroup(&cobra.Group{ID: "management", Title: "Management Commands:"})
+
+	// telemetry
+	if err := telemetry.Initialize(!disableTelemetry); err != nil {
+		logrus.WithError(err).Debug("Failed to initialize telemetry")
+	}
 }
 
 func commandInit(cmd *cobra.Command, args []string) error {
@@ -94,9 +99,6 @@ func commandInit(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	if err := telemetry.Initialize(!disableTelemetry); err != nil {
-		logrus.WithError(err).Debug("Failed to initialize telemetry")
-	}
 	return nil
 }
 
