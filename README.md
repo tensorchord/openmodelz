@@ -41,7 +41,7 @@ OpenModelZ is inspired by the [k3s](https://github.com/k3s-io/k3s) and [OpenFaaS
 You do not need to read this section if you just want to deploy your models. But if you want to understand how OpenModelZ works, this section is for you.
 
 <p align=center>
-<img src="https://user-images.githubusercontent.com/5100735/260627792-2e89f6b8-006c-4807-84a3-29b6785af812.png" alt="OpenModelZ" width="400"/>
+<img src="https://user-images.githubusercontent.com/5100735/260627792-2e89f6b8-006c-4807-84a3-29b6785af812.png" alt="OpenModelZ" width="500"/>
 </p>
 
 OpenModelZ is composed of two components:
