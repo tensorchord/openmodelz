@@ -10,7 +10,7 @@ import (
 // @Summary     Delete a node from the cluster.
 // @Description Delete a node.
 // @Tags        namespace
-// @Param       name      path    string true "Server Name"
+// @Param       name path string true "Server Name"
 // @Accept      json
 // @Produce     json
 // @Success     200

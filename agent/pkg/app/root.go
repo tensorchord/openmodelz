@@ -21,7 +21,7 @@ const (
 	flagDev   = "dev"
 
 	// server
-	flagServerPort        = "server-port"
+	flagServerPort         = "server-port"
 	flagServerReadTimeout  = "server-read-timeout"
 	flagServerWriteTimeout = "server-write-timeout"
 

@@ -11,8 +11,8 @@ import (
 // @Summary     List the servers.
 // @Description List the servers.
 // @Tags        namespace
-// @Param       name      path    string true "Server Name"
-// @Param       request   body     types.ServerSpec true "query params"
+// @Param       name    path string           true "Server Name"
+// @Param       request body types.ServerSpec true "query params"
 // @Accept      json
 // @Produce     json
 // @Success     200 {object} []string

@@ -248,6 +248,56 @@ const docTemplate = `{
                 }
             }
         },
+        "/system/inference/{name}/instance/{instance}": {
+            "post": {
+                "description": "Attach to the inference instance.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "inference"
+                ],
+                "summary": "Attach to the inference instance.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "\"modelz-d3524a71-c17c-4c92-8faf-8603f02f4713\"",
+                        "description": "Namespace",
+                        "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Name",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Instance name",
+                        "name": "instance",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/types.InferenceDeployment"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/system/inference/{name}/instances": {
             "get": {
                 "description": "List the inference instances.",
@@ -707,6 +757,105 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/system/server/{name}/delete": {
+            "delete": {
+                "description": "Delete a node.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "namespace"
+                ],
+                "summary": "Delete a node from the cluster.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Server Name",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/system/server/{name}/labels": {
+            "post": {
+                "description": "List the servers.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "namespace"
+                ],
+                "summary": "List the servers.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Server Name",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "query params",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.ServerSpec"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/system/servers": {
+            "get": {
+                "description": "List the servers.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "namespace"
+                ],
+                "summary": "List the servers.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -822,6 +971,10 @@ const docTemplate = `{
                 },
                 "framework": {
                     "description": "Framework is the inference framework.",
+                    "type": "string"
+                },
+                "http_probe_path": {
+                    "description": "HTTPProbePath is the path of the http probe.",
                     "type": "string"
                 },
                 "image": {
@@ -1017,6 +1170,20 @@ const docTemplate = `{
                 "zero_duration": {
                     "description": "ZeroDuration is the duration (in seconds) of zero load before scaling down to zero. Default is 5 minutes.",
                     "type": "integer"
+                }
+            }
+        },
+        "types.ServerSpec": {
+            "type": "object",
+            "properties": {
+                "labels": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         },
