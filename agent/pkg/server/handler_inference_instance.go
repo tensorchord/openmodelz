@@ -15,7 +15,7 @@ import (
 // @Accept      json
 // @Produce     json
 // @Param       namespace query    string true "Namespace"  example("modelz-d3524a71-c17c-4c92-8faf-8603f02f4713")
-// @Param       name      path    string true "Name"
+// @Param       name      path     string true "Name"
 // @Success     200       {object} []types.InferenceDeployment
 // @Router      /system/inference/{name}/instances [get]
 func (s *Server) handleInferenceInstance(c *gin.Context) error {

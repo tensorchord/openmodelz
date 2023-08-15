@@ -43,15 +43,15 @@ func (cli *Client) DeploymentLogGet(ctx context.Context, namespace, name string,
 	}
 
 	resp, err := cli.get(ctx, "/system/logs/inference", urlValues, nil)
-	
+
 	if err != nil {
 		return nil, wrapResponseError(err, resp, "deployment logs", name)
 	}
-	
+
 	stream := make(chan types.Message, LogBufferSize)
 	var log types.Message
 	scanner := bufio.NewScanner(resp.body)
-	go func () {
+	go func() {
 		defer ensureReaderClosed(resp)
 		defer close(stream)
 		for scanner.Scan() {

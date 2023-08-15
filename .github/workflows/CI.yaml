@@ -67,6 +67,8 @@ jobs:
         run: |
           cd ./agent
           make
+          make swag && git add pkg &&
+          git diff --cached --exit-code || (echo 'Please run "make swag" to verify api doc' && exit 1);
       - name: mdz
         run: |
           cd ./mdz
