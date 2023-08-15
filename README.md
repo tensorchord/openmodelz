@@ -28,7 +28,28 @@ With OpenModelZ, we take care of the underlying technical details for you, and p
 
 You could **start from a single machine and scale it up to a cluster of machines** without any hassle. Besides this, We **provision a separate subdomain for each deployment** without any extra cost and effort, making each deployment easily accessible from the outside.
 
+![](https://user-images.githubusercontent.com/5100735/260622177-5a7962d1-e632-42fd-94d6-94461179882f.png)
+
 OpenModelZ forms the core of our [ModelZ](https://modelz.ai) platform, which is a serverless machine learning inference service. It is utilized in a production environment to provision models for our clients.
+
+## How does it work
+
+OpenModelZ is inspired by the [k3s](https://github.com/k3s-io/k3s) and [OpenFaaS](https://github.com/openfaas), but designed specifically for machine learning deployment. We keep the core of the system **simple, and easy to extend**.
+
+You do not need to read this section if you just want to deploy your models. But if you want to understand how OpenModelZ works, this section is for you.
+
+<p align=center>
+<img src="https://user-images.githubusercontent.com/5100735/260627792-2e89f6b8-006c-4807-84a3-29b6785af812.png" alt="OpenModelZ" width="400"/>
+</p>
+
+OpenModelZ is composed of two components:
+
+- Data Plane: The data plane is responsible for the servers. You could use `mdz server` to manage the servers. The data plane is designed to be **stateless** and **scalable**. You could easily scale the data plane by adding more servers to the cluster. It uses k3s under the hood, to support VMs, bare-metal, and IoT devices (in the future). You could also deploy OpenModelZ on a existing kubernetes cluster.
+- Control Plane: The control plane is responsible for the deployments. It manages the deployments and the underlying resources.
+
+A request will be routed to the inference servers by the load balancer. And the autoscaler will scale the number of inference servers based on the workload. We provide a domain `*.modelz.live` by default, with the help of a [wildcard DNS server](https://github.com/cunnie/sslip.io) to support the public accessible subdomain for each deployment. You could also use your own domain.
+
+You could check out the [architecture](https://docs.open.modelz.ai/architecture) documentation for more details.
 
 ## Quick Start 🚀
 
