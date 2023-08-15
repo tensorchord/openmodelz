@@ -28,7 +28,9 @@ With OpenModelZ, we take care of the underlying technical details for you, and p
 
 You could **start from a single machine and scale it up to a cluster of machines** without any hassle. Besides this, We **provision a separate subdomain for each deployment** without any extra cost and effort, making each deployment easily accessible from the outside.
 
-![](https://user-images.githubusercontent.com/5100735/260622177-5a7962d1-e632-42fd-94d6-94461179882f.png)
+<p align=center>
+<img src="https://user-images.githubusercontent.com/5100735/260630222-46e26e54-50c6-43ba-b3ea-2e64dd276f87.png" alt="OpenModelZ" width="1000"/>
+</p>
 
 OpenModelZ forms the core of our [ModelZ](https://modelz.ai) platform, which is a serverless machine learning inference service. It is utilized in a production environment to provision models for our clients.
 
