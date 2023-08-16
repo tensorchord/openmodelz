@@ -13,7 +13,7 @@
 <a href="https://badge.fury.io/py/openmodelz"><img src="https://badge.fury.io/py/openmodelz.svg" alt="PyPI version" height="20"></a>
 </p>
 
-## What is OpenModelZ
+## What is OpenModelZ?
 
 OpenModelZ ( `mdz` ) is tool to deploy your models to any cluster (GCP, AWS, Lambda labs, your home lab, or even a single machine).
 
@@ -37,9 +37,9 @@ OpenModelZ provides the following features out-of-the-box:
 
 OpenModelZ is the foundational component of the ModelZ platform available at [modelz.ai](https://modelz.ai).
 
-## How does it work
+## How it works
 
-You could start from a single machine first:
+Get a server (could be a cloud VM, a home lab, or even a single machine) and run the `mdz server start` command. OpenModelZ will bootstrap the server for you.
 
 ```text
 $ mdz server start
@@ -56,7 +56,7 @@ export MDZ_URL=http://146.235.213.84.modelz.live
 $ export MDZ_URL=http://146.235.213.84.modelz.live
 ```
 
-Then you could deploy your model and get an endpoint:
+Then you could deploy your model with a single command `mdz deploy` and get the endpoint:
 
 ```
 $ mdz deploy --image modelzai/gradio-stable-diffusion:23.03 --name sdw --port 7860 --gpu 1
