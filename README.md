@@ -15,13 +15,11 @@
 
 ## What is OpenModelZ
 
-OpenModelZ is a serverless machine learning deployment platform. It is designed to be simple, scalable, and extensible. You could use OpenModelZ to deploy your models to any cluster (GCP, AWS, Lambda labs, your home lab, or even a single machine) with a single command.
+OpenModelZ ( `mdz` ) is tool to deploy your models to any cluster (GCP, AWS, Lambda labs, your home lab, or even a single machine).
 
-Getting models into production is hard for data scientists and SREs, especially with today's complex systems and dependencies. You need to configure the monitoring, logging, and scaling infrastructure, with the right security and permissions. And then setup the domain, SSL, and load balancer.
+Getting models into production is hard for data scientists and SREs. You need to configure the monitoring, logging, and scaling infrastructure, with the right security and permissions. And then setup the domain, SSL, and load balancer. This can take weeks or months of work even for a single model deployment.
 
-This can take weeks or months of work, and it's easy to make mistakes along the way, even for a single model deployment.
-
-Now you could use `mdz deploy` to deploy your models without any hassle. OpenModelZ will take care of the underlying infrastructure for you. You will get a public accessible subdomain for each deployment (e.g. `http://jupyter-9pnxdkeb6jsfqkmq.2.242.22.143.modelz.live`)
+You can now use mdz deploy to effortlessly deploy your models. OpenModelZ handles all the infrastructure setup for you. Each deployment gets a public subdomain, like `http://jupyter-9pnxd.2.242.22.143.modelz.live`, making it easily accessible.
 
 <p align=center>
 <img src="https://user-images.githubusercontent.com/5100735/260630222-46e26e54-50c6-43ba-b3ea-2e64dd276f87.png" alt="OpenModelZ" width="1000"/>
@@ -34,10 +32,8 @@ OpenModelZ provides the following features out-of-the-box:
 - 📈 **Auto-scaling from 0**: The number of inference servers could be scaled based on the workload. You could start from 0 and scale it up to 10+ replicas easily.
 - 📦 **Support any machine learning framework**: You could deploy any machine learning framework (e.g. [vLLM](https://github.com/vllm-project/vllm)/[triton-inference-server](https://github.com/triton-inference-server/server)/[mosec](https://github.com/mosecorg/mosec) etc.) with a single command. Besides, you could also deploy your own custom inference server.
 - 🔬 **Gradio/Streamlit/Jupyter support**: We provide a robust prototyping environment with support for [Gradio](https://gradio.app), [Streamlit](https://streamlit.io/), [jupyter](https://jupyter.org/) and so on. You could visualize your model's performance and debug it easily in the notebook, or deploy a web app for your model with a single command.
-- 🏃 **Scale from a single machine to a cluster of machines**: You could start from a single machine and scale it up to a cluster of machines without any hassle, with a single command `mdz server start`.
-- ☁️ **Local, and cloud**: You have the freedom to deploy your models wherever you like: in the cloud (GCP, AWS, or others), on your home lab, or even on a single machine. If you prefer, you can also use OpenModelZ on your existing Kubernetes cluster. Before sending them to the cloud, you can test and debug your models right on your local machine.
+- 🏃 **Start from a single machine to a cluster of machines**: You could start from a single machine and scale it up to a cluster of machines without any hassle, with a single command `mdz server start`.
 - 🚀 **Public accessible subdomain for each deployment** ( optional ) : We provision a separate subdomain for each deployment without any extra cost and effort, making each deployment easily accessible from the outside.
-- 🔒 **SSL certificate for each deployment** ( coming soon ) : We provide a SSL certificate for each deployment, making each deployment secure and safe.
 
 OpenModelZ is the foundational component of the ModelZ platform available at [modelz.ai](https://modelz.ai).
 
