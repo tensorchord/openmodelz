@@ -8,7 +8,6 @@ import (
 	"os/exec"
 	"regexp"
 	"strings"
-	"syscall"
 
 	"github.com/sirupsen/logrus"
 )
@@ -90,7 +89,7 @@ func (s *openModelZInstallStep) Run() error {
 func (s *openModelZInstallStep) Verify() error {
 	fmt.Fprintf(s.options.OutputStream, "🚧 Verifying the load balancer...\n")
 	cmd := exec.Command("/bin/sh", "-c", "sudo k3s kubectl get svc -n ingress-nginx ingress-nginx-controller -o jsonpath={@.status.loadBalancer.ingress}")
-	cmd.SysProcAttr = &syscall.SysProcAttr{}
+	sysProcAttr(cmd)
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		logrus.Debugf("failed to get the ingress ip: %v", err)
