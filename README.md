@@ -14,31 +14,72 @@ One-click machine learning deployment at scale on any cluster (GCP, AWS, Lambda 
 <a href="https://badge.fury.io/py/openmodelz"><img src="https://badge.fury.io/py/openmodelz.svg" alt="PyPI version" height="20"></a>
 </p>
 
-## Why use OpenModelZ
+## What is OpenModelZ
 
-OpenModelZ is the ideal solution for practitioners who want to quickly deploy their machine learning models to a (public or private) endpoint without the hassle of spending excessive time, money, and effort to figure out the entire end-to-end process.
+OpenModelZ is a serverless machine learning deployment platform. It is designed to be simple, scalable, and extensible. You could use OpenModelZ to deploy your models to any cluster (GCP, AWS, Lambda labs, your home lab, or even a single machine) with a single command.
 
-We created OpenModelZ in response to the difficulties of finding a simple, cost-effective way to get models into production fast. Traditional deployment methods can be complex and time-consuming, requiring significant effort and resources to get models up and running.
+Getting models into production is hard for data scientists and SREs, especially with today's complex systems and dependencies. You need to configure the monitoring, logging, and scaling infrastructure, with the right security and permissions. And then setup the domain, SSL, and load balancer.
 
-- Kubernetes: Setting up and maintaining Kubernetes and Kubeflow can be challenging due to their technical complexity. Data scientists spend significant time configuring and debugging infrastructure instead of focusing on model development.
-- Managed services: Alternatively, using a managed service like AWS SageMaker can be expensive and inflexible, limiting the ability to customize deployment options.
-- Virtual machines: As an alternative, setting up a cloud VM-based solution requires learning complex infrastructure concepts like load balancers, ingress controllers, and other components. This takes a lot of specialized knowledge and resources.
+This can take weeks or months of work, and it's easy to make mistakes along the way, even for a single model deployment.
 
-With OpenModelZ, we take care of the underlying technical details for you, and provide a simple and easy-to-use CLI to deploy your models to **any cloud (GCP, AWS, or others), your home lab, or even a single machine**.
-
-You could **start from a single machine and scale it up to a cluster of machines** without any hassle. Besides this, We **provision a separate subdomain for each deployment** without any extra cost and effort, making each deployment easily accessible from the outside.
+Now you could use `mdz deploy` to deploy your models without any hassle. OpenModelZ will take care of the underlying infrastructure for you. You will get a public accessible subdomain for each deployment (e.g. `http://jupyter-9pnxdkeb6jsfqkmq.2.242.22.143.modelz.live`)
 
 <p align=center>
 <img src="https://user-images.githubusercontent.com/5100735/260630222-46e26e54-50c6-43ba-b3ea-2e64dd276f87.png" alt="OpenModelZ" width="1000"/>
 </p>
 
-OpenModelZ forms the core of our [ModelZ](https://modelz.ai) platform, which is a serverless machine learning inference service. It is utilized in a production environment to provision models for our clients.
+## Benefits
+
+OpenModelZ provides the following features out-of-the-box:
+
+- 📈 **Auto-scaling from 0**: The number of inference servers could be scaled based on the workload. You could start from 0 and scale it up to 10+ replicas easily.
+- 📦 **Support any machine learning framework**: You could deploy any machine learning framework (e.g. [vLLM](https://github.com/vllm-project/vllm)/[triton-inference-server](https://github.com/triton-inference-server/server)/[mosec](https://github.com/mosecorg/mosec) etc.) with a single command. Besides, you could also deploy your own custom inference server.
+- 🔬 **Gradio/Streamlit/Jupyter support**: We provide a robust prototyping environment with support for [Gradio](https://gradio.app), [Streamlit](https://streamlit.io/), [jupyter](https://jupyter.org/) and so on. You could visualize your model's performance and debug it easily in the notebook, or deploy a web app for your model with a single command.
+- 🏃 **Scale from a single machine to a cluster of machines**: You could start from a single machine and scale it up to a cluster of machines without any hassle, with a single command `mdz server start`.
+- ☁️ **Local, and cloud**: You have the freedom to deploy your models wherever you like: in the cloud (GCP, AWS, or others), on your home lab, or even on a single machine. If you prefer, you can also use OpenModelZ on your existing Kubernetes cluster. Before sending them to the cloud, you can test and debug your models right on your local machine.
+- 🚀 **Public accessible subdomain for each deployment** ( optional ) : We provision a separate subdomain for each deployment without any extra cost and effort, making each deployment easily accessible from the outside.
+- 🔒 **SSL certificate for each deployment** ( coming soon ) : We provide a SSL certificate for each deployment, making each deployment secure and safe.
+
+OpenModelZ is the foundational component of the ModelZ platform available at [modelz.ai](https://modelz.ai).
 
 ## How does it work
+
+You could start from a single machine first:
+
+```text
+$ mdz server start
+🚧 Creating the server...
+🚧 Initializing the load balancer...
+🚧 Initializing the GPU resource...
+🚧 Initializing the server...
+🚧 Waiting for the server to be ready...
+🐋 Checking if the server is running...
+🐳 The server is running at http://146.235.213.84.modelz.live
+🎉 You could set the environment variable to get started!
+
+export MDZ_URL=http://146.235.213.84.modelz.live
+$ export MDZ_URL=http://146.235.213.84.modelz.live
+```
+
+Then you could deploy your model and get an endpoint:
+
+```
+$ mdz deploy --image modelzai/gradio-stable-diffusion:23.03 --name sdw --port 7860 --gpu 1
+Inference sd is created
+$ mdz list
+ NAME  ENDPOINT                                                 STATUS  INVOCATIONS  REPLICAS 
+ sdw   http://sdw-qh2n0y28ybqc36oc.146.235.213.84.modelz.live   Ready           174  1/1      
+       http://146.235.213.84.modelz.live/inference/sdw.default                                
+```
+
+## Architecture
 
 OpenModelZ is inspired by the [k3s](https://github.com/k3s-io/k3s) and [OpenFaaS](https://github.com/openfaas), but designed specifically for machine learning deployment. We keep the core of the system **simple, and easy to extend**.
 
 You do not need to read this section if you just want to deploy your models. But if you want to understand how OpenModelZ works, this section is for you.
+
+<details>
+<summary>More details</summary>
 
 <p align=center>
 <img src="https://user-images.githubusercontent.com/5100735/260627792-2e89f6b8-006c-4807-84a3-29b6785af812.png" alt="OpenModelZ" width="500"/>
@@ -52,6 +93,8 @@ OpenModelZ is composed of two components:
 A request will be routed to the inference servers by the load balancer. And the autoscaler will scale the number of inference servers based on the workload. We provide a domain `*.modelz.live` by default, with the help of a [wildcard DNS server](https://github.com/cunnie/sslip.io) to support the public accessible subdomain for each deployment. You could also use your own domain.
 
 You could check out the [architecture](https://docs.open.modelz.ai/architecture) documentation for more details.
+
+</details>
 
 ## Quick Start 🚀
 
