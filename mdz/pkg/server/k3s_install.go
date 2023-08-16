@@ -17,7 +17,7 @@ type k3sInstallStep struct {
 
 func (s *k3sInstallStep) Run() error {
 	checkCmd := exec.Command("/bin/sh", "-c", "sudo k3s kubectl get nodes")
-	sysProcAttr(cmd)
+	sysProcAttr(checkCmd)
 	checkCmd.Stdout = nil
 	checkCmd.Stderr = nil
 	err := checkCmd.Run()
