@@ -2,7 +2,6 @@
 
 # OpenModelZ
 
-One-click machine learning deployment at scale on any cluster (GCP, AWS, Lambda labs, your home lab, or even a single machine)
 </div>
 
 <p align=center>
@@ -71,30 +70,6 @@ $ mdz list
  sdw   http://sdw-qh2n0y28ybqc36oc.146.235.213.84.modelz.live   Ready           174  1/1      
        http://146.235.213.84.modelz.live/inference/sdw.default                                
 ```
-
-## Architecture
-
-OpenModelZ is inspired by the [k3s](https://github.com/k3s-io/k3s) and [OpenFaaS](https://github.com/openfaas), but designed specifically for machine learning deployment. We keep the core of the system **simple, and easy to extend**.
-
-You do not need to read this section if you just want to deploy your models. But if you want to understand how OpenModelZ works, this section is for you.
-
-<details>
-<summary>More details</summary>
-
-<p align=center>
-<img src="https://user-images.githubusercontent.com/5100735/260627792-2e89f6b8-006c-4807-84a3-29b6785af812.png" alt="OpenModelZ" width="500"/>
-</p>
-
-OpenModelZ is composed of two components:
-
-- Data Plane: The data plane is responsible for the servers. You could use `mdz server` to manage the servers. The data plane is designed to be **stateless** and **scalable**. You could easily scale the data plane by adding more servers to the cluster. It uses k3s under the hood, to support VMs, bare-metal, and IoT devices (in the future). You could also deploy OpenModelZ on a existing kubernetes cluster.
-- Control Plane: The control plane is responsible for the deployments. It manages the deployments and the underlying resources.
-
-A request will be routed to the inference servers by the load balancer. And the autoscaler will scale the number of inference servers based on the workload. We provide a domain `*.modelz.live` by default, with the help of a [wildcard DNS server](https://github.com/cunnie/sslip.io) to support the public accessible subdomain for each deployment. You could also use your own domain.
-
-You could check out the [architecture](https://docs.open.modelz.ai/architecture) documentation for more details.
-
-</details>
 
 ## Quick Start 🚀
 
@@ -274,6 +249,25 @@ You could label your servers to deploy your models to specific servers. For exam
 $ mdz server label node3 gpu=true type=nvidia-a100
 $ mdz deploy ... --node-labels gpu=true,type=nvidia-a100
 ```
+
+## Architecture
+
+OpenModelZ is inspired by the [k3s](https://github.com/k3s-io/k3s) and [OpenFaaS](https://github.com/openfaas), but designed specifically for machine learning deployment. We keep the core of the system **simple, and easy to extend**.
+
+You do not need to read this section if you just want to deploy your models. But if you want to understand how OpenModelZ works, this section is for you.
+
+<p align=center>
+<img src="https://user-images.githubusercontent.com/5100735/260627792-2e89f6b8-006c-4807-84a3-29b6785af812.png" alt="OpenModelZ" width="500"/>
+</p>
+
+OpenModelZ is composed of two components:
+
+- Data Plane: The data plane is responsible for the servers. You could use `mdz server` to manage the servers. The data plane is designed to be **stateless** and **scalable**. You could easily scale the data plane by adding more servers to the cluster. It uses k3s under the hood, to support VMs, bare-metal, and IoT devices (in the future). You could also deploy OpenModelZ on a existing kubernetes cluster.
+- Control Plane: The control plane is responsible for the deployments. It manages the deployments and the underlying resources.
+
+A request will be routed to the inference servers by the load balancer. And the autoscaler will scale the number of inference servers based on the workload. We provide a domain `*.modelz.live` by default, with the help of a [wildcard DNS server](https://github.com/cunnie/sslip.io) to support the public accessible subdomain for each deployment. You could also use your own domain.
+
+You could check out the [architecture](https://docs.open.modelz.ai/architecture) documentation for more details.
 
 ## Roadmap 🗂️
 
