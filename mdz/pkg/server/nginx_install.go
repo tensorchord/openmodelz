@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"os/exec"
-	"syscall"
 )
 
 //go:embed nginx-dep.yaml
@@ -20,9 +19,7 @@ func (s *nginxInstallStep) Run() error {
 	fmt.Fprintf(s.options.OutputStream, "🚧 Initializing the load balancer...\n")
 
 	cmd := exec.Command("/bin/sh", "-c", "sudo k3s kubectl apply -f -")
-	cmd.SysProcAttr = &syscall.SysProcAttr{
-		Pdeathsig: syscall.SIGKILL,
-	}
+	sysProcAttr(cmd)
 
 	stdin, err := cmd.StdinPipe()
 	if err != nil {

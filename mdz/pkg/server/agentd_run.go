@@ -3,7 +3,6 @@ package server
 import (
 	"fmt"
 	"os/exec"
-	"syscall"
 )
 
 type agentDRunStep struct {
@@ -15,9 +14,7 @@ type agentDRunStep struct {
 func (s *agentDRunStep) Run() error {
 	fmt.Fprintf(s.options.OutputStream, "🚧 Running the agent for docker runtime...\n")
 	cmd := exec.Command("/bin/sh", "-c", "mdz local-agent &")
-	cmd.SysProcAttr = &syscall.SysProcAttr{
-		Pdeathsig: syscall.SIGKILL,
-	}
+	sysProcAttr(cmd)
 	if s.options.Verbose {
 		cmd.Stderr = s.options.OutputStream
 		cmd.Stdout = s.options.OutputStream

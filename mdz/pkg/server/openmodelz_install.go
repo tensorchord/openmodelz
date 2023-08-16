@@ -27,9 +27,7 @@ func (s *openModelZInstallStep) Run() error {
 	fmt.Fprintf(s.options.OutputStream, "🚧 Initializing the server...\n")
 
 	cmd := exec.Command("/bin/sh", "-c", "sudo k3s kubectl apply -f -")
-	cmd.SysProcAttr = &syscall.SysProcAttr{
-		Pdeathsig: syscall.SIGKILL,
-	}
+	sysProcAttr(cmd)
 
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
@@ -92,9 +90,7 @@ func (s *openModelZInstallStep) Run() error {
 func (s *openModelZInstallStep) Verify() error {
 	fmt.Fprintf(s.options.OutputStream, "🚧 Verifying the load balancer...\n")
 	cmd := exec.Command("/bin/sh", "-c", "sudo k3s kubectl get svc -n ingress-nginx ingress-nginx-controller -o jsonpath={@.status.loadBalancer.ingress}")
-	cmd.SysProcAttr = &syscall.SysProcAttr{
-		Pdeathsig: syscall.SIGKILL,
-	}
+	cmd.SysProcAttr = &syscall.SysProcAttr{}
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		logrus.Debugf("failed to get the ingress ip: %v", err)

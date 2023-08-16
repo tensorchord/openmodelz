@@ -3,7 +3,6 @@ package server
 import (
 	"fmt"
 	"os/exec"
-	"syscall"
 )
 
 // k3sKillAllStep installs k3s and related tools.
@@ -15,9 +14,7 @@ func (s *k3sKillAllStep) Run() error {
 	fmt.Fprintf(s.options.OutputStream, "🚧 Stopping the OpenModelz Cluster...\n")
 	// TODO(gaocegege): Embed the script into the binary.
 	cmd := exec.Command("/bin/sh", "-c", "/usr/local/bin/k3s-killall.sh")
-	cmd.SysProcAttr = &syscall.SysProcAttr{
-		Pdeathsig: syscall.SIGKILL,
-	}
+	sysProcAttr(cmd)
 	if s.options.Verbose {
 		cmd.Stderr = s.options.OutputStream
 		cmd.Stdout = s.options.OutputStream

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io"
 	"os/exec"
-	"syscall"
 )
 
 // k3sJoinStep installs k3s and related tools.
@@ -18,9 +17,7 @@ func (s *k3sJoinStep) Run() error {
 	cmdStr := fmt.Sprintf("INSTALL_K3S_FORCE_RESTART=true K3S_KUBECONFIG_MODE=644 K3S_TOKEN=openmodelz K3S_URL=https://%s:6443 sh -", s.options.ServerIP)
 
 	cmd := exec.Command("/bin/sh", "-c", cmdStr)
-	cmd.SysProcAttr = &syscall.SysProcAttr{
-		Pdeathsig: syscall.SIGKILL,
-	}
+	sysProcAttr(cmd)
 	if s.options.Verbose {
 		cmd.Stderr = s.options.OutputStream
 		cmd.Stdout = s.options.OutputStream

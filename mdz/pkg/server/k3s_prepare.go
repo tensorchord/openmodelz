@@ -6,7 +6,6 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
-	"syscall"
 	"text/template"
 )
 
@@ -43,9 +42,7 @@ func (s *k3sPrepare) Run() error {
 		filepath.Join(mirrorPath, mirrorFile),
 		buf.String(),
 	))
-	cmd.SysProcAttr = &syscall.SysProcAttr{
-		Pdeathsig: syscall.SIGKILL,
-	}
+	sysProcAttr(cmd)
 	if s.options.Verbose {
 		cmd.Stderr = s.options.OutputStream
 		cmd.Stdout = s.options.OutputStream

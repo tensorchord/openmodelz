@@ -8,7 +8,6 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
-	"syscall"
 )
 
 //go:embed gpu-resource.yaml
@@ -60,9 +59,7 @@ func (s *gpuInstallStep) Run() error {
 	fmt.Fprintf(s.options.OutputStream, "🚧 Initializing the GPU resource...\n")
 
 	cmd := exec.Command("/bin/sh", "-c", "sudo k3s kubectl apply -f -")
-	cmd.SysProcAttr = &syscall.SysProcAttr{
-		Pdeathsig: syscall.SIGKILL,
-	}
+	sysProcAttr(cmd)
 
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
