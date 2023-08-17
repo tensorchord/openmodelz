@@ -890,7 +890,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/pkg_server.Error"
+                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
                         }
                     }
                 }
