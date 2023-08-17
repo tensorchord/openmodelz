@@ -15,7 +15,7 @@ import (
 // @Accept      json
 // @Produce     json
 // @Param       request   body     types.DeleteFunctionRequest true "query params"
-// @Param       namespace query    string                      true "Namespace"  example("modelz-d3524a71-c17c-4c92-8faf-8603f02f4713")
+// @Param       namespace query    string                      true "Namespace"
 // @Success     202       {object} types.DeleteFunctionRequest
 // @Router      /system/inferences [delete]
 func (s *Server) handleInferenceDelete(c *gin.Context) error {

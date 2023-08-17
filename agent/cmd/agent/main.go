@@ -30,15 +30,16 @@ func handleErr(err error) {
 }
 
 // @title       modelz cluster agent
-// @version     v0.0.12
+// @version     v0.0.23
 // @description modelz kubernetes cluster agent
 
 // @contact.name  modelz support
 // @contact.url   https://github.com/tensorchord/openmodelz
 // @contact.email modelz-support@tensorchord.ai
 
-// @host    localhost:8081
-// @schemes http
+// @host     localhost:8081
+// @BasePath /
+// @schemes  http
 func main() {
 	err := run(os.Args)
 	handleErr(err)

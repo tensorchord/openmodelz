@@ -14,8 +14,8 @@ import (
 // @Tags        build
 // @Accept      json
 // @Produce     json
-// @Param       namespace query    string true "Namespace"  example("modelz-d3524a71-c17c-4c92-8faf-8603f02f4713")
-// @Param       name      path     string true "inference id" example("e50886f3-caa6-449f-9fa8-7849c6ba2e08")
+// @Param       namespace query    string true "Namespace"
+// @Param       name      path     string true "inference id"
 // @Success     200       {object} types.Build
 // @Router      /system/build/{name} [get]
 func (s *Server) handleBuildGet(c *gin.Context) error {

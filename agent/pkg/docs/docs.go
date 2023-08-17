@@ -53,7 +53,44 @@ const docTemplate = `{
                     "inference-proxy"
                 ],
                 "summary": "Inference.",
-                "responses": {}
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "inference id",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "303": {
+                        "description": "See Other",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
+                        }
+                    }
+                }
             },
             "put": {
                 "description": "Inference proxy.",
@@ -67,7 +104,44 @@ const docTemplate = `{
                     "inference-proxy"
                 ],
                 "summary": "Inference.",
-                "responses": {}
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "inference id",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "303": {
+                        "description": "See Other",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
+                        }
+                    }
+                }
             },
             "post": {
                 "description": "Inference proxy.",
@@ -81,7 +155,44 @@ const docTemplate = `{
                     "inference-proxy"
                 ],
                 "summary": "Inference.",
-                "responses": {}
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "inference id",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "303": {
+                        "description": "See Other",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
+                        }
+                    }
+                }
             },
             "delete": {
                 "description": "Inference proxy.",
@@ -95,7 +206,44 @@ const docTemplate = `{
                     "inference-proxy"
                 ],
                 "summary": "Inference.",
-                "responses": {}
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "inference id",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "303": {
+                        "description": "See Other",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
+                        }
+                    }
+                }
             }
         },
         "/system/build": {
@@ -114,7 +262,6 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "example": "\"modelz-d3524a71-c17c-4c92-8faf-8603f02f4713\"",
                         "description": "Namespace",
                         "name": "namespace",
                         "in": "query",
@@ -182,7 +329,6 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "example": "\"modelz-d3524a71-c17c-4c92-8faf-8603f02f4713\"",
                         "description": "Namespace",
                         "name": "namespace",
                         "in": "query",
@@ -190,7 +336,6 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "example": "\"e50886f3-caa6-449f-9fa8-7849c6ba2e08\"",
                         "description": "inference id",
                         "name": "name",
                         "in": "path",
@@ -223,7 +368,6 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "example": "\"modelz-d3524a71-c17c-4c92-8faf-8603f02f4713\"",
                         "description": "Namespace",
                         "name": "namespace",
                         "in": "query",
@@ -231,7 +375,6 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "example": "\"e50886f3-caa6-449f-9fa8-7849c6ba2e08\"",
                         "description": "inference id",
                         "name": "name",
                         "in": "path",
@@ -264,7 +407,6 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "example": "\"modelz-d3524a71-c17c-4c92-8faf-8603f02f4713\"",
                         "description": "Namespace",
                         "name": "namespace",
                         "in": "query",
@@ -314,7 +456,6 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "example": "\"modelz-d3524a71-c17c-4c92-8faf-8603f02f4713\"",
                         "description": "Namespace",
                         "name": "namespace",
                         "in": "query",
@@ -357,7 +498,6 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "example": "\"modelz-d3524a71-c17c-4c92-8faf-8603f02f4713\"",
                         "description": "Namespace",
                         "name": "namespace",
                         "in": "query",
@@ -400,7 +540,6 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "example": "\"modelz-d3524a71-c17c-4c92-8faf-8603f02f4713\"",
                         "description": "Namespace",
                         "name": "namespace",
                         "in": "query",
@@ -472,7 +611,6 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "example": "\"modelz-d3524a71-c17c-4c92-8faf-8603f02f4713\"",
                         "description": "Namespace",
                         "name": "namespace",
                         "in": "query",
@@ -528,7 +666,6 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "example": "\"modelz-d3524a71-c17c-4c92-8faf-8603f02f4713\"",
                         "description": "Namespace",
                         "name": "namespace",
                         "in": "query",
@@ -561,7 +698,6 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "example": "\"2023-04-01T00:06:31+08:00\"",
                         "description": "Since",
                         "name": "since",
                         "in": "query"
@@ -596,7 +732,6 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "example": "\"modelz-d3524a71-c17c-4c92-8faf-8603f02f4713\"",
                         "description": "Namespace",
                         "name": "namespace",
                         "in": "query",
@@ -629,14 +764,12 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "example": "\"2023-04-01T00:06:31+08:00\"",
                         "description": "Since",
                         "name": "since",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "example": "\"2023-05-31T00:06:31+08:00\"",
                         "description": "End",
                         "name": "end",
                         "in": "query"
@@ -729,7 +862,6 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "example": "\"modelz-d3524a71-c17c-4c92-8faf-8603f02f4713\"",
                         "description": "Namespace",
                         "name": "namespace",
                         "in": "query",
@@ -753,6 +885,12 @@ const docTemplate = `{
                             "items": {
                                 "$ref": "#/definitions/types.ScaleServiceRequest"
                             }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
                         }
                     }
                 }
@@ -859,6 +997,48 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "github.com_tensorchord_openmodelz_agent_pkg_server.Error": {
+            "type": "object",
+            "properties": {
+                "error": {},
+                "http_status_code": {
+                    "description": "Machine-readable error code.",
+                    "type": "integer"
+                },
+                "message": {
+                    "description": "Human-readable message.",
+                    "type": "string"
+                },
+                "op": {
+                    "description": "Logical operation and nested error.",
+                    "type": "string"
+                },
+                "request": {
+                    "type": "string"
+                }
+            }
+        },
+        "pkg_server.Error": {
+            "type": "object",
+            "properties": {
+                "error": {},
+                "http_status_code": {
+                    "description": "Machine-readable error code.",
+                    "type": "integer"
+                },
+                "message": {
+                    "description": "Human-readable message.",
+                    "type": "string"
+                },
+                "op": {
+                    "description": "Logical operation and nested error.",
+                    "type": "string"
+                },
+                "request": {
+                    "type": "string"
+                }
+            }
+        },
         "types.Build": {
             "type": "object",
             "properties": {
@@ -1221,9 +1401,9 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "v0.0.12",
+	Version:          "v0.0.23",
 	Host:             "localhost:8081",
-	BasePath:         "",
+	BasePath:         "/",
 	Schemes:          []string{"http"},
 	Title:            "modelz cluster agent",
 	Description:      "modelz kubernetes cluster agent",
