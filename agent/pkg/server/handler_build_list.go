@@ -14,7 +14,7 @@ import (
 // @Tags        build
 // @Accept      json
 // @Produce     json
-// @Param       namespace query    string true "Namespace"  example("modelz-d3524a71-c17c-4c92-8faf-8603f02f4713")
+// @Param       namespace query    string true "Namespace"
 // @Success     200       {object} []types.Build
 // @Router      /system/build [get]
 func (s *Server) handleBuildList(c *gin.Context) error {

@@ -21,10 +21,16 @@ import (
 // @Tags        inference-proxy
 // @Accept      json
 // @Produce     json
+// @Param       name path string true "inference id"
 // @Router      /inference/{name} [post]
 // @Router      /inference/{name} [get]
 // @Router      /inference/{name} [put]
 // @Router      /inference/{name} [delete]
+// @Success     200
+// @Failure     303
+// @Failure     400
+// @Failure     404
+// @Failure     500
 func (s *Server) handleInferenceProxy(c *gin.Context) error {
 	namespacedName := c.Param("name")
 	if namespacedName == "" {

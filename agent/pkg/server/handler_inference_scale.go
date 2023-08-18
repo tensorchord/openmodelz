@@ -14,9 +14,10 @@ import (
 // @Tags        inference
 // @Accept      json
 // @Produce     json
-// @Param       namespace query    string                    true "Namespace"  example("modelz-d3524a71-c17c-4c92-8faf-8603f02f4713")
+// @Param       namespace query    string                    true "Namespace"
 // @Param       request   body     types.ScaleServiceRequest true "query params"
 // @Success     202       {object} []types.ScaleServiceRequest
+// @Failure     400
 // @Router      /system/scale-inference [post]
 func (s *Server) handleInferenceScale(c *gin.Context) error {
 	var req types.ScaleServiceRequest

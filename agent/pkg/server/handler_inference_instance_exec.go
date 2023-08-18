@@ -16,7 +16,7 @@ import (
 // @Tags        inference
 // @Accept      json
 // @Produce     json
-// @Param       namespace query    string true "Namespace"  example("modelz-d3524a71-c17c-4c92-8faf-8603f02f4713")
+// @Param       namespace query    string true "Namespace"
 // @Param       name      path     string true "Name"
 // @Param       instance  path     string true "Instance name"
 // @Success     200       {object} []types.InferenceDeployment
