@@ -67,28 +67,16 @@ const docTemplate = `{
                         "description": "OK"
                     },
                     "303": {
-                        "description": "See Other",
-                        "schema": {
-                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
-                        }
+                        "description": "See Other"
                     },
                     "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
-                        }
+                        "description": "Bad Request"
                     },
                     "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
-                        }
+                        "description": "Not Found"
                     },
                     "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
-                        }
+                        "description": "Internal Server Error"
                     }
                 }
             },
@@ -118,28 +106,16 @@ const docTemplate = `{
                         "description": "OK"
                     },
                     "303": {
-                        "description": "See Other",
-                        "schema": {
-                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
-                        }
+                        "description": "See Other"
                     },
                     "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
-                        }
+                        "description": "Bad Request"
                     },
                     "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
-                        }
+                        "description": "Not Found"
                     },
                     "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
-                        }
+                        "description": "Internal Server Error"
                     }
                 }
             },
@@ -169,28 +145,16 @@ const docTemplate = `{
                         "description": "OK"
                     },
                     "303": {
-                        "description": "See Other",
-                        "schema": {
-                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
-                        }
+                        "description": "See Other"
                     },
                     "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
-                        }
+                        "description": "Bad Request"
                     },
                     "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
-                        }
+                        "description": "Not Found"
                     },
                     "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
-                        }
+                        "description": "Internal Server Error"
                     }
                 }
             },
@@ -220,28 +184,16 @@ const docTemplate = `{
                         "description": "OK"
                     },
                     "303": {
-                        "description": "See Other",
-                        "schema": {
-                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
-                        }
+                        "description": "See Other"
                     },
                     "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
-                        }
+                        "description": "Bad Request"
                     },
                     "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
-                        }
+                        "description": "Not Found"
                     },
                     "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
-                        }
+                        "description": "Internal Server Error"
                     }
                 }
             }
@@ -888,10 +840,7 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/github.com_tensorchord_openmodelz_agent_pkg_server.Error"
-                        }
+                        "description": "Bad Request"
                     }
                 }
             }
@@ -997,48 +946,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "github.com_tensorchord_openmodelz_agent_pkg_server.Error": {
-            "type": "object",
-            "properties": {
-                "error": {},
-                "http_status_code": {
-                    "description": "Machine-readable error code.",
-                    "type": "integer"
-                },
-                "message": {
-                    "description": "Human-readable message.",
-                    "type": "string"
-                },
-                "op": {
-                    "description": "Logical operation and nested error.",
-                    "type": "string"
-                },
-                "request": {
-                    "type": "string"
-                }
-            }
-        },
-        "pkg_server.Error": {
-            "type": "object",
-            "properties": {
-                "error": {},
-                "http_status_code": {
-                    "description": "Machine-readable error code.",
-                    "type": "integer"
-                },
-                "message": {
-                    "description": "Human-readable message.",
-                    "type": "string"
-                },
-                "op": {
-                    "description": "Logical operation and nested error.",
-                    "type": "string"
-                },
-                "request": {
-                    "type": "string"
-                }
-            }
-        },
         "types.Build": {
             "type": "object",
             "properties": {

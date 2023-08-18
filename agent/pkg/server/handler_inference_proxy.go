@@ -27,10 +27,10 @@ import (
 // @Router      /inference/{name} [put]
 // @Router      /inference/{name} [delete]
 // @Success     200
-// @Failure     303 {object} server.Error
-// @Failure     400 {object} server.Error
-// @Failure     404 {object} server.Error
-// @Failure     500 {object} server.Error
+// @Failure     303
+// @Failure     400
+// @Failure     404
+// @Failure     500
 func (s *Server) handleInferenceProxy(c *gin.Context) error {
 	namespacedName := c.Param("name")
 	if namespacedName == "" {

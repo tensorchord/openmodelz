@@ -17,7 +17,7 @@ import (
 // @Param       namespace query    string                    true "Namespace"
 // @Param       request   body     types.ScaleServiceRequest true "query params"
 // @Success     202       {object} []types.ScaleServiceRequest
-// @Failure     400       {object} server.Error
+// @Failure     400
 // @Router      /system/scale-inference [post]
 func (s *Server) handleInferenceScale(c *gin.Context) error {
 	var req types.ScaleServiceRequest
