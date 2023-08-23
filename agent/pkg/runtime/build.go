@@ -4,13 +4,13 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/tensorchord/openmodelz/modelzetes/pkg/consts"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/tensorchord/openmodelz/agent/api/types"
 	"github.com/tensorchord/openmodelz/agent/errdefs"
 	"github.com/tensorchord/openmodelz/agent/pkg/k8s"
+	"github.com/tensorchord/openmodelz/modelzetes/pkg/consts"
 )
 
 func (r Runtime) BuildList(ctx context.Context, namespace string) (

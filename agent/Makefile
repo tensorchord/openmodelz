@@ -106,12 +106,12 @@ export GOFLAGS ?= -count=1
 
 .DEFAULT_GOAL:=build
 
-build: build-local  ## Build the release version of envd
+build: build-local  ## Build the release version
 
 help:  ## Display this help
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} /^[a-zA-Z0-9_-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 
-debug: debug-local  ## Build the debug version of envd
+debug: debug-local  ## Build the debug version
 
 # more info about `GOGC` env: https://github.com/golangci/golangci-lint#memory-usage-of-golangci-lint
 lint: $(GOLANGCI_LINT)  ## Lint GO code

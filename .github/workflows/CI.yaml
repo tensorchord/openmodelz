@@ -37,6 +37,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
+        dir: ["modelzetes", "autoscaler", "agent", "mdz""]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Check out code
@@ -54,22 +55,11 @@ jobs:
             ${{ runner.OS }}-build-${{ env.cache-name }}-
             ${{ runner.OS }}-build-
             ${{ runner.OS }}-
-      - name: modelzetes test
+
+      - name: test
         run: |
-          cd modelzetes
-          go test ./...
+          cd ${{ matrix.dir }}
           make
-      - name: autoscaler
-        run: |
-          cd ./autoscaler
-          make
-      - name: agent
-        run: |
-          cd ./agent
-          make
-          make swag && git add pkg &&
-          git diff --cached --exit-code || (echo 'Please run "make swag" to verify api doc' && exit 1);
-      - name: mdz
-        run: |
-          cd ./mdz
-          make
+          make test
+          make fmt
+          git diff --exit-code || (echo 'Please run "make fmt" to format code' && exit 1);

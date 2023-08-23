@@ -69,7 +69,7 @@ func (s *Scaler) AutoScale(interval time.Duration) {
 					}
 				}
 				if len(ts.Samples) < 1 {
-					logrus.Infof("Sample not found for inference %s.", &inferenceName)
+					logrus.Infof("Sample not found for inference %s.", inferenceName)
 					continue
 				}
 
@@ -151,8 +151,8 @@ func (s *Scaler) AutoScale(interval time.Duration) {
 						// update the inference, set minReplicas to expectedReplicas
 						if resp.Spec.Scaling.MinReplicas != nil &&
 							*resp.Spec.Scaling.MinReplicas > int32(expectedReplicas) {
-							resp.Status.EventMessage = fmt.Sprintf("Deployment %d replicas always CrashLoopBackOff, system scales down the replicas to %d, original min replicas is %s, reset it to %d",
-								count, expectedReplicas, *resp.Spec.Scaling.MinReplicas,
+							resp.Status.EventMessage = fmt.Sprintf("Deployment %d replicas always CrashLoopBackOff, system scales down the replicas to %d, original min replicas is %d, reset it to %d",
+								count, expectedReplicas, resp.Spec.Scaling.MinReplicas,
 								expectedReplicas)
 							*resp.Spec.Scaling.MinReplicas = int32(expectedReplicas)
 							if _, err := s.client.DeploymentUpdate(context.TODO(), namespace, resp); err != nil {
