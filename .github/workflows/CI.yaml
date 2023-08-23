@@ -37,6 +37,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
+        dir: ["modelzetes", "autoscaler", "agent", "mdz"]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Check out code
@@ -45,31 +46,18 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: 1.19
-      - name: Cache Go modules
-        uses: actions/cache@preview
+      - uses: actions/cache@v3
         with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-build-${{ hashFiles('**/go.sum') }}
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
-            ${{ runner.OS }}-build-${{ env.cache-name }}-
-            ${{ runner.OS }}-build-
-            ${{ runner.OS }}-
-      - name: modelzetes test
+            ${{ runner.os }}-go-
+      - name: test
         run: |
-          cd modelzetes
-          go test ./...
+          cd ${{ matrix.dir }}
           make
-      - name: autoscaler
-        run: |
-          cd ./autoscaler
-          make
-      - name: agent
-        run: |
-          cd ./agent
-          make
-          make swag && git add pkg &&
-          git diff --cached --exit-code || (echo 'Please run "make swag" to verify api doc' && exit 1);
-      - name: mdz
-        run: |
-          cd ./mdz
-          make
+          make test
+          make fmt
+          git diff --exit-code || (echo 'Please run "make fmt" to format code' && exit 1);

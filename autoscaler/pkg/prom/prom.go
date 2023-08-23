@@ -84,12 +84,12 @@ func (q PrometheusQuery) Query(query string, time time.Time) ([]*TimeSeries, err
 	api := promapiv1.NewAPI(client)
 	results, warnings, err := api.Query(context.TODO(), query, time)
 	if len(warnings) != 0 {
-		logrus.Infof("Prom query warnings", "warnings", warnings)
+		logrus.Info("Prom query warnings", "warnings", warnings)
 	}
 	if err != nil {
 		return ts, err
 	}
-	logrus.Infof("Prom query result", "result", results.String(), "resultsType", results.Type())
+	logrus.Info("Prom query result", "result", results.String(), "resultsType", results.Type())
 	return convertPromResultsToTimeSeries(results)
 }
 
