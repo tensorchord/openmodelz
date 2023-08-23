@@ -46,15 +46,6 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: 1.19
-      - name: Cache Go modules
-        uses: actions/cache@preview
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-build-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.OS }}-build-${{ env.cache-name }}-
-            ${{ runner.OS }}-build-
-            ${{ runner.OS }}-
 
       - name: test
         run: |
