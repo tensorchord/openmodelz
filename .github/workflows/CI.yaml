@@ -37,7 +37,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        dir: ["modelzetes", "autoscaler", "agent", "mdz""]
+        dir: ["modelzetes", "autoscaler", "agent", "mdz"]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Check out code
