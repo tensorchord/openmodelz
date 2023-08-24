@@ -253,6 +253,7 @@ func MakeAnnotations(fni *faasv1.InferenceIngress, host string) map[string]strin
 	specJSON, _ := json.Marshal(fni)
 	annotations := make(map[string]string)
 
+	annotations["kubernetes.io/ingress.class"] = class
 	annotations["ai.tensorchord.spec"] = string(specJSON)
 
 	if !fni.Spec.BypassGateway {

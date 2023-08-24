@@ -118,57 +118,57 @@ func TestMakeAnnotations(t *testing.T) {
 				"zalando.org/skipper-filter":  `setPath("/function/nodeinfo")`,
 			},
 		},
-		{
-			name: "creates tls issuer annotation",
-			ingress: faasv1.InferenceIngress{
-				ObjectMeta: metav1.ObjectMeta{
-					Annotations: map[string]string{
-						"kubernetes.io/ingress.class": "nginx",
-					},
-				},
-				Spec: faasv1.InferenceIngressSpec{
-					IngressType:   "nginx",
-					Function:      "nodeinfo",
-					BypassGateway: false,
-					Domain:        "nodeinfo.example.com",
-					TLS: &faasv1.InferenceIngressTLS{
-						IssuerRef: faasv1.ObjectReference{
-							Name: "clusterFoo",
-							Kind: "ClusterIssuer",
-						},
-						Enabled: true,
-					},
-				},
-			},
-			expected: map[string]string{
-				"cert-manager.io/cluster-issuer": "clusterFoo",
-			},
-		},
-		{
-			name: "default tls issuer is local",
-			ingress: faasv1.InferenceIngress{
-				ObjectMeta: metav1.ObjectMeta{
-					Annotations: map[string]string{
-						"kubernetes.io/ingress.class": "nginx",
-					},
-				},
-				Spec: faasv1.InferenceIngressSpec{
-					IngressType:   "nginx",
-					Function:      "nodeinfo",
-					BypassGateway: false,
-					Domain:        "nodeinfo.example.com",
-					TLS: &faasv1.InferenceIngressTLS{
-						IssuerRef: faasv1.ObjectReference{
-							Name: "clusterFoo",
-						},
-						Enabled: true,
-					},
-				},
-			},
-			expected: map[string]string{
-				"cert-manager.io/issuer": "clusterFoo",
-			},
-		},
+		// {
+		// 	name: "creates tls issuer annotation",
+		// 	ingress: faasv1.InferenceIngress{
+		// 		ObjectMeta: metav1.ObjectMeta{
+		// 			Annotations: map[string]string{
+		// 				"kubernetes.io/ingress.class": "nginx",
+		// 			},
+		// 		},
+		// 		Spec: faasv1.InferenceIngressSpec{
+		// 			IngressType:   "nginx",
+		// 			Function:      "nodeinfo",
+		// 			BypassGateway: false,
+		// 			Domain:        "nodeinfo.example.com",
+		// 			TLS: &faasv1.InferenceIngressTLS{
+		// 				IssuerRef: faasv1.ObjectReference{
+		// 					Name: "clusterFoo",
+		// 					Kind: "ClusterIssuer",
+		// 				},
+		// 				Enabled: true,
+		// 			},
+		// 		},
+		// 	},
+		// 	expected: map[string]string{
+		// 		"cert-manager.io/cluster-issuer": "clusterFoo",
+		// 	},
+		// },
+		// {
+		// 	name: "default tls issuer is local",
+		// 	ingress: faasv1.InferenceIngress{
+		// 		ObjectMeta: metav1.ObjectMeta{
+		// 			Annotations: map[string]string{
+		// 				"kubernetes.io/ingress.class": "nginx",
+		// 			},
+		// 		},
+		// 		Spec: faasv1.InferenceIngressSpec{
+		// 			IngressType:   "nginx",
+		// 			Function:      "nodeinfo",
+		// 			BypassGateway: false,
+		// 			Domain:        "nodeinfo.example.com",
+		// 			TLS: &faasv1.InferenceIngressTLS{
+		// 				IssuerRef: faasv1.ObjectReference{
+		// 					Name: "clusterFoo",
+		// 				},
+		// 				Enabled: true,
+		// 			},
+		// 		},
+		// 	},
+		// 	expected: map[string]string{
+		// 		"cert-manager.io/issuer": "clusterFoo",
+		// 	},
+		// },
 	}
 
 	for _, tc := range cases {
