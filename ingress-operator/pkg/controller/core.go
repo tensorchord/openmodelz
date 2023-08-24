@@ -275,6 +275,7 @@ func MakeAnnotations(fni *faasv1.InferenceIngress, host string) map[string]strin
 
 	annotations["nginx.ingress.kubernetes.io/proxy-send-timeout"] = "300"
 	annotations["nginx.ingress.kubernetes.io/proxy-read-timeout"] = "300"
+	annotations["nginx.ingress.kubernetes.io/proxy-body-size"] = "16m"
 
 	// We use the default certificate for now.
 	// if fni.Spec.UseTLS() {

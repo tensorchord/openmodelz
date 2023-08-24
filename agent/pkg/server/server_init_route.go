@@ -20,6 +20,7 @@ const (
 	endpointNamespacePlural = "/namespaces"
 	endpointHealthz         = "/healthz"
 	endpointBuild           = "/build"
+	endpointImageCache      = "/image-cache"
 )
 
 func (s *Server) registerRoutes() {
@@ -93,6 +94,9 @@ func (s *Server) registerRoutes() {
 	}
 	// TODO(gaocegege): Support metrics
 	// metrics
+
+	// image cache
+	controlPlane.POST(endpointImageCache, WrapHandler(s.handleImageCacheCreate))
 }
 
 // registerMetricsRoutes registers the metrics routes.

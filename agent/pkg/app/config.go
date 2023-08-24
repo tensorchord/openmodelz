@@ -39,6 +39,7 @@ func configFromCLI(c *cli.Context) config.Config {
 	cfg.Build.BuildCtlBin = c.String(flagBuildCtlBin)
 	cfg.Build.BuildRegistry = c.String(flagBuildRegistry)
 	cfg.Build.BuildRegistryToken = c.String(flagBuildRegistryToken)
+	cfg.Build.BuildImagePullSecret = c.String(flagBuildImagePullSecret)
 
 	// loki
 	cfg.Logs.Timeout = c.Duration(flagLogsTimeout)

@@ -5,9 +5,7 @@ const (
 
 	LabelInferenceName = "inference"
 
-	AnnotationMinReplicas = "ai.tensorchord.scale.min"
-	AnnotationMaxReplicas = "ai.tensorchord.scale.max"
-	AnnotationBuilding    = "ai.tensorchord.building"
+	AnnotationBuilding = "ai.tensorchord.building"
 
 	TolerationGPU              = "ai.tensorchord.gpu"
 	TolerationNvidiaGPUPresent = "nvidia.com/gpu"

@@ -43,12 +43,13 @@ const (
 	flagInferenceCacheTTL   = "inference-cache-ttl"
 
 	// build
-	flagBuildEnabled       = "build-enabled"
-	flagBuilderImage       = "builder-image"
-	flagBuildkitdAddress   = "buildkitd-address"
-	flagBuildCtlBin        = "buildctl-bin"
-	flagBuildRegistry      = "build-registry"
-	flagBuildRegistryToken = "build-registry-token"
+	flagBuildEnabled         = "build-enabled"
+	flagBuilderImage         = "builder-image"
+	flagBuildkitdAddress     = "buildkitd-address"
+	flagBuildCtlBin          = "buildctl-bin"
+	flagBuildRegistry        = "build-registry"
+	flagBuildRegistryToken   = "build-registry-token"
+	flagBuildImagePullSecret = "build-image-pull-secret"
 
 	// metrics
 	flagMetricsPollingInterval = "metrics-polling-interval"
@@ -236,6 +237,14 @@ func New() App {
 			Usage:   "Token to use for building models. ",
 			EnvVars: []string{"MODELZ_AGENT_BUILD_REGISTRY_TOKEN"},
 			Aliases: []string{"bt"},
+		},
+		&cli.StringFlag{
+			Name:    flagBuildImagePullSecret,
+			Hidden:  true,
+			Usage:   "Image pull secret to use for building models.",
+			EnvVars: []string{"MODELZ_AGENT_BUILD_IMAGE_PULL_SECRET"},
+			Aliases: []string{"bp"},
+			Value:   "dockerhub-secret",
 		},
 		&cli.DurationFlag{
 			Name:    flagMetricsPollingInterval,

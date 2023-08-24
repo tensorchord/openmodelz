@@ -46,6 +46,8 @@ const (
 	PhaseNotReady Phase = "NotReady"
 
 	PhaseBuilding Phase = "Building"
+
+	PhaseOptimizing Phase = "Optimizing"
 )
 
 // InferenceUsage represents CPU and RAM used by all of the

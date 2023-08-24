@@ -4,20 +4,21 @@ import (
 	"fmt"
 
 	"github.com/sirupsen/logrus"
-	ingressclient "github.com/tensorchord/openmodelz/ingress-operator/pkg/client/clientset/versioned"
-	clientset "github.com/tensorchord/openmodelz/modelzetes/pkg/client/clientset/versioned"
-	informers "github.com/tensorchord/openmodelz/modelzetes/pkg/client/informers/externalversions"
-	"github.com/tensorchord/openmodelz/modelzetes/pkg/consts"
-	"github.com/tensorchord/openmodelz/modelzetes/pkg/signals"
 	kubeinformers "k8s.io/client-go/informers"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/tools/clientcmd"
 
+	kubefledged "github.com/senthilrch/kube-fledged/pkg/client/clientset/versioned"
 	"github.com/tensorchord/openmodelz/agent/pkg/k8s"
 	"github.com/tensorchord/openmodelz/agent/pkg/log"
 	"github.com/tensorchord/openmodelz/agent/pkg/runtime"
 	"github.com/tensorchord/openmodelz/agent/pkg/scaling"
+	ingressclient "github.com/tensorchord/openmodelz/ingress-operator/pkg/client/clientset/versioned"
+	clientset "github.com/tensorchord/openmodelz/modelzetes/pkg/client/clientset/versioned"
+	informers "github.com/tensorchord/openmodelz/modelzetes/pkg/client/informers/externalversions"
+	"github.com/tensorchord/openmodelz/modelzetes/pkg/consts"
+	"github.com/tensorchord/openmodelz/modelzetes/pkg/signals"
 )
 
 func (s *Server) initKubernetesResources() error {
@@ -45,6 +46,10 @@ func (s *Server) initKubernetesResources() error {
 		if err != nil {
 			return err
 		}
+	}
+	kubefledgedClient, err := kubefledged.NewForConfig(clientCmdConfig)
+	if err != nil {
+		return err
 	}
 
 	kubeInformerFactory := kubeinformers.NewSharedInformerFactoryWithOptions(
@@ -90,9 +95,10 @@ func (s *Server) initKubernetesResources() error {
 
 	runtime, err := runtime.New(clientCmdConfig,
 		endpoints, deployments, inferences, pods,
-		kubeClient, ingressClient, inferenceClient, s.eventRecorder,
+		kubeClient, ingressClient, kubefledgedClient, inferenceClient,
+		s.eventRecorder,
 		s.config.Ingress.IngressEnabled, s.config.DB.EventEnabled,
-		s.config.Ingress.AnyIPToDomain,
+		s.config.Build.BuildEnabled, s.config.Ingress.AnyIPToDomain,
 	)
 	if err != nil {
 		return err

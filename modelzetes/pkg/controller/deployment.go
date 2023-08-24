@@ -288,15 +288,6 @@ func makeAnnotations(inference *v2alpha1.Inference) map[string]string {
 		}
 	}
 
-	if inference.Spec.Scaling != nil && inference.Spec.Scaling.MinReplicas != nil {
-		annotations[consts.AnnotationMinReplicas] = strconv.Itoa(
-			int(*inference.Spec.Scaling.MinReplicas))
-	}
-	if inference.Spec.Scaling != nil && inference.Spec.Scaling.MaxReplicas != nil {
-		annotations[consts.AnnotationMaxReplicas] = strconv.Itoa(
-			int(*inference.Spec.Scaling.MaxReplicas))
-	}
-
 	// save inference spec in deployment annotations
 	// used to detect changes in inference spec
 	specJSON, err := json.Marshal(inference.Spec)

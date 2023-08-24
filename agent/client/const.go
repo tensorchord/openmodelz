@@ -23,6 +23,7 @@ const (
 	gatewayNamespaceControlPlanePath         = "/system/namespaces"
 	gatewayBuildControlPlanePath             = "/system/build"
 	gatewayBuildInstanceControlPlanePath     = "/system/build/%s"
+	gatewayImageCacheControlPlanePath        = "/system/image-cache"
 )
 
 const (

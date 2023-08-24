@@ -32,8 +32,13 @@ func (s *Server) handleInferenceScale(c *gin.Context) error {
 			http.StatusBadRequest, errors.New("namespace is required"), "inference-scale")
 	}
 
+	inf, err := s.runtime.InferenceGet(namespace, req.ServiceName)
+	if err != nil {
+		return errFromErrDefs(err, "inference-scale")
+	}
+
 	if err := s.runtime.InferenceScale(c.Request.Context(),
-		namespace, req); err != nil {
+		namespace, req, inf); err != nil {
 		return errFromErrDefs(err, "inference-scale")
 	}
 

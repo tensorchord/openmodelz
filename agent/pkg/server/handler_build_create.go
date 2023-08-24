@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 
 	"github.com/tensorchord/openmodelz/agent/api/types"
 )
@@ -29,11 +30,15 @@ func (s *Server) handleBuildCreate(c *gin.Context) error {
 	}
 	s.validator.DefaultBuildRequest(&req)
 
-	if err := s.runtime.BuildCreate(c.Request.Context(), req,
+	inference, err := s.runtime.InferenceGetCRD(req.Spec.Namespace, req.Spec.Name)
+	if err != nil {
+		return errFromErrDefs(err, "inference-instance-list")
+	}
+
+	if err := s.runtime.BuildCreate(c.Request.Context(), req, inference,
 		s.config.Build.BuilderImage, s.config.Build.BuildkitdAddress,
-		s.config.Build.BuildCtlBin, s.config.Build.BuildRegistry,
-		s.config.Build.BuildRegistryToken,
-	); err != nil {
+		s.config.Build.BuildCtlBin, s.config.Build.BuildImagePullSecret); err != nil {
+		logrus.Errorf("failed to create build: %v", err)
 		return errFromErrDefs(err, "build-create")
 	}
 	c.JSON(http.StatusOK, req)
