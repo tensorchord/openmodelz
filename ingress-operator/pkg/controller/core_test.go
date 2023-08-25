@@ -87,9 +87,9 @@ func TestMakeAnnotations(t *testing.T) {
 					},
 				},
 				Spec: faasv1.InferenceIngressSpec{
-					IngressType:   "nginx",
-					Framework: "mosec",
-					Function: "main",
+					IngressType: "nginx",
+					Framework:   "mosec",
+					Function:    "main",
 				},
 			},
 			expected: map[string]string{

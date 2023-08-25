@@ -160,8 +160,8 @@ func Test_makeTLS(t *testing.T) {
 		expected []netv1.IngressTLS
 	}{
 		{
-			name:     "tls disabled results in empty tls config",
-			fni:      &faasv1.InferenceIngress{
+			name: "tls disabled results in empty tls config",
+			fni: &faasv1.InferenceIngress{
 				Spec: faasv1.InferenceIngressSpec{
 					TLS: &faasv1.InferenceIngressTLS{
 						Enabled: false,
