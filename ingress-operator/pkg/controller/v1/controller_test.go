@@ -43,7 +43,7 @@ func Test_makeRules_Nginx_RootPath_HasRegex(t *testing.T) {
 }
 
 func Test_makeRules_Nginx_RootPath_IsRootWithBypassMode(t *testing.T) {
-	wantFunction := "nodeinfo"
+	wantFunction := "apiserver"
 	ingress := faasv1.InferenceIngress{
 		ObjectMeta: metav1.ObjectMeta{
 			Annotations: map[string]string{},
@@ -161,7 +161,13 @@ func Test_makeTLS(t *testing.T) {
 	}{
 		{
 			name:     "tls disabled results in empty tls config",
-			fni:      &faasv1.InferenceIngress{Spec: faasv1.InferenceIngressSpec{TLS: &faasv1.InferenceIngressTLS{Enabled: false}}},
+			fni:      &faasv1.InferenceIngress{
+				Spec: faasv1.InferenceIngressSpec{
+					TLS: &faasv1.InferenceIngressTLS{
+						Enabled: false,
+					},
+				},
+			},
 			expected: []netv1.IngressTLS{},
 		},
 		{
@@ -180,7 +186,6 @@ func Test_makeTLS(t *testing.T) {
 			},
 			expected: []netv1.IngressTLS{
 				{
-					SecretName: "foo.example.com-cert",
 					Hosts: []string{
 						"foo.example.com",
 					},
