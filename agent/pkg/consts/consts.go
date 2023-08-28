@@ -1,9 +1,9 @@
 package consts
 
 const (
-	LabelProjectID = "ai.tensorchord.project"
-	LabelBuildName = "ai.tensorchord.build"
-	LabelName      = "ai.tensorchord.name"
+	LabelBuildName      = "ai.tensorchord.build"
+	LabelName           = "ai.tensorchord.name"
+	LabelServerResource = "ai.tensorchord.server-resource"
 
 	Domain = "modelz.live"
 )

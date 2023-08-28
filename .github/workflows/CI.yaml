@@ -37,7 +37,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        dir: ["modelzetes", "autoscaler", "agent", "mdz"]
+        dir: ["modelzetes", "autoscaler", "agent", "mdz", "ingress-operator"]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Check out code
@@ -57,7 +57,7 @@ jobs:
       - name: test
         run: |
           cd ${{ matrix.dir }}
-          make
-          make test
           make fmt
           git diff --exit-code || (echo 'Please run "make fmt" to format code' && exit 1);
+          make
+          make test

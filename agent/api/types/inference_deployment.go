@@ -118,3 +118,12 @@ type Quantity string
 const (
 	RuntimeClassNvidia string = "nvidia"
 )
+
+type ImageCache struct {
+	// Name is the name of the inference.
+	Name           string `json:"name"`
+	Namespace      string `json:"namespace"`
+	Image          string `json:"image"`
+	ForceFullCache bool   `json:"force_full_cache"`
+	NodeSelector   string `json:"node_selector"`
+}

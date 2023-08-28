@@ -155,7 +155,7 @@ func (s *InferenceScaler) Scale(ctx context.Context,
 				ServiceName:  inferenceName,
 				Replicas:     minReplicas,
 				EventMessage: fmt.Sprintf("scale up to minimum replicas %d", minReplicas),
-			}); err != nil {
+			}, inf); err != nil {
 				return err
 			}
 			logrus.WithField("inference", inferenceName).

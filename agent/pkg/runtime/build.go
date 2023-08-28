@@ -10,6 +10,7 @@ import (
 	"github.com/tensorchord/openmodelz/agent/api/types"
 	"github.com/tensorchord/openmodelz/agent/errdefs"
 	"github.com/tensorchord/openmodelz/agent/pkg/k8s"
+	"github.com/tensorchord/openmodelz/modelzetes/pkg/apis/modelzetes/v2alpha1"
 	"github.com/tensorchord/openmodelz/modelzetes/pkg/consts"
 )
 
@@ -40,11 +41,9 @@ func (r Runtime) BuildList(ctx context.Context, namespace string) (
 }
 
 func (r Runtime) BuildCreate(ctx context.Context,
-	req types.Build, builderImage, buildkitdAddress, buildCtlBin,
-	buildRegistry, buildRegistryToken string) error {
-	buildJob, err := k8s.MakeBuild(req, builderImage,
-		buildkitdAddress, buildCtlBin,
-		buildRegistry, buildRegistryToken)
+	req types.Build, inference *v2alpha1.Inference, builderImage, buildkitdAddress, buildCtlBin, secret string) error {
+	buildJob, err := k8s.MakeBuild(req, inference, builderImage,
+		buildkitdAddress, buildCtlBin, secret)
 	if err != nil {
 		return errdefs.System(err)
 	}

@@ -119,33 +119,48 @@ func (v Validator) ValidateBuildRequest(request *types.Build) error {
 		return fmt.Errorf("name: is required")
 	}
 
-	if request.Spec.Repository == "" {
-		return fmt.Errorf("git repository: is required")
-	}
-
-	if request.Spec.ArtifactImage == "" {
+	if request.Spec.BuildTarget.ArtifactImage == "" {
 		return fmt.Errorf("artifact image: is required")
-	}
-
-	if request.Spec.ProjectID == "" {
-		return fmt.Errorf("project id: is required")
 	}
 
 	return nil
 }
 
-func (v Validator) DefaultBuildRequest(request *types.Build) {
-	if request.Spec.Builder == "" {
-		request.Spec.Builder = types.BuilderTypeDockerfile
-	}
-	if request.Spec.Branch == "" && request.Spec.Revision == "" {
-		request.Spec.Branch = "main"
-	}
-	if request.Spec.ArtifactImageTag == "" {
-		request.Spec.ArtifactImageTag = rand.String(8)
+func (v Validator) ValidateImageCacheRequest(request *types.ImageCache) error {
+	if request.Name == "" {
+		return fmt.Errorf("name: is required")
 	}
 
-	if request.Spec.Duration == "" {
-		request.Spec.Duration = defaultBuildDuration
+	if request.Namespace == "" {
+		return fmt.Errorf("namespace: is required")
+	}
+
+	if request.Image == "" {
+		return fmt.Errorf("image: is required")
+	}
+
+	if request.NodeSelector == "" {
+		return fmt.Errorf("node selector: is required")
+	}
+	return nil
+}
+
+func (v Validator) DefaultBuildRequest(request *types.Build) {
+	if request.Spec.BuildTarget.Builder == "" {
+		request.Spec.BuildTarget.Builder = types.BuilderTypeImage
+	}
+
+	if request.Spec.BuildTarget.Builder != types.BuilderTypeImage {
+		if request.Spec.Branch == "" && request.Spec.Revision == "" {
+			request.Spec.Branch = "main"
+		}
+
+		if request.Spec.BuildTarget.Duration == "" {
+			request.Spec.BuildTarget.Duration = defaultBuildDuration
+		}
+	}
+
+	if request.Spec.BuildTarget.ArtifactImageTag == "" {
+		request.Spec.BuildTarget.ArtifactImageTag = rand.String(8)
 	}
 }

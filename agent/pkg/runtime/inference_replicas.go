@@ -2,7 +2,6 @@ package runtime
 
 import (
 	"context"
-	"strconv"
 
 	"github.com/tensorchord/openmodelz/modelzetes/pkg/consts"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -12,7 +11,7 @@ import (
 )
 
 func (r Runtime) InferenceScale(ctx context.Context, namespace string,
-	req types.ScaleServiceRequest) (err error) {
+	req types.ScaleServiceRequest, inf *types.InferenceDeployment) (err error) {
 	options := metav1.GetOptions{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "Deployment",
@@ -29,24 +28,15 @@ func (r Runtime) InferenceScale(ctx context.Context, namespace string,
 	oldReplicas := *deployment.Spec.Replicas
 	replicas := int32(req.Replicas)
 
-	minReplicasStr := deployment.Annotations[consts.AnnotationMinReplicas]
-	if minReplicasStr != "" {
-		minReplicas, err := strconv.Atoi(minReplicasStr)
-		if err != nil {
-			return errdefs.InvalidParameter(err)
+	if inf.Spec.Scaling != nil {
+		minReplicas := *inf.Spec.Scaling.MinReplicas
+		if replicas < minReplicas {
+			replicas = minReplicas
 		}
-		if replicas < int32(minReplicas) {
-			replicas = int32(minReplicas)
-		}
-	}
-	maxReplicasStr := deployment.Annotations[consts.AnnotationMaxReplicas]
-	if maxReplicasStr != "" {
-		maxReplicas, err := strconv.Atoi(maxReplicasStr)
-		if err != nil {
-			return errdefs.InvalidParameter(err)
-		}
-		if replicas > int32(maxReplicas) {
-			replicas = int32(maxReplicas)
+
+		maxReplicas := *inf.Spec.Scaling.MaxReplicas
+		if replicas > maxReplicas {
+			replicas = maxReplicas
 		}
 	}
 
@@ -60,6 +50,17 @@ func (r Runtime) InferenceScale(ctx context.Context, namespace string,
 	event := types.DeploymentScaleDownEvent
 	if oldReplicas < replicas {
 		event = types.DeploymentScaleUpEvent
+	}
+
+	var building bool
+	if r.buildEnabled {
+		_, building = deployment.Annotations[consts.AnnotationBuilding]
+	}
+
+	if building {
+		event = types.DeploymentScaleBlockEvent
+		req.EventMessage = "Deployment is building image, scale is blocked"
+		replicas = 0
 	}
 
 	if r.eventEnabled {

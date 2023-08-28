@@ -272,6 +272,7 @@ func (c *Controller) syncHandler(key string) error {
 	}
 
 	svcGetOptions := metav1.GetOptions{}
+	svcName := consts.DefaultServicePrefix + deploymentName
 	_, getSvcErr := c.kubeclientset.CoreV1().Services(function.Namespace).Get(context.TODO(), deploymentName, svcGetOptions)
 	if errors.IsNotFound(getSvcErr) {
 		glog.Infof("Creating ClusterIP service for '%s'", function.Spec.Name)
@@ -319,7 +320,7 @@ func (c *Controller) syncHandler(key string) error {
 			glog.Errorf("Updating deployment for '%s' failed: %v", function.Spec.Name, err)
 		}
 
-		existingService, err := c.kubeclientset.CoreV1().Services(function.Namespace).Get(context.TODO(), function.Spec.Name, metav1.GetOptions{})
+		existingService, err := c.kubeclientset.CoreV1().Services(function.Namespace).Get(context.TODO(), svcName, metav1.GetOptions{})
 		if err != nil {
 			return err
 		}

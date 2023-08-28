@@ -39,12 +39,13 @@ type MetricsConfig struct {
 }
 
 type BuildConfig struct {
-	BuildEnabled       bool   `json:"build_enabled,omitempty"`
-	BuilderImage       string `json:"builder_image,omitempty"`
-	BuildkitdAddress   string `json:"buildkitd_address,omitempty"`
-	BuildCtlBin        string `json:"build_ctl_bin,omitempty"`
-	BuildRegistry      string `json:"build_registry,omitempty"`
-	BuildRegistryToken string `json:"build_registry_token,omitempty"`
+	BuildEnabled         bool   `json:"build_enabled,omitempty"`
+	BuilderImage         string `json:"builder_image,omitempty"`
+	BuildkitdAddress     string `json:"buildkitd_address,omitempty"`
+	BuildCtlBin          string `json:"build_ctl_bin,omitempty"`
+	BuildRegistry        string `json:"build_registry,omitempty"`
+	BuildRegistryToken   string `json:"build_registry_token,omitempty"`
+	BuildImagePullSecret string `json:"build_image_pull_secret,omitempty"`
 }
 
 type InferenceConfig struct {
@@ -104,7 +105,8 @@ func (c Config) Validate() error {
 			c.Build.BuilderImage == "" ||
 			c.Build.BuildRegistryToken == "" ||
 			c.Build.BuildRegistry == "" ||
-			c.Build.BuildCtlBin == "" {
+			c.Build.BuildCtlBin == "" ||
+			c.Build.BuildImagePullSecret == "" {
 			return errors.New("build config is required")
 		}
 	}
