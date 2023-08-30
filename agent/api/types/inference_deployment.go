@@ -84,8 +84,8 @@ type ScalingConfig struct {
 type ScalingType string
 
 const (
-	ScalingTypeCapacity = "capacity"
-	ScalingTypeRPS      = "rps"
+	ScalingTypeCapacity ScalingType = "capacity"
+	ScalingTypeRPS      ScalingType = "rps"
 )
 
 // ResourceRequirements describes the compute resource requirements.

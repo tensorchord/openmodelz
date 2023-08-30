@@ -164,8 +164,8 @@ vet: ## Run go vet against code.
 	go vet ./...
 
 build-image: build-local
-	docker build -t ${BASE_REGISTRY}/${BASE_REGISTRY_USER}/modelzetes:dev -f Dockerfile ./bin
-	docker push ${BASE_REGISTRY}/${BASE_REGISTRY_USER}/modelzetes:dev
+	docker build -t ${BASE_REGISTRY}/${BASE_REGISTRY_USER}/ingress-operator:dev -f Dockerfile ./bin
+	docker push ${BASE_REGISTRY}/${BASE_REGISTRY_USER}/ingress-operator:dev
 
 release:
 	@if [ ! -f ".release-env" ]; then \
