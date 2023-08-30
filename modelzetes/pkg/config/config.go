@@ -67,9 +67,9 @@ func (c Config) Validate() error {
 		return errors.New("invalid kubeconfig")
 	}
 
-	// if c.Metrics.ServerPort == 0 {
-	// 	return errors.New("invalid metrics config")
-	// }
+	if c.Metrics.ServerPort <= 0 {
+		return errors.New("invalid metrics config")
+	}
 
 	if c.Controller.ThreadCount == 0 {
 		return errors.New("invalid controller config")

@@ -1,1 +1,0 @@
-The ingress-operator should be deployed using the openfaas helm chart: https://github.com/openfaas/faas-netes/tree/master/chart/openfaas/templates

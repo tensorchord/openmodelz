@@ -45,7 +45,8 @@ type SyncHandler struct {
 }
 
 // NewController returns a new OpenFaaS controller
-func NewController(cfg config.Config,
+func NewController(
+	cfg config.Config,
 	kubeclientset kubernetes.Interface,
 	faasclientset clientset.Interface,
 	kubeInformerFactory kubeinformers.SharedInformerFactory,
