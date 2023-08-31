@@ -16,6 +16,7 @@ import (
 	v2alpha1 "github.com/tensorchord/openmodelz/modelzetes/pkg/apis/modelzetes/v2alpha1"
 	"github.com/tensorchord/openmodelz/modelzetes/pkg/consts"
 	"github.com/tensorchord/openmodelz/modelzetes/pkg/k8s"
+	. "github.com/tensorchord/openmodelz/modelzetes/pkg/pointer"
 )
 
 const (
@@ -92,7 +93,7 @@ func newDeployment(
 			Selector: &metav1.LabelSelector{
 				MatchLabels: labelMap,
 			},
-			RevisionHistoryLimit: int32p(5),
+			RevisionHistoryLimit: Ptr(int32(5)),
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels:      labels,

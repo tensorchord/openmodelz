@@ -8,18 +8,15 @@ import (
 
 	v2alpha1 "github.com/tensorchord/openmodelz/modelzetes/pkg/apis/modelzetes/v2alpha1"
 	"github.com/tensorchord/openmodelz/modelzetes/pkg/k8s"
+	. "github.com/tensorchord/openmodelz/modelzetes/pkg/pointer"
 )
-
-func intPtr(n int32) *int32 {
-	return &n
-}
 
 func Test_Replicas(t *testing.T) {
 	scenarios := []struct {
-		name     string
-		function *v2alpha1.Inference
-		deploy   *appsv1.Deployment
-		expected *int32
+		name      string
+		inference *v2alpha1.Inference
+		deploy    *appsv1.Deployment
+		expected  *int32
 	}{
 		{
 			"return nil replicas when label is missing and deployment does not exist",
@@ -38,7 +35,7 @@ func Test_Replicas(t *testing.T) {
 			&v2alpha1.Inference{
 				Spec: v2alpha1.InferenceSpec{
 					Scaling: &v2alpha1.ScalingConfig{
-						MinReplicas: intPtr(2),
+						MinReplicas: Ptr(int32(2)),
 					},
 				},
 			},
@@ -50,7 +47,7 @@ func Test_Replicas(t *testing.T) {
 			&v2alpha1.Inference{
 				Spec: v2alpha1.InferenceSpec{
 					Scaling: &v2alpha1.ScalingConfig{
-						MinReplicas: intPtr(2),
+						MinReplicas: Ptr(int32(2)),
 					},
 				},
 			},
@@ -62,7 +59,7 @@ func Test_Replicas(t *testing.T) {
 			&v2alpha1.Inference{
 				Spec: v2alpha1.InferenceSpec{
 					Scaling: &v2alpha1.ScalingConfig{
-						MinReplicas: intPtr(2),
+						MinReplicas: Ptr(int32(2)),
 					},
 				},
 			},
@@ -83,7 +80,7 @@ func Test_Replicas(t *testing.T) {
 			&v2alpha1.Inference{
 				Spec: v2alpha1.InferenceSpec{
 					Scaling: &v2alpha1.ScalingConfig{
-						MinReplicas: intPtr(2),
+						MinReplicas: Ptr(int32(2)),
 					},
 				},
 			}, &appsv1.Deployment{Spec: appsv1.DeploymentSpec{Replicas: int32p(0)}},
@@ -100,7 +97,7 @@ func Test_Replicas(t *testing.T) {
 
 	for _, s := range scenarios {
 		t.Run(s.name, func(t *testing.T) {
-			deploy := newDeployment(s.function, s.deploy, nil, factory)
+			deploy := newDeployment(s.inference, s.deploy, nil, factory)
 			value := deploy.Spec.Replicas
 
 			if s.expected != nil && value != nil {
