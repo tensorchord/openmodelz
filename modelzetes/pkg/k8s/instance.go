@@ -30,13 +30,13 @@ func InstanceFromPod(pod v1.Pod) *types.InferenceDeploymentInstance {
 	case v1.PodRunning:
 		i.Status.Phase = types.InstancePhaseRunning
 	case v1.PodPending:
+		i.Status.Phase = types.InstancePhasePending
 		for _, c := range pod.Status.Conditions {
 			if c.Type == v1.PodScheduled && c.Status == v1.ConditionFalse {
 				i.Status.Phase = types.InstancePhaseScheduling
 				break
 			}
 		}
-		i.Status.Phase = types.InstancePhasePending
 	case v1.PodFailed:
 		i.Status.Phase = types.InstancePhaseFailed
 	case v1.PodSucceeded:
