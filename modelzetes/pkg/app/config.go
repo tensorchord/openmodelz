@@ -19,6 +19,9 @@ func configFromCLI(c *cli.Context) config.Config {
 	// controller
 	cfg.Controller.ThreadCount = c.Int(flagControllerThreads)
 
+	// metrics
+	cfg.Metrics.ServerPort = c.Int(flagMetricsServerPort)
+
 	// huggingface
 	cfg.HuggingfaceProxy.Endpoint = c.String(flagHuggingfaceEndpoint)
 
