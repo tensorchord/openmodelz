@@ -152,10 +152,10 @@ func (h SyncHandler) handler(ctx context.Context, key string) error {
 
 	old := faasv1.InferenceIngress{}
 
-	if val, ok := ingress.Annotations["com.openfaas.spec"]; ok && len(val) > 0 {
+	if val, ok := ingress.Annotations["ai.tensorchord.spec"]; ok && len(val) > 0 {
 		unmarshalErr := json.Unmarshal([]byte(val), &old)
 		if unmarshalErr != nil {
-			return pkgerrors.Wrap(unmarshalErr, "unable to unmarshal from field com.openfaas.spec")
+			return pkgerrors.Wrap(unmarshalErr, "unable to unmarshal from field inference")
 		}
 	}
 
