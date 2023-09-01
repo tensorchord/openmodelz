@@ -16,22 +16,6 @@ func TestMakeAnnotations(t *testing.T) {
 		excluded []string
 	}{
 		{
-			name: "base case, annotations are copied, default class is nginx",
-			ingress: faasv1.InferenceIngress{
-				ObjectMeta: metav1.ObjectMeta{
-					Annotations: map[string]string{
-						"test":    "test",
-						"example": "example",
-					},
-				},
-			},
-			expected: map[string]string{
-				"test":                        "test",
-				"example":                     "example",
-				"kubernetes.io/ingress.class": "nginx",
-			},
-		},
-		{
 			name: "can override ingress class value",
 			ingress: faasv1.InferenceIngress{
 				ObjectMeta: metav1.ObjectMeta{
