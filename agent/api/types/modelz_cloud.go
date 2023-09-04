@@ -5,7 +5,7 @@ import "time"
 const (
 	ClusterStatusInit   = "init"
 	ClusterStatusActive = "active"
-	ClusterStatusUnkown = "unknown"
+	ClusterStatusUnknown = "unknown"
 )
 
 const (
