@@ -111,17 +111,17 @@ func New(c config.Config) (Server, error) {
 		s.eventRecorder = event.NewFake()
 	}
 
+	s.registerRoutes()
+	s.registerMetricsRoutes()
+	if err := s.initKubernetesResources(); err != nil {
+		return s, err
+	}
+
 	if c.ModelZCloud.Enabled {
 		err := s.initModelZCloud(c.ModelZCloud.URL, c.ModelZCloud.AgentToken, c.ModelZCloud.Region)
 		if err != nil {
 			return s, err
 		}
-	}
-
-	s.registerRoutes()
-	s.registerMetricsRoutes()
-	if err := s.initKubernetesResources(); err != nil {
-		return s, err
 	}
 	if err := s.initMetrics(); err != nil {
 		return s, err

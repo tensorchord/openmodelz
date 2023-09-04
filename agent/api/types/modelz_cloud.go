@@ -3,8 +3,8 @@ package types
 import "time"
 
 const (
-	ClusterStatusInit   = "init"
-	ClusterStatusActive = "active"
+	ClusterStatusInit    = "init"
+	ClusterStatusActive  = "active"
 	ClusterStatusUnknown = "unknown"
 )
 
