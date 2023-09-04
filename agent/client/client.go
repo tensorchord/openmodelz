@@ -112,7 +112,7 @@ func defaultHTTPClient(host string) (*http.Client, error) {
 	_ = sockets.ConfigureTransport(transport, hostURL.Scheme, hostURL.Host)
 	return &http.Client{
 		Transport:     transport,
-		CheckRedirect: CheckRedirect,
+		CheckRedirect: CheckRedirectKeepHeader,
 	}, nil
 }
 
@@ -134,6 +134,11 @@ func CheckRedirect(req *http.Request, via []*http.Request) error {
 		return http.ErrUseLastResponse
 	}
 	return ErrRedirect
+}
+
+func CheckRedirectKeepHeader(req *http.Request, via []*http.Request) error {
+	req.Header = via[0].Header.Clone()
+	return nil
 }
 
 // DaemonHost returns the host address used by the client

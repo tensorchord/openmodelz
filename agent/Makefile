@@ -127,7 +127,7 @@ addlicense-install:
 	go install github.com/google/addlicense@latest
 
 sqlc-install:
-	go install github.com/kyleconroy/sqlc/cmd/sqlc@latest
+	go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 
 # https://github.com/swaggo/swag/pull/1322, we should use master instead of latest for now.
 swag-install:

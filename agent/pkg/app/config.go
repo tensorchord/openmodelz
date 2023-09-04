@@ -27,6 +27,7 @@ func configFromCLI(c *cli.Context) config.Config {
 	cfg.Ingress.Domain = c.String(flagIngressDomain)
 	cfg.Ingress.AnyIPToDomain = c.Bool(flagIngressAnyIPToDomain)
 	cfg.Ingress.Namespace = c.String(flagIngressNamespace)
+	cfg.Ingress.TLSEnabled = c.Bool(flagIngressTLSEnabled)
 
 	// inference
 	cfg.Inference.LogTimeout = c.Duration(flagInferenceLogTimeout)
@@ -56,5 +57,16 @@ func configFromCLI(c *cli.Context) config.Config {
 	// postgres database
 	cfg.DB.EventEnabled = c.Bool(flagEventEnabled)
 	cfg.DB.URL = c.String(flagDBURL)
+
+	// modelz cloud
+	cfg.ModelZCloud.Enabled = c.Bool(flagModelZCloudEnabled)
+	cfg.ModelZCloud.URL = c.String(flagModelZCloudURL)
+	cfg.ModelZCloud.AgentToken = c.String(flagModelZCloudAgentToken)
+	cfg.ModelZCloud.HeartbeatInterval = c.Duration(flagModelZCloudAgentHeartbeatInterval)
+	cfg.ModelZCloud.Region = c.String(flagModelZCloudRegion)
+	cfg.ModelZCloud.UnifiedAPIKey = c.String(flagModelZCloudUnifiedAPIKey)
+	cfg.ModelZCloud.UpstreamTimeout = c.Duration(flagModelZCloudUpstreamTimeout)
+	cfg.ModelZCloud.MaxIdleConnections = c.Int(flagModelZCloudMaxIdleConnections)
+	cfg.ModelZCloud.MaxIdleConnectionsPerHost = c.Int(flagModelZCloudMaxIdleConnectionsPerHost)
 	return cfg
 }

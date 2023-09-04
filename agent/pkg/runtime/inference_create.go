@@ -13,11 +13,12 @@ import (
 
 	"github.com/tensorchord/openmodelz/agent/api/types"
 	"github.com/tensorchord/openmodelz/agent/errdefs"
+	"github.com/tensorchord/openmodelz/agent/pkg/config"
 	localconsts "github.com/tensorchord/openmodelz/agent/pkg/consts"
 )
 
 func (r Runtime) InferenceCreate(ctx context.Context,
-	req types.InferenceDeployment, ingressDomain, ingressNamespace, event string) error {
+	req types.InferenceDeployment, cfg config.IngressConfig, event string) error {
 
 	namespace := req.Spec.Namespace
 
@@ -28,7 +29,7 @@ func (r Runtime) InferenceCreate(ctx context.Context,
 		}
 	}
 
-	inf, err := makeInference(req, ingressDomain)
+	inf, err := makeInference(req)
 	if err != nil {
 		return err
 	}
@@ -60,10 +61,11 @@ func (r Runtime) InferenceCreate(ctx context.Context,
 				}
 			}
 			// Set the domain to
-			ingressDomain = fmt.Sprintf("%s.%s", externalIP, localconsts.Domain)
+			ingressDomain := fmt.Sprintf("%s.%s", externalIP, localconsts.Domain)
+			cfg.Domain = ingressDomain
 		}
 
-		domain, err := makeDomain(name, ingressDomain)
+		domain, err := makeDomain(name, cfg.Domain)
 		if err != nil {
 			return errdefs.InvalidParameter(err)
 		}
@@ -73,7 +75,11 @@ func (r Runtime) InferenceCreate(ctx context.Context,
 		if inf.Spec.Annotations == nil {
 			inf.Spec.Annotations = make(map[string]string)
 		}
-		inf.Spec.Annotations[AnnotationDomain] = fmt.Sprintf("https://%s", domain)
+		if cfg.TLSEnabled {
+			inf.Spec.Annotations[AnnotationDomain] = fmt.Sprintf("https://%s", domain)
+		} else {
+			inf.Spec.Annotations[AnnotationDomain] = fmt.Sprintf("http://%s", domain)
+		}
 
 		_, err = r.inferenceClient.TensorchordV2alpha1().
 			Inferences(namespace).Create(
@@ -86,13 +92,14 @@ func (r Runtime) InferenceCreate(ctx context.Context,
 			}
 		}
 
-		ingress, err := makeIngress(req, domain, ingressNamespace)
+		cfg.Domain = domain
+		ingress, err := makeIngress(req, cfg)
 		if err != nil {
 			return err
 		}
 
 		_, err = r.ingressClient.TensorchordV1().
-			InferenceIngresses(ingressNamespace).
+			InferenceIngresses(cfg.Namespace).
 			Create(ctx, ingress, metav1.CreateOptions{})
 		if err != nil {
 			if k8serrors.IsAlreadyExists(err) {
@@ -116,8 +123,7 @@ func (r Runtime) InferenceCreate(ctx context.Context,
 	return nil
 }
 
-func makeInference(request types.InferenceDeployment,
-	domain string) (*v2alpha1.Inference, error) {
+func makeInference(request types.InferenceDeployment) (*v2alpha1.Inference, error) {
 	is := &v2alpha1.Inference{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      request.Spec.Name,
@@ -164,7 +170,7 @@ func makeInference(request types.InferenceDeployment,
 	return is, nil
 }
 
-func makeIngress(request types.InferenceDeployment, domain, BaseNamespace string) (*ingressv1.InferenceIngress, error) {
+func makeIngress(request types.InferenceDeployment, cfg config.IngressConfig) (*ingressv1.InferenceIngress, error) {
 	labels := map[string]string{
 		consts.LabelInferenceName: request.Spec.Name,
 	}
@@ -176,21 +182,20 @@ func makeIngress(request types.InferenceDeployment, domain, BaseNamespace string
 	ingress := &ingressv1.InferenceIngress{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      request.Spec.Name,
-			Namespace: BaseNamespace,
+			Namespace: cfg.Namespace,
 			Labels:    labels,
 		},
 		Spec: ingressv1.InferenceIngressSpec{
-			Domain:        domain,
+			Domain:        cfg.Domain,
 			Framework:     string(request.Spec.Framework),
 			IngressType:   "nginx",
 			BypassGateway: false,
 			Function:      request.Spec.Name,
 			TLS: &ingressv1.InferenceIngressTLS{
-				Enabled: true,
+				Enabled: cfg.TLSEnabled,
 			},
 		},
 	}
 
-	// Add HTTPS scheme to the domain.
 	return ingress, nil
 }

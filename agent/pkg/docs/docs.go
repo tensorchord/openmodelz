@@ -20,6 +20,62 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/gradio/{id}": {
+            "get": {
+                "description": "Reverse proxy to the backend gradio.",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "inference"
+                ],
+                "summary": "Reverse proxy to the backend gradio.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Deployment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    }
+                }
+            },
+            "post": {
+                "description": "Reverse proxy to the backend gradio.",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "inference"
+                ],
+                "summary": "Reverse proxy to the backend gradio.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Deployment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    }
+                }
+            }
+        },
         "/healthz": {
             "get": {
                 "description": "Healthz",
@@ -198,6 +254,205 @@ const docTemplate = `{
                 }
             }
         },
+        "/mosec/{id}": {
+            "get": {
+                "description": "Proxy to the backend mosec.",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "inference"
+                ],
+                "summary": "Proxy to the backend mosec.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Deployment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    }
+                }
+            }
+        },
+        "/mosec/{id}/inference": {
+            "post": {
+                "description": "Proxy to the backend mosec.",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "inference"
+                ],
+                "summary": "Proxy to the backend mosec.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Deployment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    }
+                }
+            }
+        },
+        "/mosec/{id}/metrics": {
+            "get": {
+                "description": "Proxy to the backend mosec.",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "inference"
+                ],
+                "summary": "Proxy to the backend mosec.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Deployment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    }
+                }
+            }
+        },
+        "/other/{id}": {
+            "get": {
+                "description": "Reverse proxy to the backend other.",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "inference"
+                ],
+                "summary": "Reverse proxy to the backend other.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Deployment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    }
+                }
+            },
+            "post": {
+                "description": "Reverse proxy to the backend other.",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "inference"
+                ],
+                "summary": "Reverse proxy to the backend other.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Deployment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    }
+                }
+            }
+        },
+        "/streamlit/{id}": {
+            "get": {
+                "description": "Reverse proxy to streamlit.",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "inference"
+                ],
+                "summary": "Reverse proxy to streamlit.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Deployment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    }
+                }
+            },
+            "post": {
+                "description": "Reverse proxy to streamlit.",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "inference"
+                ],
+                "summary": "Reverse proxy to streamlit.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Deployment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    }
+                }
+            }
+        },
         "/system/build": {
             "get": {
                 "description": "List the builds.",
@@ -299,6 +554,40 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/types.Build"
+                        }
+                    }
+                }
+            }
+        },
+        "/system/image-cache": {
+            "post": {
+                "description": "Create the image cache.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "image-cache"
+                ],
+                "summary": "Create the image cache.",
+                "parameters": [
+                    {
+                        "description": "image-cache",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.ImageCache"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/types.ImageCache"
                         }
                     }
                 }
@@ -946,6 +1235,20 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "types.AuthN": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "types.Build": {
             "type": "object",
             "properties": {
@@ -960,10 +1263,55 @@ const docTemplate = `{
         "types.BuildSpec": {
             "type": "object",
             "properties": {
+                "authn": {
+                    "$ref": "#/definitions/types.AuthN"
+                },
                 "branch": {
                     "type": "string"
                 },
+                "buildTarget": {
+                    "$ref": "#/definitions/types.BuildTarget"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "image_tag": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "namespace": {
+                    "type": "string"
+                },
+                "repository": {
+                    "description": "repository is the URL",
+                    "type": "string"
+                },
+                "revision": {
+                    "description": "revision is the commit hash for the specified revision.\n+optional",
+                    "type": "string"
+                },
+                "secret_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.BuildStatus": {
+            "type": "object",
+            "properties": {
+                "phase": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.BuildTarget": {
+            "type": "object",
+            "properties": {
                 "builder": {
+                    "type": "string"
+                },
+                "digest": {
                     "type": "string"
                 },
                 "directory": {
@@ -979,32 +1327,10 @@ const docTemplate = `{
                 "image_tag": {
                     "type": "string"
                 },
-                "name": {
+                "registry": {
                     "type": "string"
                 },
-                "namespace": {
-                    "type": "string"
-                },
-                "project_id": {
-                    "type": "string"
-                },
-                "repository": {
-                    "description": "repository is the URL",
-                    "type": "string"
-                },
-                "revision": {
-                    "description": "revision is the commit hash for the specified revision.\n+optional",
-                    "type": "string"
-                }
-            }
-        },
-        "types.BuildStatus": {
-            "type": "object",
-            "properties": {
-                "image": {
-                    "type": "string"
-                },
-                "phase": {
+                "registry_token": {
                     "type": "string"
                 }
             }
@@ -1013,6 +1339,27 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "functionName": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.ImageCache": {
+            "type": "object",
+            "properties": {
+                "force_full_cache": {
+                    "type": "boolean"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "name": {
+                    "description": "Name is the name of the inference.",
+                    "type": "string"
+                },
+                "namespace": {
+                    "type": "string"
+                },
+                "node_selector": {
                     "type": "string"
                 }
             }

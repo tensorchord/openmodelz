@@ -37,6 +37,7 @@ const (
 	flagIngressDomain        = "ingress-domain"
 	flagIngressNamespace     = "ingress-namespace"
 	flagIngressAnyIPToDomain = "ingress-any-ip-to-domain"
+	flagIngressTLSEnabled    = "ingress-tls-enabled"
 
 	// inference
 	flagInferenceLogTimeout = "inference-log-timeout"
@@ -66,6 +67,17 @@ const (
 	// db
 	flagEventEnabled = "event-enabled"
 	flagDBURL        = "db-url"
+
+	// modelz cloud
+	flagModelZCloudEnabled                   = "modelz-cloud-enabled"
+	flagModelZCloudURL                       = "modelz-cloud-url"
+	flagModelZCloudAgentToken                = "modelz-cloud-agent-token"
+	flagModelZCloudAgentHeartbeatInterval    = "modelz-cloud-agent-heartbeat-interval"
+	flagModelZCloudRegion                    = "modelz-cloud-region"
+	flagModelZCloudUnifiedAPIKey             = "modelz-cloud-unified-api-key"
+	flagModelZCloudUpstreamTimeout           = "modelz-cloud-upstream-timeout"
+	flagModelZCloudMaxIdleConnections        = "modelz-cloud-max-idle-connections"
+	flagModelZCloudMaxIdleConnectionsPerHost = "modelz-cloud-max-idle-connections-per-host"
 )
 
 type App struct {
@@ -174,6 +186,13 @@ func New() App {
 			Value:   false,
 			EnvVars: []string{"MODELZ_AGENT_INGRESS_ANY_IP_TO_DOMAIN"},
 			Aliases: []string{"iad"},
+		},
+		&cli.BoolFlag{
+			Name:    flagIngressTLSEnabled,
+			Usage:   "Enable TLS for inference ingress. ",
+			Value:   true,
+			EnvVars: []string{"MODELZ_AGENT_INGRESS_TLS_ENABLED"},
+			Aliases: []string{"it"},
 		},
 		&cli.DurationFlag{
 			Name: flagInferenceLogTimeout,
@@ -312,6 +331,67 @@ func New() App {
 			Hidden:  true,
 			Aliases: []string{"du"},
 			EnvVars: []string{"MODELZ_AGENT_DB_URL"},
+		},
+		&cli.BoolFlag{
+			Name:    flagModelZCloudEnabled,
+			Usage:   "Enable modelz cloud, agent as modelz cloud agent",
+			Value:   false,
+			EnvVars: []string{"MODELZ_AGENT_MODELZ_CLOUD_ENABLED"},
+			Aliases: []string{"mzc"},
+		},
+		&cli.StringFlag{
+			Name:    flagModelZCloudURL,
+			Usage:   "Modelz cloud URL",
+			EnvVars: []string{"MODELZ_AGENT_MODELZ_CLOUD_URL"},
+			Aliases: []string{"mzu"},
+			Value:   "https://cloud.modelz.ai",
+		},
+		&cli.StringFlag{
+			Name:    flagModelZCloudAgentToken,
+			Usage:   "Modelz cloud agent token",
+			EnvVars: []string{"MODELZ_CLOUD_AGENT_TOKEN"},
+			Aliases: []string{"mzt"},
+		},
+		&cli.DurationFlag{
+			Name:    flagModelZCloudAgentHeartbeatInterval,
+			Usage:   "Modelz cloud agent heartbeat interval",
+			EnvVars: []string{"MODELZ_CLOUD_AGENT_HEARTBEAT_INTERVAL"},
+			Aliases: []string{"mzh"},
+			Value:   time.Minute * 1,
+		},
+		&cli.StringFlag{
+			Name:    flagModelZCloudRegion,
+			Usage:   "Modelz cloud agent region",
+			EnvVars: []string{"MODELZ_CLOUD_AGENT_REGION"},
+			Aliases: []string{"mzr"},
+			Value:   "us-central1",
+		},
+		&cli.StringFlag{
+			Name:    flagModelZCloudUnifiedAPIKey,
+			Usage:   "Modelz cloud agent unified api key",
+			EnvVars: []string{"MODELZ_CLOUD_AGENT_UNIFIED_API_KEY"},
+			Aliases: []string{"mzua"},
+		},
+		&cli.DurationFlag{
+			Name:    flagModelZCloudUpstreamTimeout,
+			Usage:   "upstream timeout",
+			EnvVars: []string{"MODELZ_UPSTREAM_TIMEOUT"},
+			Aliases: []string{"ut"},
+			Value:   300 * time.Second,
+		},
+		&cli.IntFlag{
+			Name:    flagModelZCloudMaxIdleConnections,
+			Usage:   "max idle connections",
+			EnvVars: []string{"MODELZ_MAX_IDLE_CONNECTIONS"},
+			Aliases: []string{"mic"},
+			Value:   1024,
+		},
+		&cli.IntFlag{
+			Name:    flagModelZCloudMaxIdleConnectionsPerHost,
+			Usage:   "max idle connections per host",
+			EnvVars: []string{"MODELZ_MAX_IDLE_CONNECTIONS_PER_HOST"},
+			Aliases: []string{"mich"},
+			Value:   1024,
 		},
 	}
 	internalApp.Action = runServer
