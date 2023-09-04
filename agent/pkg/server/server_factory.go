@@ -52,7 +52,7 @@ type Server struct {
 
 func New(c config.Config) (Server, error) {
 	router := gin.New()
-	router.Use(ginlogrus.Logger(logrus.StandardLogger()))
+	router.Use(ginlogrus.Logger(logrus.StandardLogger(), "/healthz"))
 	router.Use(gin.Recovery())
 
 	// metrics server
