@@ -46,7 +46,7 @@ func (s *Server) runWebSocketServer() {
 }
 
 func retry(sleep time.Duration, f func() error) {
-	i := 0
+	i := 1
 	for {
 		err := f()
 		if err == nil {
