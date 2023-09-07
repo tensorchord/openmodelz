@@ -26,6 +26,14 @@ func (s *Server) initModelZCloud(url, token, region string) error {
 		return errors.Wrap(err, "failed to get managed cluster info")
 	}
 
+	apiServerReady := make(chan struct{})
+	go func() {
+		if err := s.modelzCloudClient.WaitForAPIServerReady(); err != nil {
+			logrus.Fatalf("failed to wait for apiserver ready: %v", err)
+		}
+		close(apiServerReady)
+	}()
+
 	cluster.Status = types.ClusterStatusInit
 	// after init modelz cloud client, register agent
 	clusterID, tokenID, err := cli.RegisterAgent(context.Background(), token, cluster)
@@ -35,14 +43,14 @@ func (s *Server) initModelZCloud(url, token, region string) error {
 	s.config.ModelZCloud.ID = clusterID
 	s.config.ModelZCloud.TokenID = tokenID
 
-	apikeys, err := s.modelzCloudClient.GetAPIKeys(context.Background(), s.config.ModelZCloud.AgentToken, s.config.ModelZCloud.ID)
+	apikeys, err := s.modelzCloudClient.GetAPIKeys(context.Background(), apiServerReady, s.config.ModelZCloud.AgentToken, s.config.ModelZCloud.ID)
 	if err != nil {
 		logrus.Errorf("failed to get apikeys: %v", err)
 	}
 
 	s.config.ModelZCloud.APIKeys = apikeys
 
-	namespaces, err := s.modelzCloudClient.GetNamespaces(context.Background(), s.config.ModelZCloud.AgentToken, s.config.ModelZCloud.ID)
+	namespaces, err := s.modelzCloudClient.GetNamespaces(context.Background(), apiServerReady, s.config.ModelZCloud.AgentToken, s.config.ModelZCloud.ID)
 	if err != nil {
 		logrus.Errorf("failed to get namespaces: %v", err)
 	}

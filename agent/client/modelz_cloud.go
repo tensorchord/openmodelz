@@ -4,10 +4,40 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"net/url"
+	"time"
 
+	"github.com/sirupsen/logrus"
 	"github.com/tensorchord/openmodelz/agent/api/types"
+	"github.com/tensorchord/openmodelz/agent/pkg/consts"
+	"k8s.io/apimachinery/pkg/util/wait"
 )
+
+func (cli *Client) WaitForAPIServerReady() error {
+	err := wait.PollImmediateWithContext(context.Background(), time.Second, consts.DefaultAPIServerReadyTimeout, func(ctx context.Context) (bool, error) {
+		err, healthStatus := cli.waitForAPIServerReady(ctx)
+		if err != nil || healthStatus != http.StatusOK {
+			logrus.Warn("APIServer isn't ready yet, Waiting a little while.")
+			return false, err
+		}
+		return true, nil
+	})
+	if err != nil {
+		return fmt.Errorf("failed to wait for apiserver ready, %v", err)
+	}
+	return nil
+}
+
+func (cli *Client) waitForAPIServerReady(ctx context.Context) (error, int) {
+	urlValues := url.Values{}
+	resp, err := cli.get(ctx, "/healthz", urlValues, nil)
+	if err != nil {
+		return wrapResponseError(err, resp, "check apiserver is ready", ""), resp.statusCode
+	}
+	defer ensureReaderClosed(resp)
+	return nil, resp.statusCode
+}
 
 func (cli *Client) RegisterAgent(ctx context.Context, token string, cluster types.ManagedCluster) (string, string, error) {
 	urlValues := url.Values{}
@@ -32,7 +62,8 @@ func (cli *Client) RegisterAgent(ctx context.Context, token string, cluster type
 	return cluster.ID, cluster.TokenID, nil
 }
 
-func (cli *Client) UpdateAgentStatus(ctx context.Context, token string, cluster types.ManagedCluster) error {
+func (cli *Client) UpdateAgentStatus(ctx context.Context, apiServerReady <-chan struct{}, token string, cluster types.ManagedCluster) error {
+	<-apiServerReady
 	urlValues := url.Values{}
 	agentToken, err := ParseAgentToken(token)
 	if err != nil {
@@ -54,7 +85,8 @@ func (cli *Client) UpdateAgentStatus(ctx context.Context, token string, cluster 
 	return fmt.Errorf("failed to update agent status to modelz cloud, status code: %d", resp.statusCode)
 }
 
-func (cli *Client) GetAPIKeys(ctx context.Context, token string, cluster string) (types.APIKeyMap, error) {
+func (cli *Client) GetAPIKeys(ctx context.Context, apiServerReady <-chan struct{}, token string, cluster string) (types.APIKeyMap, error) {
+	<-apiServerReady
 	urlValues := url.Values{}
 	agentToken, err := ParseAgentToken(token)
 	keys := types.APIKeyMap{}
@@ -78,7 +110,8 @@ func (cli *Client) GetAPIKeys(ctx context.Context, token string, cluster string)
 	return keys, nil
 }
 
-func (cli *Client) GetNamespaces(ctx context.Context, token string, cluster string) (types.NamespaceList, error) {
+func (cli *Client) GetNamespaces(ctx context.Context, apiServerReady <-chan struct{}, token string, cluster string) (types.NamespaceList, error) {
+	<-apiServerReady
 	urlValues := url.Values{}
 	agentToken, err := ParseAgentToken(token)
 	ns := types.NamespaceList{}

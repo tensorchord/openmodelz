@@ -11,7 +11,8 @@ import (
 	"github.com/tensorchord/openmodelz/agent/api/types"
 )
 
-func (s *Server) runWebSocketServer() {
+func (s *Server) connect(apiServerReady <-chan struct{}) {
+	<-apiServerReady
 	var clusterDialEndpoint string
 	headers := http.Header{
 		"X-Cluster-ID": {s.config.ModelZCloud.ID},
@@ -28,20 +29,34 @@ func (s *Server) runWebSocketServer() {
 	case "https":
 		clusterDialEndpoint = "wss://" + u.Host + types.DailEndPointSuffix
 	}
+
 	ctx := context.Background()
-	retry(
-		s.config.ModelZCloud.HeartbeatInterval,
-		func() error {
-			logrus.Debugf("run websocket server")
-			err := remotedialer.ClientConnect(ctx, clusterDialEndpoint, headers, nil,
-				func(proto, address string) bool { return true }, nil)
-			if err != nil {
-				logrus.Errorf("failed to connect to apiserver: %v", err)
-				return err
+	go func() {
+		for {
+			remotedialer.ClientConnect(ctx, clusterDialEndpoint, headers, nil, func(proto, address string) bool { return true }, nil)
+			select {
+			case <-ctx.Done():
+				return
+			case <-time.After(s.config.ModelZCloud.HeartbeatInterval):
+				// retry connect after interval
 			}
-			return nil
-		},
-	)
+		}
+	}()
+
+	// retry(
+	// 	s.config.ModelZCloud.HeartbeatInterval,
+	// 	func() error {
+	// 		logrus.Debugf("run websocket server")
+	// 		ctx := context.Background()
+	// 		err := remotedialer.ClientConnect(ctx, clusterDialEndpoint, headers, nil,
+	// 			func(proto, address string) bool { return true }, nil)
+	// 		if err != nil {
+	// 			logrus.Errorf("failed to connect to apiserver: %v", err)
+	// 			return err
+	// 		}
+	// 		return nil
+	// 	},
+	// )
 
 }
 
@@ -54,7 +69,7 @@ func retry(sleep time.Duration, f func() error) {
 		} else {
 			logrus.Errorf("retry %d times, still failed", i)
 			time.Sleep(sleep)
+			i++
 		}
-		i++
 	}
 }

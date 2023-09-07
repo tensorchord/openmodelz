@@ -50,9 +50,17 @@ func (s *Server) Run() error {
 		Info("metrics server is running...")
 
 	if s.config.ModelZCloud.Enabled {
+		// check apiserver is ready
+		apiServerReady := make(chan struct{})
+		go func() {
+			if err := s.modelzCloudClient.WaitForAPIServerReady(); err != nil {
+				logrus.Fatalf("failed to wait for apiserver ready: %v", err)
+			}
+			close(apiServerReady)
+		}()
 		// websocket
 		// build websocket
-		go s.runWebSocketServer()
+		go s.connect(apiServerReady)
 
 		// heartbeat with apiserver
 		go wait.UntilWithContext(context.Background(), func(ctx context.Context) {
@@ -68,7 +76,7 @@ func (s *Server) Run() error {
 				logrus.Errorf("failed to get managed cluster info: %v", err)
 			}
 
-			err = s.modelzCloudClient.UpdateAgentStatus(ctx, s.config.ModelZCloud.AgentToken, cluster)
+			err = s.modelzCloudClient.UpdateAgentStatus(ctx, apiServerReady, s.config.ModelZCloud.AgentToken, cluster)
 			if err != nil {
 				logrus.Errorf("failed to update agent status: %v", err)
 			}
@@ -76,7 +84,7 @@ func (s *Server) Run() error {
 		}, s.config.ModelZCloud.HeartbeatInterval)
 
 		go wait.UntilWithContext(context.Background(), func(ctx context.Context) {
-			apikeys, err := s.modelzCloudClient.GetAPIKeys(ctx, s.config.ModelZCloud.AgentToken, s.config.ModelZCloud.ID)
+			apikeys, err := s.modelzCloudClient.GetAPIKeys(ctx, apiServerReady, s.config.ModelZCloud.AgentToken, s.config.ModelZCloud.ID)
 			if err != nil {
 				logrus.Errorf("failed to get apikeys: %v", err)
 			}
@@ -86,7 +94,7 @@ func (s *Server) Run() error {
 		}, s.config.ModelZCloud.HeartbeatInterval) // default 1min update, TODO(xieydd) make it configurable
 
 		go wait.UntilWithContext(context.Background(), func(ctx context.Context) {
-			namespaces, err := s.modelzCloudClient.GetNamespaces(ctx, s.config.ModelZCloud.AgentToken, s.config.ModelZCloud.ID)
+			namespaces, err := s.modelzCloudClient.GetNamespaces(ctx, apiServerReady, s.config.ModelZCloud.AgentToken, s.config.ModelZCloud.ID)
 			if err != nil {
 				logrus.Errorf("failed to get namespaces: %v", err)
 			}

@@ -82,8 +82,15 @@ func (s *Server) validateAPIKey(key string) (string, bool) {
 		return uid, true
 	}
 
+	apiServerReady := make(chan struct{})
+	go func() {
+		if err := s.modelzCloudClient.WaitForAPIServerReady(); err != nil {
+			logrus.Fatalf("failed to wait for apiserver ready: %v", err)
+		}
+		close(apiServerReady)
+	}()
 	// Get from apiserver
-	apikeys, err := s.modelzCloudClient.GetAPIKeys(context.Background(), s.config.ModelZCloud.AgentToken, s.config.ModelZCloud.ID)
+	apikeys, err := s.modelzCloudClient.GetAPIKeys(context.Background(), apiServerReady, s.config.ModelZCloud.AgentToken, s.config.ModelZCloud.ID)
 	if err != nil {
 		logrus.Errorf("failed to get apikeys: %v", err)
 		return "", false
