@@ -109,6 +109,16 @@ func (r Runtime) InferenceCreate(ctx context.Context,
 			}
 		}
 	} else {
+		// Set the gateway kubernetes service domain.
+		domain := fmt.Sprintf("gateway.default:8080/api/v1/%s/%s/", string(req.Spec.Framework), req.Spec.Name)
+		if inf.Spec.Annotations == nil {
+			inf.Spec.Annotations = make(map[string]string)
+		}
+		if cfg.TLSEnabled {
+			inf.Spec.Annotations[AnnotationDomain] = fmt.Sprintf("https://%s", domain)
+		} else {
+			inf.Spec.Annotations[AnnotationDomain] = fmt.Sprintf("http://%s", domain)
+		}
 		_, err = r.inferenceClient.TensorchordV2alpha1().
 			Inferences(namespace).Create(
 			ctx, inf, metav1.CreateOptions{})
