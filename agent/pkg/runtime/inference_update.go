@@ -12,7 +12,7 @@ import (
 	"github.com/tensorchord/openmodelz/agent/errdefs"
 )
 
-func (r Runtime) InferenceUpdate(ctx context.Context, namespace string,
+func (r generalRuntime) InferenceUpdate(ctx context.Context, namespace string,
 	req types.InferenceDeployment, event string) (err error) {
 
 	if r.eventEnabled {

@@ -8,7 +8,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func (r Runtime) ServerDeleteNode(ctx context.Context, name string) error {
+func (r generalRuntime) ServerDeleteNode(ctx context.Context, name string) error {
 	err := r.kubeClient.CoreV1().Nodes().Delete(ctx, name, metav1.DeleteOptions{})
 	if err != nil {
 		if k8serrors.IsNotFound(err) {

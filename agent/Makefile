@@ -127,7 +127,7 @@ addlicense-install:
 	go install github.com/google/addlicense@latest
 
 sqlc-install:
-	go install github.com/kyleconroy/sqlc/cmd/sqlc@latest
+	go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 
 # https://github.com/swaggo/swag/pull/1322, we should use master instead of latest for now.
 swag-install:
@@ -156,7 +156,7 @@ test-local:
 	@go test -tags=$(DASHBOARD_BUILD) -v -race -coverprofile=coverage.out ./...
 
 test:  ## Run the tests
-	@go test -tags=$(DASHBOARD_BUILD) -race -coverpkg=./pkg/... -coverprofile=coverage.out ./...
+	@go test -tags=$(DASHBOARD_BUILD) -race -coverprofile=coverage.out ./...
 	@go tool cover -func coverage.out | tail -n 1 | awk '{ print "Total coverage: " $$3 }'
 
 clean:  ## Clean the outputs and artifacts
@@ -196,5 +196,6 @@ release:
 		release --rm-dist
 
 generate: mockgen-install sqlc-install swag
-	# @mockgen -source pkg/query/querier.go -destination pkg/query/mock/mock.go -package mock
+	@mockgen -source pkg/query/querier.go -destination pkg/query/mock/mock.go -package mock
+	@mockgen -source pkg/runtime/runtime.go -destination pkg/runtime/mock/mock.go -package mock
 	# @sqlc generate

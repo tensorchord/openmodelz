@@ -10,7 +10,7 @@ import (
 	"github.com/tensorchord/openmodelz/agent/errdefs"
 )
 
-func (r Runtime) InferenceScale(ctx context.Context, namespace string,
+func (r generalRuntime) InferenceScale(ctx context.Context, namespace string,
 	req types.ScaleServiceRequest, inf *types.InferenceDeployment) (err error) {
 	options := metav1.GetOptions{
 		TypeMeta: metav1.TypeMeta{

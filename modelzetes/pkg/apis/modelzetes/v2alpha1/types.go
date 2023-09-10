@@ -94,8 +94,8 @@ type ScalingConfig struct {
 type ScalingType string
 
 const (
-	ScalingTypeCapacity = "capacity"
-	ScalingTypeRPS      = "rps"
+	ScalingTypeCapacity ScalingType = "capacity"
+	ScalingTypeRPS      ScalingType = "rps"
 )
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object

@@ -16,7 +16,7 @@ import (
 	localconsts "github.com/tensorchord/openmodelz/agent/pkg/consts"
 )
 
-func (r Runtime) InferenceCreate(ctx context.Context,
+func (r generalRuntime) InferenceCreate(ctx context.Context,
 	req types.InferenceDeployment, ingressDomain, ingressNamespace, event string) error {
 
 	namespace := req.Spec.Namespace
@@ -35,7 +35,6 @@ func (r Runtime) InferenceCreate(ctx context.Context,
 
 	// Create the ingress
 	// TODO(gaocegege): Check if the domain is already used.
-	// TODO: Move it to apiserver.
 	if r.ingressEnabled {
 		name := req.Spec.Labels[localconsts.LabelName]
 

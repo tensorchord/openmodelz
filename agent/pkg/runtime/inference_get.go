@@ -13,13 +13,13 @@ import (
 	"github.com/tensorchord/openmodelz/modelzetes/pkg/client/listers/modelzetes/v2alpha1"
 )
 
-func (r Runtime) InferenceGet(namespace, inferenceName string) (
+func (r generalRuntime) InferenceGet(namespace, inferenceName string) (
 	*types.InferenceDeployment, error) {
 	return inferenceGet(namespace, inferenceName,
 		r.inferenceInformer.Lister(), r.deploymentInformer.Lister())
 }
 
-func (r Runtime) InferenceGetCRD(namespace, name string) (*apis.Inference, error) {
+func (r generalRuntime) InferenceGetCRD(namespace, name string) (*apis.Inference, error) {
 	inference, err := r.inferenceInformer.Lister().Inferences(namespace).Get(name)
 	if err != nil {
 		if k8serrors.IsNotFound(err) {

@@ -14,7 +14,7 @@ import (
 	"github.com/tensorchord/openmodelz/modelzetes/pkg/consts"
 )
 
-func (r Runtime) BuildList(ctx context.Context, namespace string) (
+func (r generalRuntime) BuildList(ctx context.Context, namespace string) (
 	[]types.Build, error) {
 	res := []types.Build{}
 	jobs, err := r.kubeClient.BatchV1().Jobs(namespace).
@@ -40,7 +40,7 @@ func (r Runtime) BuildList(ctx context.Context, namespace string) (
 	return res, nil
 }
 
-func (r Runtime) BuildCreate(ctx context.Context,
+func (r generalRuntime) BuildCreate(ctx context.Context,
 	req types.Build, inference *v2alpha1.Inference, builderImage, buildkitdAddress, buildCtlBin, secret string) error {
 	buildJob, err := k8s.MakeBuild(req, inference, builderImage,
 		buildkitdAddress, buildCtlBin, secret)
@@ -56,7 +56,7 @@ func (r Runtime) BuildCreate(ctx context.Context,
 	return nil
 }
 
-func (r Runtime) BuildGet(ctx context.Context, namespace, buildName string) (types.Build, error) {
+func (r generalRuntime) BuildGet(ctx context.Context, namespace, buildName string) (types.Build, error) {
 	job, err := r.kubeClient.BatchV1().Jobs(namespace).Get(ctx,
 		buildName, metav1.GetOptions{})
 	if err != nil {

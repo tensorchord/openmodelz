@@ -12,8 +12,8 @@ func getUserIDFromNamespace(ns string) (string, error) {
 	}
 
 	if ns[:len(DefaultPrefix)] != DefaultPrefix {
-		return "", fmt.Errorf("namespace does not start with ")
+		return "", fmt.Errorf("namespace does not start with %s", DefaultPrefix)
 	}
 
-	return ns[7:], nil
+	return ns[len(DefaultPrefix):], nil
 }

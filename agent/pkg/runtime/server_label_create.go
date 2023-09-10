@@ -10,7 +10,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func (r Runtime) ServerLabelCreate(ctx context.Context, name string, spec types.ServerSpec) error {
+func (r generalRuntime) ServerLabelCreate(ctx context.Context, name string, spec types.ServerSpec) error {
 	node, err := r.kubeClient.CoreV1().Nodes().Get(ctx, name, metav1.GetOptions{})
 	if err != nil {
 		if k8serrors.IsNotFound(err) {

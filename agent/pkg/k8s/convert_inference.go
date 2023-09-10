@@ -3,6 +3,7 @@ package k8s
 import (
 	"github.com/tensorchord/openmodelz/agent/api/types"
 	"github.com/tensorchord/openmodelz/modelzetes/pkg/apis/modelzetes/v2alpha1"
+	"github.com/tensorchord/openmodelz/modelzetes/pkg/consts"
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 )
@@ -74,6 +75,26 @@ func AsInferenceDeployment(inf *v2alpha1.Inference, item *appsv1.Deployment) *ty
 		if item.DeletionTimestamp != nil {
 			res.Status.Phase = types.PhaseTerminating
 		}
+	}
+	return res
+}
+
+func AsResourceList(resources v1.ResourceList) types.ResourceList {
+	res := types.ResourceList{}
+	gpuResource := resources[consts.ResourceNvidiaGPU]
+	gpuPtr := &gpuResource
+
+	if !resources.Cpu().IsZero() {
+		res[types.ResourceCPU] = types.Quantity(
+			resources.Cpu().String())
+	}
+	if !resources.Memory().IsZero() {
+		res[types.ResourceMemory] = types.Quantity(
+			resources.Memory().String())
+	}
+	if !gpuPtr.IsZero() {
+		res[types.ResourceGPU] = types.Quantity(
+			gpuPtr.String())
 	}
 	return res
 }

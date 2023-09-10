@@ -17,7 +17,7 @@ import (
 	"github.com/tensorchord/openmodelz/agent/pkg/k8s"
 )
 
-func (r Runtime) InferenceList(namespace string) ([]types.InferenceDeployment, error) {
+func (r generalRuntime) InferenceList(namespace string) ([]types.InferenceDeployment, error) {
 	infLister := r.inferenceInformer.Lister()
 	deploymentLister := r.deploymentInformer.Lister()
 
