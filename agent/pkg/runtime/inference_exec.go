@@ -27,7 +27,7 @@ const (
 	endOfTransmission = "\u0004"
 )
 
-func (r Runtime) InferenceExec(ctx *gin.Context, namespace, instance string,
+func (r generalRuntime) InferenceExec(ctx *gin.Context, namespace, instance string,
 	commands []string, tty bool) error {
 	pod, err := r.kubeClient.CoreV1().Pods(namespace).Get(
 		ctx.Request.Context(), instance, metav1.GetOptions{})

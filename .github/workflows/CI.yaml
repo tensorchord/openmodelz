@@ -31,13 +31,12 @@ jobs:
         uses: crate-ci/typos@v1.16.2
         with:
           config: ./typos.toml
-
   test:
     name: test
     strategy:
       matrix:
         os: [ubuntu-latest]
-        dir: ["modelzetes", "autoscaler", "agent", "mdz", "ingress-operator"]
+        dir: ["agent", "autoscaler", "ingress-operator", "mdz", "modelzetes"]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Check out code
@@ -60,4 +59,59 @@ jobs:
           make fmt
           git diff --exit-code || (echo 'Please run "make fmt" to format code' && exit 1);
           make
-          make test
+          go test -race -coverprofile=${{ matrix.dir }}.out -covermode=atomic ./...
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.dir }}-out
+          path: ${{ matrix.dir }}/${{ matrix.dir }}.out
+  report:
+    needs:
+      - test
+      - typos-check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.19
+      - name: Install bins
+        run: |
+          go install github.com/mattn/goveralls@latest
+      - name: Get agent coverage report
+        uses: actions/download-artifact@v3
+        with:
+          name: agent-out
+          path: merge
+      - name: Get autoscaler coverage report
+        uses: actions/download-artifact@v3
+        with:
+          name: autoscaler-out
+          path: merge
+      - name: Get ingress-operator coverage report
+        uses: actions/download-artifact@v3
+        with:
+          name: ingress-operator-out
+          path: merge
+      - name: Get mdz coverage report
+        uses: actions/download-artifact@v3
+        with:
+          name: mdz-out
+          path: merge
+      - name: Get modelzetes coverage report
+        uses: actions/download-artifact@v3
+        with:
+          name: modelzetes-out
+          path: merge
+      - name: Merge all coverage reports
+        uses: cutecutecat/go-cover-merge@v1
+        with:
+          input_dir: merge
+          output_file: final.out
+      - name: Send coverage
+        env:
+          COVERALLS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          goveralls -coverprofile=final.out -service=github

@@ -11,7 +11,7 @@ import (
 	"github.com/tensorchord/openmodelz/agent/errdefs"
 )
 
-func (r Runtime) InferenceDelete(ctx context.Context, namespace,
+func (r generalRuntime) InferenceDelete(ctx context.Context, namespace,
 	inferenceName, ingressNamespace, event string) error {
 
 	if r.eventEnabled {

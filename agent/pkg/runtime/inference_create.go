@@ -36,7 +36,6 @@ func (r Runtime) InferenceCreate(ctx context.Context,
 
 	// Create the ingress
 	// TODO(gaocegege): Check if the domain is already used.
-	// TODO: Move it to apiserver.
 	if r.ingressEnabled {
 		name := req.Spec.Labels[localconsts.LabelName]
 

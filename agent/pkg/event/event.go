@@ -15,10 +15,10 @@ type Interface interface {
 }
 
 type EventRecorder struct {
-	DB *query.Queries
+	DB query.Querier
 }
 
-func NewEventRecorder(q *query.Queries) Interface {
+func NewEventRecorder(q query.Querier) Interface {
 	return &EventRecorder{
 		DB: q,
 	}

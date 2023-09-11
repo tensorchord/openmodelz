@@ -12,7 +12,7 @@ import (
 	"github.com/tensorchord/openmodelz/agent/errdefs"
 )
 
-func (r Runtime) NamespaceList(ctx context.Context) ([]string, error) {
+func (r generalRuntime) NamespaceList(ctx context.Context) ([]string, error) {
 	ns, err := r.kubeClient.CoreV1().Namespaces().List(ctx,
 		metav1.ListOptions{
 			LabelSelector: fmt.Sprintf("%s=true", types.LabelNamespace),
@@ -32,7 +32,7 @@ func (r Runtime) NamespaceList(ctx context.Context) ([]string, error) {
 	return res, nil
 }
 
-func (r Runtime) NamespaceCreate(ctx context.Context, name string) error {
+func (r generalRuntime) NamespaceCreate(ctx context.Context, name string) error {
 	ns := &v1.Namespace{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: name,

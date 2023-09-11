@@ -10,7 +10,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func (r Runtime) ImageCacheCreate(ctx context.Context, req types.ImageCache, inference *modelzetes.Inference) error {
+func (r generalRuntime) ImageCacheCreate(ctx context.Context, req types.ImageCache, inference *modelzetes.Inference) error {
 	imageCache := k8s.MakeImageCache(req, inference)
 	logrus.Infof("%v", imageCache)
 

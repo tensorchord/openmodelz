@@ -11,6 +11,7 @@
 <a href="https://github.com/tensorchord/openmodelz#contributors-"><img alt="all-contributors" src="https://img.shields.io/github/all-contributors/tensorchord/openmodelz/main"></a>
 <a href="https://github.com/tensorchord/openmodelz/actions/workflows/CI.yaml"><img alt="CI" src="https://github.com/tensorchord/openmodelz/actions/workflows/CI.yaml/badge.svg"></a>
 <a href="https://badge.fury.io/py/openmodelz"><img src="https://badge.fury.io/py/openmodelz.svg" alt="PyPI version" height="20"></a>
+<a href='https://coveralls.io/github/tensorchord/openmodelz'><img src='https://coveralls.io/repos/github/tensorchord/openmodelz/badge.svg' alt='Coverage Status' /></a>
 </p>
 
 ## What is OpenModelZ?

@@ -12,7 +12,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func (r Runtime) ServerList(ctx context.Context) ([]types.Server, error) {
+func (r generalRuntime) ServerList(ctx context.Context) ([]types.Server, error) {
 	nodes, err := r.kubeClient.CoreV1().Nodes().List(ctx, metav1.ListOptions{})
 	if err != nil {
 		if k8serrors.IsNotFound(err) {
