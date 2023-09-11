@@ -27,7 +27,7 @@ import (
 // @Router      /streamlit/{id} [post]
 // @Success     201
 func (s *Server) proxyStreamlit(c *gin.Context) error {
-	remote, err := url.Parse("http://0.0.0.0:8080")
+	remote, err := url.Parse(fmt.Sprintf("http://0.0.0.0:%d", s.config.Server.ServerPort))
 	if err != nil {
 		return err
 	}

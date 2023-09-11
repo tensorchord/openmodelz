@@ -30,7 +30,7 @@ var _ = Describe("inference create", func() {
 		Expect(err).To(HaveOccurred())
 	})
 	It("good request", func() {
-		mockRuntime.EXPECT().InferenceCreate(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Times(1).Return(nil)
+		mockRuntime.EXPECT().InferenceCreate(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Times(1).Return(nil)
 		c := mkJsonBodyContext("GET", "/", nil, types.InferenceDeployment{
 			Spec: types.InferenceDeploymentSpec{
 				Name:  "abc",

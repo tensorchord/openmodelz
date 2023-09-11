@@ -54,7 +54,7 @@ func (s *Server) handleInferenceCreate(c *gin.Context) error {
 
 	// Create the inference.
 	if err := s.runtime.InferenceCreate(c.Request.Context(), req,
-		s.config.Ingress, event); err != nil {
+		s.config.Ingress, event, s.config.Server.ServerPort); err != nil {
 		return errFromErrDefs(err, event)
 	}
 	c.JSON(http.StatusCreated, req)

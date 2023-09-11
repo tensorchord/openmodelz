@@ -103,7 +103,7 @@ func New() App {
 		},
 		&cli.IntFlag{
 			Name:    flagServerPort,
-			Value:   8081,
+			Value:   8080,
 			Usage:   "port to listen on",
 			EnvVars: []string{"MODELZ_AGENT_SERVER_PORT"},
 			Aliases: []string{"p"},

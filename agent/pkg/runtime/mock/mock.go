@@ -111,17 +111,17 @@ func (mr *MockRuntimeMockRecorder) ImageCacheCreate(ctx, req, inference interfac
 }
 
 // InferenceCreate mocks base method.
-func (m *MockRuntime) InferenceCreate(ctx context.Context, req types.InferenceDeployment, cfg config.IngressConfig, event string) error {
+func (m *MockRuntime) InferenceCreate(ctx context.Context, req types.InferenceDeployment, cfg config.IngressConfig, event string, serverPort int) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "InferenceCreate", ctx, req, cfg, event)
+	ret := m.ctrl.Call(m, "InferenceCreate", ctx, req, cfg, event, serverPort)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // InferenceCreate indicates an expected call of InferenceCreate.
-func (mr *MockRuntimeMockRecorder) InferenceCreate(ctx, req, cfg, event interface{}) *gomock.Call {
+func (mr *MockRuntimeMockRecorder) InferenceCreate(ctx, req, cfg, event, serverPort interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InferenceCreate", reflect.TypeOf((*MockRuntime)(nil).InferenceCreate), ctx, req, cfg, event)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InferenceCreate", reflect.TypeOf((*MockRuntime)(nil).InferenceCreate), ctx, req, cfg, event, serverPort)
 }
 
 // InferenceDelete mocks base method.

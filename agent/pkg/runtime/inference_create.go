@@ -18,7 +18,7 @@ import (
 )
 
 func (r generalRuntime) InferenceCreate(ctx context.Context,
-	req types.InferenceDeployment, cfg config.IngressConfig, event string) error {
+	req types.InferenceDeployment, cfg config.IngressConfig, event string, serverPort int) error {
 
 	namespace := req.Spec.Namespace
 
@@ -109,7 +109,7 @@ func (r generalRuntime) InferenceCreate(ctx context.Context,
 		}
 	} else {
 		// Set the gateway kubernetes service domain.
-		domain := fmt.Sprintf("gateway.default:8080/api/v1/%s/%s/", string(req.Spec.Framework), req.Spec.Name)
+		domain := fmt.Sprintf("gateway.default:%d/api/v1/%s/%s/", serverPort, string(req.Spec.Framework), req.Spec.Name)
 		if inf.Spec.Annotations == nil {
 			inf.Spec.Annotations = make(map[string]string)
 		}

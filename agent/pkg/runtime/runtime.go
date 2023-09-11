@@ -34,7 +34,7 @@ type Runtime interface {
 	ImageCacheCreate(ctx context.Context, req types.ImageCache, inference *modelzetes.Inference) error
 	// inference
 	InferenceCreate(ctx context.Context,
-		req types.InferenceDeployment, cfg config.IngressConfig, event string) error
+		req types.InferenceDeployment, cfg config.IngressConfig, event string, serverPort int) error
 	InferenceDelete(ctx context.Context, namespace, inferenceName, ingressNamespace, event string) error
 	InferenceExec(ctx *gin.Context, namespace, instance string, commands []string, tty bool) error
 	InferenceGet(namespace, inferenceName string) (*types.InferenceDeployment, error)
