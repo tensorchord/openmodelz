@@ -10,7 +10,7 @@ import (
 	"github.com/tensorchord/openmodelz/agent/pkg/k8s"
 )
 
-func (r Runtime) InferenceInstanceList(namespace, inferenceName string) (
+func (r generalRuntime) InferenceInstanceList(namespace, inferenceName string) (
 	[]types.InferenceDeploymentInstance, error) {
 	return getInstances(namespace, inferenceName, r.podInformer.Lister())
 }

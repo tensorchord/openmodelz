@@ -1,6 +1,9 @@
 package runtime
 
 import (
+	"context"
+
+	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	apicorev1 "k8s.io/api/core/v1"
 	appsv1 "k8s.io/client-go/informers/apps/v1"
@@ -10,13 +13,45 @@ import (
 	"k8s.io/client-go/rest"
 
 	kubefledged "github.com/senthilrch/kube-fledged/pkg/client/clientset/versioned"
+	"github.com/tensorchord/openmodelz/agent/api/types"
 	"github.com/tensorchord/openmodelz/agent/pkg/event"
 	ingressclient "github.com/tensorchord/openmodelz/ingress-operator/pkg/client/clientset/versioned"
+	"github.com/tensorchord/openmodelz/modelzetes/pkg/apis/modelzetes/v2alpha1"
+	apis "github.com/tensorchord/openmodelz/modelzetes/pkg/apis/modelzetes/v2alpha1"
+	modelzetes "github.com/tensorchord/openmodelz/modelzetes/pkg/apis/modelzetes/v2alpha1"
 	clientset "github.com/tensorchord/openmodelz/modelzetes/pkg/client/clientset/versioned"
 	modelzv2alpha1 "github.com/tensorchord/openmodelz/modelzetes/pkg/client/informers/externalversions/modelzetes/v2alpha1"
 )
 
-type Runtime struct {
+type Runtime interface {
+	// build
+	BuildList(ctx context.Context, namespace string) ([]types.Build, error)
+	BuildCreate(ctx context.Context, req types.Build, inference *v2alpha1.Inference, builderImage,
+		buildkitdAddress, buildCtlBin, secret string) error
+	BuildGet(ctx context.Context, namespace, buildName string) (types.Build, error)
+	// cache
+	ImageCacheCreate(ctx context.Context, req types.ImageCache, inference *modelzetes.Inference) error
+	// inference
+	InferenceCreate(ctx context.Context, req types.InferenceDeployment, ingressDomain,
+		ingressNamespace, event string) error
+	InferenceDelete(ctx context.Context, namespace, inferenceName, ingressNamespace, event string) error
+	InferenceExec(ctx *gin.Context, namespace, instance string, commands []string, tty bool) error
+	InferenceGet(namespace, inferenceName string) (*types.InferenceDeployment, error)
+	InferenceGetCRD(namespace, name string) (*apis.Inference, error)
+	InferenceInstanceList(namespace, inferenceName string) ([]types.InferenceDeploymentInstance, error)
+	InferenceList(namespace string) ([]types.InferenceDeployment, error)
+	InferenceScale(ctx context.Context, namespace string, req types.ScaleServiceRequest, inf *types.InferenceDeployment) error
+	InferenceUpdate(ctx context.Context, namespace string, req types.InferenceDeployment, event string) (err error)
+	// namespace
+	NamespaceList(ctx context.Context) ([]string, error)
+	NamespaceCreate(ctx context.Context, name string) error
+	// server
+	ServerDeleteNode(ctx context.Context, name string) error
+	ServerLabelCreate(ctx context.Context, name string, spec types.ServerSpec) error
+	ServerList(ctx context.Context) ([]types.Server, error)
+}
+
+type generalRuntime struct {
 	endpointsInformer  corev1.EndpointsInformer
 	deploymentInformer appsv1.DeploymentInformer
 	inferenceInformer  modelzv2alpha1.InferenceInformer
@@ -53,7 +88,7 @@ func New(clientConfig *rest.Config,
 	buildEnabled bool,
 	ingressAnyIPToDomain bool,
 ) (Runtime, error) {
-	r := Runtime{
+	r := generalRuntime{
 		endpointsInformer:    endpointsInformer,
 		deploymentInformer:   deploymentInformer,
 		inferenceInformer:    inferenceInformer,
