@@ -8,7 +8,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func (r Runtime) ListServerResource() ([]string, error) {
+func (r generalRuntime) ListServerResource() ([]string, error) {
 	resources := []string{}
 	listOptions := metav1.ListOptions{
 		LabelSelector: consts.LabelServerResource,

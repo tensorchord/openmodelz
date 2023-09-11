@@ -8,7 +8,7 @@ import (
 	"github.com/tensorchord/openmodelz/agent/pkg/version"
 )
 
-func (r Runtime) GetClusterInfo(cluster *types.ManagedCluster) error {
+func (r generalRuntime) GetClusterInfo(cluster *types.ManagedCluster) error {
 	info, err := k8s.GetKubernetesVersion(r.kubeClient)
 	if err != nil {
 		return err

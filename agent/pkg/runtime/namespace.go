@@ -54,7 +54,7 @@ func (r generalRuntime) NamespaceCreate(ctx context.Context, name string) error 
 	return nil
 }
 
-func (r Runtime) NamespaceGet(ctx context.Context, name string) bool {
+func (r generalRuntime) NamespaceGet(ctx context.Context, name string) bool {
 	_, err := r.kubeClient.CoreV1().Namespaces().Get(ctx, name, metav1.GetOptions{})
 	if err != nil {
 		return false

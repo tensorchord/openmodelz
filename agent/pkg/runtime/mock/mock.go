@@ -11,6 +11,7 @@ import (
 	gin "github.com/gin-gonic/gin"
 	gomock "github.com/golang/mock/gomock"
 	types "github.com/tensorchord/openmodelz/agent/api/types"
+	config "github.com/tensorchord/openmodelz/agent/pkg/config"
 	v2alpha1 "github.com/tensorchord/openmodelz/modelzetes/pkg/apis/modelzetes/v2alpha1"
 )
 
@@ -81,6 +82,20 @@ func (mr *MockRuntimeMockRecorder) BuildList(ctx, namespace interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BuildList", reflect.TypeOf((*MockRuntime)(nil).BuildList), ctx, namespace)
 }
 
+// GetClusterInfo mocks base method.
+func (m *MockRuntime) GetClusterInfo(cluster *types.ManagedCluster) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetClusterInfo", cluster)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// GetClusterInfo indicates an expected call of GetClusterInfo.
+func (mr *MockRuntimeMockRecorder) GetClusterInfo(cluster interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetClusterInfo", reflect.TypeOf((*MockRuntime)(nil).GetClusterInfo), cluster)
+}
+
 // ImageCacheCreate mocks base method.
 func (m *MockRuntime) ImageCacheCreate(ctx context.Context, req types.ImageCache, inference *v2alpha1.Inference) error {
 	m.ctrl.T.Helper()
@@ -96,17 +111,17 @@ func (mr *MockRuntimeMockRecorder) ImageCacheCreate(ctx, req, inference interfac
 }
 
 // InferenceCreate mocks base method.
-func (m *MockRuntime) InferenceCreate(ctx context.Context, req types.InferenceDeployment, ingressDomain, ingressNamespace, event string) error {
+func (m *MockRuntime) InferenceCreate(ctx context.Context, req types.InferenceDeployment, cfg config.IngressConfig, event string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "InferenceCreate", ctx, req, ingressDomain, ingressNamespace, event)
+	ret := m.ctrl.Call(m, "InferenceCreate", ctx, req, cfg, event)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // InferenceCreate indicates an expected call of InferenceCreate.
-func (mr *MockRuntimeMockRecorder) InferenceCreate(ctx, req, ingressDomain, ingressNamespace, event interface{}) *gomock.Call {
+func (mr *MockRuntimeMockRecorder) InferenceCreate(ctx, req, cfg, event interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InferenceCreate", reflect.TypeOf((*MockRuntime)(nil).InferenceCreate), ctx, req, ingressDomain, ingressNamespace, event)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InferenceCreate", reflect.TypeOf((*MockRuntime)(nil).InferenceCreate), ctx, req, cfg, event)
 }
 
 // InferenceDelete mocks base method.
@@ -237,6 +252,20 @@ func (m *MockRuntime) NamespaceCreate(ctx context.Context, name string) error {
 func (mr *MockRuntimeMockRecorder) NamespaceCreate(ctx, name interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NamespaceCreate", reflect.TypeOf((*MockRuntime)(nil).NamespaceCreate), ctx, name)
+}
+
+// NamespaceGet mocks base method.
+func (m *MockRuntime) NamespaceGet(ctx context.Context, name string) bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "NamespaceGet", ctx, name)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// NamespaceGet indicates an expected call of NamespaceGet.
+func (mr *MockRuntimeMockRecorder) NamespaceGet(ctx, name interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NamespaceGet", reflect.TypeOf((*MockRuntime)(nil).NamespaceGet), ctx, name)
 }
 
 // NamespaceList mocks base method.

@@ -17,7 +17,7 @@ import (
 	localconsts "github.com/tensorchord/openmodelz/agent/pkg/consts"
 )
 
-func (r Runtime) InferenceCreate(ctx context.Context,
+func (r generalRuntime) InferenceCreate(ctx context.Context,
 	req types.InferenceDeployment, cfg config.IngressConfig, event string) error {
 
 	namespace := req.Spec.Namespace
