@@ -59,7 +59,7 @@ jobs:
           make fmt
           git diff --exit-code || (echo 'Please run "make fmt" to format code' && exit 1);
           make
-          go test -coverprofile=${{ matrix.dir }}.out -covermode=atomic ./...
+          go test -race -coverprofile=${{ matrix.dir }}.out -covermode=atomic ./...
       - name: Upload coverage report
         uses: actions/upload-artifact@v3
         with:
