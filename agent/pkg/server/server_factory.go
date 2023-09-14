@@ -4,11 +4,13 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/dgraph-io/ristretto"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
+	"github.com/tensorchord/openmodelz/agent/client"
 	"github.com/tensorchord/openmodelz/agent/pkg/query"
 	ginlogrus "github.com/toorop/gin-logrus"
 
@@ -48,6 +50,10 @@ type Server struct {
 	config config.Config
 
 	eventRecorder event.Interface
+
+	modelzCloudClient *client.Client
+
+	cache ristretto.Cache
 }
 
 func New(c config.Config) (Server, error) {
@@ -82,6 +88,16 @@ func New(c config.Config) (Server, error) {
 		prometheusClient: promCli,
 	}
 
+	cache, err := ristretto.NewCache(&ristretto.Config{
+		NumCounters: 1e7,
+		MaxCost:     1 << 28,
+		BufferItems: 64,
+	})
+	if err != nil {
+		return s, err
+	}
+	s.cache = *cache
+
 	if s.config.DB.EventEnabled {
 		logrus.Info("Event recording is enabled")
 		// Connect to database
@@ -99,6 +115,13 @@ func New(c config.Config) (Server, error) {
 	s.registerMetricsRoutes()
 	if err := s.initKubernetesResources(); err != nil {
 		return s, err
+	}
+
+	if c.ModelZCloud.Enabled {
+		err := s.initModelZCloud(c.ModelZCloud.URL, c.ModelZCloud.AgentToken, c.ModelZCloud.Region)
+		if err != nil {
+			return s, err
+		}
 	}
 	if err := s.initMetrics(); err != nil {
 		return s, err

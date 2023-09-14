@@ -25,6 +25,7 @@ const (
 
 func (s *Server) registerRoutes() {
 	root := s.router.Group("/")
+	v1 := s.router.Group("/api/v1")
 
 	// swagger
 	root.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
@@ -35,6 +36,11 @@ func (s *Server) registerRoutes() {
 	root.Any("/inference/:name/*proxyPath",
 		WrapHandler(s.middlewareCallID),
 		WrapHandler(s.handleInferenceProxy))
+
+	v1.Any("/mosec/:id/*proxyPath", WrapHandler(s.proxyMosec))
+	v1.Any("/gradio/:id/*proxyPath", WrapHandler(s.proxyGradio))
+	v1.Any("/streamlit/:id/*proxyPath", WrapHandler(s.proxyStreamlit))
+	v1.Any("/other/:id/*proxyPath", WrapHandler(s.proxyOther))
 
 	// healthz
 	root.GET(endpointHealthz, WrapHandler(s.handleHealthz))

@@ -6,6 +6,7 @@ import (
 
 	"github.com/google/uuid"
 
+	"github.com/tensorchord/openmodelz/agent/client"
 	"github.com/tensorchord/openmodelz/agent/pkg/query"
 )
 
@@ -24,7 +25,7 @@ func NewEventRecorder(q query.Querier) Interface {
 }
 
 func (e *EventRecorder) CreateDeploymentEvent(namespace, deployment, event, message string) error {
-	user, err := getUserIDFromNamespace(namespace)
+	user, err := client.GetUserIDFromNamespace(namespace)
 	if err != nil {
 		return err
 	} else if user == "" {

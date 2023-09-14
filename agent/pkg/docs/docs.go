@@ -20,6 +20,62 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/gradio/{id}": {
+            "get": {
+                "description": "Reverse proxy to the backend gradio.",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "inference"
+                ],
+                "summary": "Reverse proxy to the backend gradio.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Deployment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    }
+                }
+            },
+            "post": {
+                "description": "Reverse proxy to the backend gradio.",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "inference"
+                ],
+                "summary": "Reverse proxy to the backend gradio.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Deployment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    }
+                }
+            }
+        },
         "/healthz": {
             "get": {
                 "description": "Healthz",
@@ -194,6 +250,205 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/mosec/{id}": {
+            "get": {
+                "description": "Proxy to the backend mosec.",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "inference"
+                ],
+                "summary": "Proxy to the backend mosec.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Deployment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    }
+                }
+            }
+        },
+        "/mosec/{id}/inference": {
+            "post": {
+                "description": "Proxy to the backend mosec.",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "inference"
+                ],
+                "summary": "Proxy to the backend mosec.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Deployment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    }
+                }
+            }
+        },
+        "/mosec/{id}/metrics": {
+            "get": {
+                "description": "Proxy to the backend mosec.",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "inference"
+                ],
+                "summary": "Proxy to the backend mosec.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Deployment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    }
+                }
+            }
+        },
+        "/other/{id}": {
+            "get": {
+                "description": "Reverse proxy to the backend other.",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "inference"
+                ],
+                "summary": "Reverse proxy to the backend other.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Deployment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    }
+                }
+            },
+            "post": {
+                "description": "Reverse proxy to the backend other.",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "inference"
+                ],
+                "summary": "Reverse proxy to the backend other.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Deployment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    }
+                }
+            }
+        },
+        "/streamlit/{id}": {
+            "get": {
+                "description": "Reverse proxy to streamlit.",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "inference"
+                ],
+                "summary": "Reverse proxy to streamlit.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Deployment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    }
+                }
+            },
+            "post": {
+                "description": "Reverse proxy to streamlit.",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "inference"
+                ],
+                "summary": "Reverse proxy to streamlit.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Deployment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
                     }
                 }
             }

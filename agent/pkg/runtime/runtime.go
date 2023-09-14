@@ -14,6 +14,7 @@ import (
 
 	kubefledged "github.com/senthilrch/kube-fledged/pkg/client/clientset/versioned"
 	"github.com/tensorchord/openmodelz/agent/api/types"
+	"github.com/tensorchord/openmodelz/agent/pkg/config"
 	"github.com/tensorchord/openmodelz/agent/pkg/event"
 	ingressclient "github.com/tensorchord/openmodelz/ingress-operator/pkg/client/clientset/versioned"
 	"github.com/tensorchord/openmodelz/modelzetes/pkg/apis/modelzetes/v2alpha1"
@@ -32,8 +33,8 @@ type Runtime interface {
 	// cache
 	ImageCacheCreate(ctx context.Context, req types.ImageCache, inference *modelzetes.Inference) error
 	// inference
-	InferenceCreate(ctx context.Context, req types.InferenceDeployment, ingressDomain,
-		ingressNamespace, event string) error
+	InferenceCreate(ctx context.Context,
+		req types.InferenceDeployment, cfg config.IngressConfig, event string, serverPort int) error
 	InferenceDelete(ctx context.Context, namespace, inferenceName, ingressNamespace, event string) error
 	InferenceExec(ctx *gin.Context, namespace, instance string, commands []string, tty bool) error
 	InferenceGet(namespace, inferenceName string) (*types.InferenceDeployment, error)
@@ -45,10 +46,13 @@ type Runtime interface {
 	// namespace
 	NamespaceList(ctx context.Context) ([]string, error)
 	NamespaceCreate(ctx context.Context, name string) error
+	NamespaceGet(ctx context.Context, name string) bool
 	// server
 	ServerDeleteNode(ctx context.Context, name string) error
 	ServerLabelCreate(ctx context.Context, name string, spec types.ServerSpec) error
 	ServerList(ctx context.Context) ([]types.Server, error)
+	// managed cluster
+	GetClusterInfo(cluster *types.ManagedCluster) error
 }
 
 type generalRuntime struct {
