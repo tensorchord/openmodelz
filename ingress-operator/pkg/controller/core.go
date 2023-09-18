@@ -13,6 +13,7 @@ import (
 	faasscheme "github.com/tensorchord/openmodelz/ingress-operator/pkg/client/clientset/versioned/scheme"
 	v1 "github.com/tensorchord/openmodelz/ingress-operator/pkg/client/informers/externalversions/modelzetes/v1"
 	listers "github.com/tensorchord/openmodelz/ingress-operator/pkg/client/listers/modelzetes/v1"
+	"github.com/tensorchord/openmodelz/modelzetes/pkg/consts"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -254,6 +255,7 @@ func MakeAnnotations(fni *faasv1.InferenceIngress, host string) map[string]strin
 	annotations := make(map[string]string)
 
 	annotations["ai.tensorchord.spec"] = string(specJSON)
+	inferenceNamespace := fni.Labels[consts.LabelInferenceNamespace]
 
 	if !fni.Spec.BypassGateway {
 		switch class {
@@ -265,7 +267,7 @@ func MakeAnnotations(fni *faasv1.InferenceIngress, host string) map[string]strin
 					"/" + fni.Spec.Function + "/$1"
 				annotations["nginx.ingress.kubernetes.io/use-regex"] = "true"
 			default:
-				annotations["nginx.ingress.kubernetes.io/rewrite-target"] = "/inference/" + fni.Name + ".default" + "/$1"
+				annotations["nginx.ingress.kubernetes.io/rewrite-target"] = "/inference/" + fni.Name + "." + inferenceNamespace + "/$1"
 				annotations["nginx.ingress.kubernetes.io/ssl-redirect"] = "false"
 				annotations["nginx.ingress.kubernetes.io/use-regex"] = "true"
 			}

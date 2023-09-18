@@ -181,7 +181,8 @@ func makeInference(request types.InferenceDeployment) (*v2alpha1.Inference, erro
 
 func makeIngress(request types.InferenceDeployment, cfg config.IngressConfig) (*ingressv1.InferenceIngress, error) {
 	labels := map[string]string{
-		consts.LabelInferenceName: request.Spec.Name,
+		consts.LabelInferenceName:      request.Spec.Name,
+		consts.LabelInferenceNamespace: request.Spec.Namespace,
 	}
 
 	if request.Spec.Labels == nil {
