@@ -50,8 +50,13 @@ func setQuery(c *gin.Context, query map[string]string) {
 	for k, v := range query {
 		params.Set(k, v)
 	}
-
 	c.Request.URL.RawQuery = params.Encode()
+}
+
+func setParam(c *gin.Context, param map[string]string) {
+	for k, v := range param {
+		c.Params = []gin.Param{{Key: k, Value: v}}
+	}
 }
 
 func TestBuilder(t *testing.T) {

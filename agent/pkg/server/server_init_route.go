@@ -88,6 +88,8 @@ func (s *Server) registerRoutes() {
 		WrapHandler(s.handleNamespaceList))
 	controlPlane.POST(endpointNamespacePlural,
 		WrapHandler(s.handleNamespaceCreate))
+	controlPlane.DELETE(endpointNamespacePlural,
+		WrapHandler(s.handleNamespaceDelete))
 
 	// TODO(gaocegege): Support secrets
 	// controlPlane.GET("/secrets")

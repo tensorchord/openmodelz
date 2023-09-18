@@ -1,6 +1,8 @@
 package server
 
 import (
+	"errors"
+
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
 	. "github.com/onsi/ginkgo/v2"
@@ -9,7 +11,7 @@ import (
 	"github.com/tensorchord/openmodelz/agent/pkg/server/validator"
 )
 
-var _ = Describe("inference delete", func() {
+var _ = Describe("namespace delete", func() {
 	BeforeEach(func() {
 		server = &Server{
 			router:        gin.New(),
@@ -20,21 +22,23 @@ var _ = Describe("inference delete", func() {
 	})
 	It("invalid request - nil", func() {
 		c := mkContext("GET", "/", nil, nil)
-		err := server.handleInferenceDelete(c)
+		err := server.handleNamespaceDelete(c)
 		Expect(err).To(HaveOccurred())
 	})
-	It("invalid request - empty", func() {
-		c := mkJsonBodyContext("GET", "/", nil, types.DeleteFunctionRequest{})
-		err := server.handleInferenceDelete(c)
+	It("invalid request - mock error", func() {
+		mockRuntime.EXPECT().NamespaceDelete(gomock.Any(), gomock.Any()).Times(1).Return(errors.New("mock-error"))
+		c := mkJsonBodyContext("GET", "/", nil, types.NamespaceRequest{
+			Name: "mock-ns",
+		})
+		err := server.handleNamespaceDelete(c)
 		Expect(err).To(HaveOccurred())
 	})
 	It("good request", func() {
-		mockRuntime.EXPECT().InferenceDelete(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Times(1).Return(nil)
-		c := mkJsonBodyContext("GET", "/", nil, types.DeleteFunctionRequest{
-			FunctionName: "mock-inference",
+		mockRuntime.EXPECT().NamespaceDelete(gomock.Any(), gomock.Any()).Times(1).Return(nil)
+		c := mkJsonBodyContext("GET", "/", nil, types.NamespaceRequest{
+			Name: "mock-ns",
 		})
-		setQuery(c, map[string]string{"namespace": "mock-namespace"})
-		err := server.handleInferenceDelete(c)
+		err := server.handleNamespaceDelete(c)
 		Expect(err).NotTo(HaveOccurred())
 	})
 })

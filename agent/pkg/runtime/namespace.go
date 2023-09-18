@@ -62,3 +62,8 @@ func (r generalRuntime) NamespaceGet(ctx context.Context, name string) bool {
 
 	return true
 }
+
+func (r generalRuntime) NamespaceDelete(ctx context.Context, name string) error {
+	err := r.kubeClient.CoreV1().Namespaces().Delete(ctx, name, metav1.DeleteOptions{})
+	return err
+}

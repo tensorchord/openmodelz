@@ -47,6 +47,7 @@ type Runtime interface {
 	NamespaceList(ctx context.Context) ([]string, error)
 	NamespaceCreate(ctx context.Context, name string) error
 	NamespaceGet(ctx context.Context, name string) bool
+	NamespaceDelete(ctx context.Context, name string) error
 	// server
 	ServerDeleteNode(ctx context.Context, name string) error
 	ServerLabelCreate(ctx context.Context, name string, spec types.ServerSpec) error
