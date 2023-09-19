@@ -3,7 +3,8 @@ package consts
 const (
 	ResourceNvidiaGPU = "nvidia.com/gpu"
 
-	LabelInferenceName = "inference"
+	LabelInferenceName      = "inference"
+	LabelInferenceNamespace = "inference-namespace"
 
 	AnnotationBuilding = "ai.tensorchord.building"
 
