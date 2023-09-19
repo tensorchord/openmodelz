@@ -23,9 +23,5 @@ func (cli *Client) NamespaceCreate(ctx context.Context,
 	resp, err := cli.post(ctx, gatewayNamespaceControlPlanePath, urlValues, req, nil)
 	defer ensureReaderClosed(resp)
 
-	if err != nil {
-		return wrapResponseError(err, resp, "namespace", namespace)
-	}
-
 	return wrapResponseError(err, resp, "namespace", namespace)
 }
