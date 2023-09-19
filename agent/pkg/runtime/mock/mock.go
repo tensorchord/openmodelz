@@ -254,6 +254,20 @@ func (mr *MockRuntimeMockRecorder) NamespaceCreate(ctx, name interface{}) *gomoc
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NamespaceCreate", reflect.TypeOf((*MockRuntime)(nil).NamespaceCreate), ctx, name)
 }
 
+// NamespaceDelete mocks base method.
+func (m *MockRuntime) NamespaceDelete(ctx context.Context, name string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "NamespaceDelete", ctx, name)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// NamespaceDelete indicates an expected call of NamespaceDelete.
+func (mr *MockRuntimeMockRecorder) NamespaceDelete(ctx, name interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NamespaceDelete", reflect.TypeOf((*MockRuntime)(nil).NamespaceDelete), ctx, name)
+}
+
 // NamespaceGet mocks base method.
 func (m *MockRuntime) NamespaceGet(ctx context.Context, name string) bool {
 	m.ctrl.T.Helper()
