@@ -17,7 +17,6 @@ import (
 	"strings"
 
 	"github.com/cockroachdb/errors"
-	"github.com/docker/docker/api/types"
 	"github.com/sirupsen/logrus"
 
 	"github.com/tensorchord/openmodelz/agent/errdefs"
@@ -128,7 +127,7 @@ func (cli *Client) buildRequest(method, path string, body io.Reader, headers hea
 func (cli *Client) sendRequest(ctx context.Context, method, path string, query url.Values, body io.Reader, headers headers) (serverResponse, error) {
 	req, err := cli.buildRequest(method, cli.getAPIPath(ctx, path, query), body, headers)
 	if err != nil {
-		return serverResponse{}, err
+		return serverResponse{}, errors.Wrap(err, "failed to build request")
 	}
 
 	resp, err := cli.doRequest(ctx, req)
@@ -216,16 +215,7 @@ func (cli *Client) checkResponseErr(serverResp serverResponse) error {
 		return fmt.Errorf("request returned %s for API route and version %s, check if the server supports the requested API version", http.StatusText(serverResp.statusCode), serverResp.reqURL)
 	}
 
-	var errorMessage string
-	if cli.version == "" {
-		var errorResponse types.ErrorResponse
-		if err := json.Unmarshal(body, &errorResponse); err != nil {
-			return errors.Wrap(err, "Error reading JSON")
-		}
-		errorMessage = strings.TrimSpace(errorResponse.Message)
-	} else {
-		errorMessage = strings.TrimSpace(string(body))
-	}
+	errorMessage := strings.TrimSpace(string(body))
 
 	return errors.Wrap(errors.New(errorMessage), "Error response from gateway")
 }
