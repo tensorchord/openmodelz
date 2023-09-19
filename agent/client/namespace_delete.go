@@ -11,8 +11,8 @@ import (
 	"github.com/tensorchord/openmodelz/agent/api/types"
 )
 
-// NamespaceCreate creates the namespace.
-func (cli *Client) NamespaceCreate(ctx context.Context,
+// NamespaceDelete deletes the namespace.
+func (cli *Client) NamespaceDelete(ctx context.Context,
 	namespace string) error {
 	req := types.NamespaceRequest{
 		Name: namespace,
@@ -20,7 +20,7 @@ func (cli *Client) NamespaceCreate(ctx context.Context,
 
 	urlValues := url.Values{}
 
-	resp, err := cli.post(ctx, gatewayNamespaceControlPlanePath, urlValues, req, nil)
+	resp, err := cli.delete(ctx, gatewayNamespaceControlPlanePath, urlValues, req, nil)
 	defer ensureReaderClosed(resp)
 
 	return wrapResponseError(err, resp, "namespace", namespace)
