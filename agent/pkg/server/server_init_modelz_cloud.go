@@ -36,12 +36,13 @@ func (s *Server) initModelZCloud(url, token, region string) error {
 
 	cluster.Status = types.ClusterStatusInit
 	// after init modelz cloud client, register agent
-	clusterID, tokenID, err := cli.RegisterAgent(context.Background(), token, cluster)
+	err = cli.RegisterAgent(context.Background(), token, &cluster)
 	if err != nil {
 		return errors.Wrap(err, "failed to register agent to modelz cloud")
 	}
-	s.config.ModelZCloud.ID = clusterID
-	s.config.ModelZCloud.TokenID = tokenID
+	s.config.ModelZCloud.ID = cluster.ID
+	s.config.ModelZCloud.TokenID = cluster.TokenID
+	s.config.ModelZCloud.Name = cluster.Name
 
 	apikeys, err := s.modelzCloudClient.GetAPIKeys(context.Background(), apiServerReady, s.config.ModelZCloud.AgentToken, s.config.ModelZCloud.ID)
 	if err != nil {

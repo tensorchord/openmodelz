@@ -22,7 +22,7 @@ func (s *Server) handleNamespaceDelete(c *gin.Context) error {
 	}
 
 	if err := s.runtime.NamespaceDelete(c.Request.Context(), req.Name); err != nil {
-		return errFromErrDefs(err, "namespace-create")
+		return errFromErrDefs(err, "namespace-delete")
 	}
 
 	c.JSON(http.StatusOK, req)

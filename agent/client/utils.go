@@ -22,7 +22,7 @@ func ParseAgentToken(token string) (types.AgentToken, error) {
 	if len(strings) != 3 {
 		return agentToken, errors.New("invalid agent token")
 	}
-	agentToken.Type = strings[0]
+	agentToken.ClusterName = strings[0]
 	agentToken.UID = strings[1]
 	agentToken.Token = strings[2]
 

@@ -65,6 +65,7 @@ func (s *Server) Run() error {
 		// heartbeat with apiserver
 		go wait.UntilWithContext(context.Background(), func(ctx context.Context) {
 			cluster := types.ManagedCluster{
+				Name:      s.config.ModelZCloud.Name,
 				ID:        s.config.ModelZCloud.ID,
 				Status:    types.ClusterStatusActive,
 				UpdatedAt: time.Now().UTC(),
