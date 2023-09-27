@@ -14,10 +14,14 @@ import (
 )
 
 var (
-	serverStartRuntime string
-	serverStartDomain  string = consts.Domain
-	serverStartVersion string
-	serverStartWithGPU bool
+	serverStartRuntime    string
+	serverStartDomain     string = consts.Domain
+	serverStartVersion    string
+	serverStartWithGPU    bool
+	enableModelZCloud     bool
+	modelzCloudUrl        string
+	modelzCloudAgentToken string
+	modelzCloudRegion     string
 )
 
 // serverStartCmd represents the server start command
@@ -53,6 +57,14 @@ func init() {
 		"docker.io", "Mirror domain name of the registry")
 	serverStartCmd.Flags().StringArrayVarP(&serverRegistryMirrorEndpoints, "mirror-endpoints", "",
 		[]string{}, "Mirror URL endpoints of the registry like `https://quay.io`")
+	serverStartCmd.Flags().BoolVarP(&enableModelZCloud, "modelzcloud-enabled", "",
+		false, "Enable ModelZ Cloud Management")
+	serverStartCmd.Flags().StringVarP(&modelzCloudUrl, "modelzcloud-url", "",
+		"https://cloud.modelz.ai", "ModelZ Cloud URL")
+	serverStartCmd.Flags().StringVarP(&modelzCloudAgentToken, "modelzcloud-agent-token", "",
+		"", "ModelZ Cloud Agent Token")
+	serverStartCmd.Flags().StringVarP(&modelzCloudRegion, "modelzcloud-region", "",
+		"on-premises", "ModelZ Cloud Region")
 }
 
 func commandServerStart(cmd *cobra.Command, args []string) error {
@@ -78,6 +90,12 @@ func commandServerStart(cmd *cobra.Command, args []string) error {
 		Mirror: server.Mirror{
 			Name:      serverRegistryMirrorName,
 			Endpoints: serverRegistryMirrorEndpoints,
+		},
+		ModelZCloud: server.ModelZCloud{
+			Enabled: enableModelZCloud,
+			URL:     modelzCloudUrl,
+			Token:   modelzCloudAgentToken,
+			Region:  modelzCloudRegion,
 		},
 	})
 	if err != nil {

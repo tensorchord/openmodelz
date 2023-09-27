@@ -20,6 +20,14 @@ type Options struct {
 	Domain        *string
 	Version       string
 	ForceGPU      bool
+	ModelZCloud   ModelZCloud
+}
+
+type ModelZCloud struct {
+	Enabled bool
+	URL     string
+	Token   string
+	Region  string
 }
 
 type Mirror struct {

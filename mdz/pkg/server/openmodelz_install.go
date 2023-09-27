@@ -48,9 +48,13 @@ func (s *openModelZInstallStep) Run() error {
 	}
 
 	variables := struct {
-		Domain     string
-		IpToDomain bool
-		Version    string
+		Domain                string
+		IpToDomain            bool
+		Version               string
+		EnableModelZCloud     bool
+		ModelZCloudUrl        string
+		ModelZCloudAgentToken string
+		ModelZCloudRegion     string
 	}{
 		Version: s.options.Version,
 	}
@@ -61,6 +65,18 @@ func (s *openModelZInstallStep) Run() error {
 		fmt.Fprintf(s.options.OutputStream, "🚧 No domain provided, using the server IP...\n")
 		variables.Domain = ""
 		variables.IpToDomain = true
+	}
+
+	if s.options.ModelZCloud.Enabled {
+		variables.EnableModelZCloud = true
+		variables.ModelZCloudUrl = s.options.ModelZCloud.URL
+		variables.ModelZCloudAgentToken = s.options.ModelZCloud.Token
+		variables.ModelZCloudRegion = s.options.ModelZCloud.Region
+	} else {
+		variables.EnableModelZCloud = false
+		variables.ModelZCloudUrl = ""
+		variables.ModelZCloudAgentToken = ""
+		variables.ModelZCloudRegion = ""
 	}
 	tmpl, err := template.New("openmodelz").Parse(yamlContent)
 	if err != nil {
@@ -113,5 +129,12 @@ func (s *openModelZInstallStep) Verify() error {
 	}
 
 	resultDomain = re.FindString(string(output))
+
+	// If enabled modelzcloud control plane, you need make configuration
+	if s.options.ModelZCloud.Enabled {
+		if s.options.ModelZCloud.URL == "" || s.options.ModelZCloud.Token == "" || s.options.ModelZCloud.Region == "" {
+			return fmt.Errorf("modelzcloud configuration is not complete")
+		}
+	}
 	return nil
 }
