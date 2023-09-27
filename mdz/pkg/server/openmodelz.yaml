@@ -23,3 +23,8 @@ spec:
         enabled: true
         ipToDomain: {{.IpToDomain}}
         domain: "{{.Domain}}"
+      modelzCloud:
+        enabled: {{.EnableModelZCloud}}
+        url: {{.ModelZCloudUrl}}
+        token: {{.ModelZCloudAgentToken}}
+        region: {{.ModelZCloudRegion}} 
