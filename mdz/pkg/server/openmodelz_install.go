@@ -129,12 +129,5 @@ func (s *openModelZInstallStep) Verify() error {
 	}
 
 	resultDomain = re.FindString(string(output))
-
-	// If enabled modelzcloud control plane, you need make configuration
-	if s.options.ModelZCloud.Enabled {
-		if s.options.ModelZCloud.URL == "" || s.options.ModelZCloud.Token == "" || s.options.ModelZCloud.Region == "" {
-			return fmt.Errorf("modelzcloud configuration is not complete")
-		}
-	}
 	return nil
 }

@@ -32,7 +32,7 @@ var serverStartCmd = &cobra.Command{
 	Example: `  mdz server start
   mdz server start -v
   mdz server start 1.2.3.4`,
-	PreRunE: commandInitLog,
+	PreRunE: preRunE,
 	Args:    cobra.RangeArgs(0, 1),
 	RunE:    commandServerStart,
 }
@@ -65,6 +65,21 @@ func init() {
 		"", "ModelZ Cloud Agent Token")
 	serverStartCmd.Flags().StringVarP(&modelzCloudRegion, "modelzcloud-region", "",
 		"on-premises", "ModelZ Cloud Region")
+}
+
+func preRunE(cmd *cobra.Command, args []string) error {
+	err := commandInitLog(cmd, args)
+	if err != nil {
+		return err
+	}
+
+	// If enabled modelzcloud control plane, you need make configuration
+	if enableModelZCloud {
+		if modelzCloudUrl == "" || modelzCloudAgentToken == "" || modelzCloudRegion == "" {
+			return fmt.Errorf("modelzcloud configuration is not complete")
+		}
+	}
+	return nil
 }
 
 func commandServerStart(cmd *cobra.Command, args []string) error {
