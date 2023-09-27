@@ -39,27 +39,28 @@ func (cli *Client) waitForAPIServerReady(ctx context.Context) (error, int) {
 	return nil, resp.statusCode
 }
 
-func (cli *Client) RegisterAgent(ctx context.Context, token string, cluster types.ManagedCluster) (string, string, error) {
+func (cli *Client) RegisterAgent(ctx context.Context, token string, cluster *types.ManagedCluster) error {
 	urlValues := url.Values{}
 	agentToken, err := ParseAgentToken(token)
 	if err != nil {
-		return "", "", err
+		return err
 	}
 	urlPath := fmt.Sprintf(modelzCloudClusterWithUserControlPlanePath, agentToken.UID)
 	headers := make(map[string][]string)
 	headers["Authorization"] = []string{"Bearer " + agentToken.Token}
+	cluster.Name = agentToken.ClusterName
 
 	resp, err := cli.post(ctx, urlPath, urlValues, cluster, headers)
 	if err != nil {
-		return "", "", wrapResponseError(err, resp, "register agent to modelz cloud", agentToken.UID)
+		return wrapResponseError(err, resp, "register agent to modelz cloud", agentToken.UID)
 	}
 	defer ensureReaderClosed(resp)
 
 	err = json.NewDecoder(resp.body).Decode(&cluster)
 	if err != nil {
-		return "", "", err
+		return err
 	}
-	return cluster.ID, cluster.TokenID, nil
+	return nil
 }
 
 func (cli *Client) UpdateAgentStatus(ctx context.Context, apiServerReady <-chan struct{}, token string, cluster types.ManagedCluster) error {

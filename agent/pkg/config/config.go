@@ -25,6 +25,7 @@ type ModelZCloudConfig struct {
 	AgentToken                string            `json:"agent_token,omitempty"`
 	HeartbeatInterval         time.Duration     `json:"heartbeat_interval,omitempty"`
 	ID                        string            `json:"id,omitempty"`
+	Name                      string            `json:"name,omitempty"`
 	TokenID                   string            `json:"token_id,omitempty"`
 	Region                    string            `json:"region,omitempty"`
 	APIKeys                   map[string]string `json:"api_keys,omitempty"`
