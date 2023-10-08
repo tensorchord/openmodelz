@@ -8,6 +8,7 @@ type ScaleServiceRequest struct {
 	ServiceName  string `json:"serviceName"`
 	Replicas     uint64 `json:"replicas"`
 	EventMessage string `json:"eventMessage"`
+	Attempt      int    `json:"attempt"`
 }
 
 // DeleteFunctionRequest delete a deployed function
