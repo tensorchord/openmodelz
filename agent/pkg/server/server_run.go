@@ -71,6 +71,8 @@ func (s *Server) Run() error {
 				UpdatedAt: time.Now().UTC(),
 				TokenID:   s.config.ModelZCloud.TokenID,
 				Region:    s.config.ModelZCloud.Region,
+				PrometheusURL: fmt.Sprintf("%s:%d", s.config.Metrics.PrometheusHost,
+					s.config.Metrics.PrometheusPort),
 			}
 			err := s.runtime.GetClusterInfo(&cluster)
 			if err != nil {

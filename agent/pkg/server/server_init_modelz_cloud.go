@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -12,6 +13,8 @@ import (
 func (s *Server) initModelZCloud(url, token, region string) error {
 	cluster := types.ManagedCluster{
 		Region: region,
+		PrometheusURL: fmt.Sprintf("%s:%d", s.config.Metrics.PrometheusHost,
+			s.config.Metrics.PrometheusPort),
 	}
 
 	cli, err := client.NewClientWithOpts(
