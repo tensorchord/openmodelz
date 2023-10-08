@@ -30,6 +30,7 @@ type ManagedCluster struct {
 	UpdatedAt         time.Time `json:"updated_at,omitempty"`
 	Region            string    `json:"region,omitempty"`
 	ServerResources   string    `json:"server_resources,omitempty"`
+	PrometheusURL     string    `json:"prometheus_url,omitempty"`
 }
 
 type APIKeyMap map[string]string
