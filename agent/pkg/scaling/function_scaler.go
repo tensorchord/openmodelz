@@ -154,7 +154,8 @@ func (s *InferenceScaler) Scale(ctx context.Context,
 			if err := s.runtime.InferenceScale(ctx, namespace, types.ScaleServiceRequest{
 				ServiceName:  inferenceName,
 				Replicas:     minReplicas,
-				EventMessage: fmt.Sprintf("scale up to minimum replicas %d", minReplicas),
+				EventMessage: fmt.Sprintf("scale up to replicas %d", minReplicas),
+				Attempt:      attempt,
 			}, inf); err != nil {
 				return err
 			}

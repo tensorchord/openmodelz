@@ -175,8 +175,8 @@ swag: swag-install
 	swag init -g ./cmd/agent/main.go --parseDependency --output ./pkg/docs 
 
 build-image: build-local
-	docker build -t ${BASE_REGISTRY}/${BASE_REGISTRY_USER}/modelz-agent:dev -f Dockerfile ./bin
-	docker push ${BASE_REGISTRY}/${BASE_REGISTRY_USER}/modelz-agent:dev
+	docker build -t ${BASE_REGISTRY}/${BASE_REGISTRY_USER}/openmodelz-agent:dev -f Dockerfile ./bin
+	docker push ${BASE_REGISTRY}/${BASE_REGISTRY_USER}/openmodelz-agent:dev
 
 release:
 	@if [ ! -f ".release-env" ]; then \

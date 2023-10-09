@@ -64,9 +64,12 @@ func (r generalRuntime) InferenceScale(ctx context.Context, namespace string,
 	}
 
 	if r.eventEnabled {
-		err = r.eventRecorder.CreateDeploymentEvent(namespace, deployment.Name, event, req.EventMessage)
-		if err != nil {
-			return err
+		// Only create event when the first time scale up/down
+		if req.Attempt == 0 {
+			err = r.eventRecorder.CreateDeploymentEvent(namespace, deployment.Name, event, req.EventMessage)
+			if err != nil {
+				return err
+			}
 		}
 	}
 
