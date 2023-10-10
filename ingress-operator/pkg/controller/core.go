@@ -13,7 +13,8 @@ import (
 	faasscheme "github.com/tensorchord/openmodelz/ingress-operator/pkg/client/clientset/versioned/scheme"
 	v1 "github.com/tensorchord/openmodelz/ingress-operator/pkg/client/informers/externalversions/modelzetes/v1"
 	listers "github.com/tensorchord/openmodelz/ingress-operator/pkg/client/listers/modelzetes/v1"
-	"github.com/tensorchord/openmodelz/modelzetes/pkg/consts"
+	"github.com/tensorchord/openmodelz/ingress-operator/pkg/consts"
+	mdzconsts "github.com/tensorchord/openmodelz/modelzetes/pkg/consts"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -250,12 +251,13 @@ func GetIssuerKind(issuerType string) string {
 }
 
 func MakeAnnotations(fni *faasv1.InferenceIngress, host string) map[string]string {
+	controlPlane, exist := fni.Annotations[consts.AnnotationControlPlaneKey]
 	class := GetClass(fni.Spec.IngressType)
 	specJSON, _ := json.Marshal(fni)
 	annotations := make(map[string]string)
 
 	annotations["ai.tensorchord.spec"] = string(specJSON)
-	inferenceNamespace := fni.Labels[consts.LabelInferenceNamespace]
+	inferenceNamespace := fni.Labels[mdzconsts.LabelInferenceNamespace]
 
 	if !fni.Spec.BypassGateway {
 		switch class {
@@ -267,11 +269,18 @@ func MakeAnnotations(fni *faasv1.InferenceIngress, host string) map[string]strin
 					"/" + fni.Spec.Function + "/$1"
 				annotations["nginx.ingress.kubernetes.io/use-regex"] = "true"
 			default:
-				annotations["nginx.ingress.kubernetes.io/rewrite-target"] = "/inference/" + fni.Name + "." + inferenceNamespace + "/$1"
-				annotations["nginx.ingress.kubernetes.io/ssl-redirect"] = "false"
-				annotations["nginx.ingress.kubernetes.io/use-regex"] = "true"
+				// for inference created by modelz apiserver
+				if exist && controlPlane == consts.ModelzAnnotationValue {
+					annotations["nginx.ingress.kubernetes.io/rewrite-target"] = "/api/v1/" + fni.Spec.Framework +
+						"/" + fni.Spec.Function + "/$1"
+					annotations["nginx.ingress.kubernetes.io/use-regex"] = "true"
+					annotations["nginx.ingress.kubernetes.io/ssl-redirect"] = "false"
+				} else {
+					annotations["nginx.ingress.kubernetes.io/rewrite-target"] = "/inference/" + fni.Name + "." + inferenceNamespace + "/$1"
+					annotations["nginx.ingress.kubernetes.io/ssl-redirect"] = "false"
+					annotations["nginx.ingress.kubernetes.io/use-regex"] = "true"
+				}
 			}
-
 		}
 	}
 
