@@ -1085,6 +1085,38 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "delete": {
+                "description": "Delete the namespace.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "namespace"
+                ],
+                "summary": "Delete the namespace.",
+                "parameters": [
+                    {
+                        "description": "Namespace name",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.NamespaceRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.NamespaceRequest"
+                        }
+                    }
+                }
             }
         },
         "/system/scale-inference": {
@@ -1226,7 +1258,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "string"
+                                "$ref": "#/definitions/types.Server"
                             }
                         }
                     }
@@ -1531,6 +1563,31 @@ const docTemplate = `{
                 }
             }
         },
+        "types.NodeSystemInfo": {
+            "type": "object",
+            "properties": {
+                "architecture": {
+                    "description": "The Architecture reported by the node",
+                    "type": "string"
+                },
+                "kernelVersion": {
+                    "description": "Kernel Version reported by the node from 'uname -r' (e.g. 3.16.0-0.bpo.4-amd64).",
+                    "type": "string"
+                },
+                "machineID": {
+                    "description": "MachineID reported by the node. For unique machine identification\nin the cluster this field is preferred. Learn more from man(5)\nmachine-id: http://man7.org/linux/man-pages/man5/machine-id.5.html",
+                    "type": "string"
+                },
+                "operatingSystem": {
+                    "description": "The Operating System reported by the node",
+                    "type": "string"
+                },
+                "osImage": {
+                    "description": "OS Image reported by the node from /etc/os-release (e.g. Debian GNU/Linux 7 (wheezy)).",
+                    "type": "string"
+                }
+            }
+        },
         "types.ProviderInfo": {
             "type": "object",
             "properties": {
@@ -1567,6 +1624,9 @@ const docTemplate = `{
         "types.ScaleServiceRequest": {
             "type": "object",
             "properties": {
+                "attempt": {
+                    "type": "integer"
+                },
                 "eventMessage": {
                     "type": "string"
                 },
@@ -1607,6 +1667,17 @@ const docTemplate = `{
                 }
             }
         },
+        "types.Server": {
+            "type": "object",
+            "properties": {
+                "spec": {
+                    "$ref": "#/definitions/types.ServerSpec"
+                },
+                "status": {
+                    "$ref": "#/definitions/types.ServerStatus"
+                }
+            }
+        },
         "types.ServerSpec": {
             "type": "object",
             "properties": {
@@ -1618,6 +1689,23 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "types.ServerStatus": {
+            "type": "object",
+            "properties": {
+                "allocatable": {
+                    "$ref": "#/definitions/types.ResourceList"
+                },
+                "capacity": {
+                    "$ref": "#/definitions/types.ResourceList"
+                },
+                "phase": {
+                    "type": "string"
+                },
+                "system": {
+                    "$ref": "#/definitions/types.NodeSystemInfo"
                 }
             }
         },
