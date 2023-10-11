@@ -1,17 +1,14 @@
 package server
 
 import (
-	"context"
 	"net/http"
 
 	"github.com/dgraph-io/ristretto"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/tensorchord/openmodelz/agent/client"
-	"github.com/tensorchord/openmodelz/agent/pkg/query"
 	ginlogrus "github.com/toorop/gin-logrus"
 
 	"github.com/tensorchord/openmodelz/agent/pkg/config"
@@ -98,15 +95,14 @@ func New(c config.Config) (Server, error) {
 	}
 	s.cache = *cache
 
-	if s.config.DB.EventEnabled {
+	if s.config.ModelZCloud.EventEnabled {
 		logrus.Info("Event recording is enabled")
-		// Connect to database
-		conn, err := pgxpool.Connect(context.Background(), c.DB.URL)
+		cli, err := client.NewClientWithOpts(
+			client.WithHost(s.config.ModelZCloud.URL))
 		if err != nil {
-			return s, errors.Wrap(err, "failed to connect to database")
+			return s, errors.Wrap(err, "failed to create modelz cloud client")
 		}
-		queries := query.New(conn)
-		s.eventRecorder = event.NewEventRecorder(queries)
+		s.eventRecorder = event.NewEventRecorder(cli, s.config.ModelZCloud.AgentToken)
 	} else {
 		s.eventRecorder = event.NewFake()
 	}
