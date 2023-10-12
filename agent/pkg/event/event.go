@@ -4,10 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/google/uuid"
-
+	"github.com/sirupsen/logrus"
+	"github.com/tensorchord/openmodelz/agent/api/types"
 	"github.com/tensorchord/openmodelz/agent/client"
-	"github.com/tensorchord/openmodelz/agent/pkg/query"
 )
 
 type Interface interface {
@@ -15,12 +14,14 @@ type Interface interface {
 }
 
 type EventRecorder struct {
-	DB query.Querier
+	Client     *client.Client
+	AgentToken string
 }
 
-func NewEventRecorder(q query.Querier) Interface {
+func NewEventRecorder(client *client.Client, token string) Interface {
 	return &EventRecorder{
-		DB: q,
+		Client:     client,
+		AgentToken: token,
 	}
 }
 
@@ -31,24 +32,18 @@ func (e *EventRecorder) CreateDeploymentEvent(namespace, deployment, event, mess
 	} else if user == "" {
 		return fmt.Errorf("user id is empty")
 	}
-	userId, err := uuid.Parse(user)
+
+	deploymentEvent := types.DeploymentEvent{
+		UserID:       user,
+		DeploymentID: deployment,
+		EventType:    event,
+		Message:      message,
+	}
+	err = e.Client.CreateDeploymentEvent(context.TODO(), e.AgentToken, deploymentEvent)
 	if err != nil {
+		logrus.Errorf("failed to create deployment event: %v", err)
 		return err
 	}
 
-	deploymentId, err := uuid.Parse(deployment)
-	if err != nil {
-		return err
-	}
-
-	params := query.CreateDeploymentEventParams{
-		UserID:       uuid.NullUUID{UUID: userId, Valid: true},
-		DeploymentID: uuid.NullUUID{UUID: deploymentId, Valid: true},
-		EventType:    NullStringBuilder(event, true),
-		Message:      NullStringBuilder(message, true),
-	}
-	if _, err := e.DB.CreateDeploymentEvent(context.TODO(), params); err != nil {
-		return err
-	}
 	return nil
 }

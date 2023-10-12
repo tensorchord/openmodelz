@@ -64,10 +64,6 @@ const (
 	flaglogsLokiUser  = "logs-loki-user"
 	flagLogsLokiToken = "logs-loki-token"
 
-	// db
-	flagEventEnabled = "event-enabled"
-	flagDBURL        = "db-url"
-
 	// modelz cloud
 	flagModelZCloudEnabled                   = "modelz-cloud-enabled"
 	flagModelZCloudURL                       = "modelz-cloud-url"
@@ -78,6 +74,7 @@ const (
 	flagModelZCloudUpstreamTimeout           = "modelz-cloud-upstream-timeout"
 	flagModelZCloudMaxIdleConnections        = "modelz-cloud-max-idle-connections"
 	flagModelZCloudMaxIdleConnectionsPerHost = "modelz-cloud-max-idle-connections-per-host"
+	flagModelZCloudEventEnabled              = "modelz-cloud-event-enabled"
 )
 
 type App struct {
@@ -318,21 +315,6 @@ func New() App {
 			EnvVars: []string{"MODELZ_AGENT_LOGS_LOKI_TOKEN"},
 		},
 		&cli.BoolFlag{
-			Name:    flagEventEnabled,
-			Hidden:  true,
-			Usage:   "Enable event logging",
-			Value:   false,
-			EnvVars: []string{"MODELZ_AGENT_EVENT_ENABLED"},
-			Aliases: []string{"ee"},
-		},
-		&cli.StringFlag{
-			Name:    flagDBURL,
-			Usage:   "Postgres database URL",
-			Hidden:  true,
-			Aliases: []string{"du"},
-			EnvVars: []string{"MODELZ_AGENT_DB_URL"},
-		},
-		&cli.BoolFlag{
 			Name:    flagModelZCloudEnabled,
 			Usage:   "Enable modelz cloud, agent as modelz cloud agent",
 			Value:   false,
@@ -392,6 +374,13 @@ func New() App {
 			EnvVars: []string{"MODELZ_MAX_IDLE_CONNECTIONS_PER_HOST"},
 			Aliases: []string{"mich"},
 			Value:   1024,
+		},
+		&cli.BoolFlag{
+			Name:    flagModelZCloudEventEnabled,
+			Usage:   "Enable event logging for modelz cloud.",
+			Value:   false,
+			EnvVars: []string{"MODELZ_AGENT_MODELZ_CLOUD_EVENT_ENABLED"},
+			Aliases: []string{"mze"},
 		},
 	}
 	internalApp.Action = runServer

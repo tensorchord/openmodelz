@@ -14,7 +14,6 @@ type Config struct {
 	Build       BuildConfig       `json:"build,omitempty"`
 	Metrics     MetricsConfig     `json:"metrics,omitempty"`
 	Logs        LogsConfig        `json:"logs,omitempty"`
-	DB          PostgresConfig    `json:"db,omitempty"`
 	ModelZCloud ModelZCloudConfig `json:"modelz_cloud,omitempty"`
 }
 
@@ -34,6 +33,7 @@ type ModelZCloudConfig struct {
 	UpstreamTimeout           time.Duration     `json:"upstream_timeout,omitempty"`
 	MaxIdleConnections        int               `json:"max_idle_connections,omitempty"`
 	MaxIdleConnectionsPerHost int               `json:"max_idle_connections_per_host,omitempty"`
+	EventEnabled              bool              `json:"event_enabled,omitempty"`
 }
 
 type LogsConfig struct {
@@ -88,11 +88,6 @@ type KubeConfig struct {
 	ResyncPeriod time.Duration `json:"resync_period,omitempty"`
 }
 
-type PostgresConfig struct {
-	EventEnabled bool   `json:"event_enabled,omitempty"`
-	URL          string `json:"url,omitempty"`
-}
-
 func New() Config {
 	return Config{
 		KubeConfig: KubeConfig{},
@@ -136,12 +131,6 @@ func (c Config) Validate() error {
 		c.Metrics.PrometheusHost == "" ||
 		c.Metrics.PrometheusPort == 0 {
 		return errors.New("metrics config is required")
-	}
-
-	if c.DB.EventEnabled {
-		if c.DB.URL == "" {
-			return errors.New("db config is required")
-		}
 	}
 
 	if c.Ingress.IngressEnabled {

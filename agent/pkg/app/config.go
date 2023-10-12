@@ -54,10 +54,6 @@ func configFromCLI(c *cli.Context) config.Config {
 	cfg.Metrics.PrometheusHost = c.String(flagMetricsPrometheusHost)
 	cfg.Metrics.PrometheusPort = c.Int(flagMetricsPrometheusPort)
 
-	// postgres database
-	cfg.DB.EventEnabled = c.Bool(flagEventEnabled)
-	cfg.DB.URL = c.String(flagDBURL)
-
 	// modelz cloud
 	cfg.ModelZCloud.Enabled = c.Bool(flagModelZCloudEnabled)
 	cfg.ModelZCloud.URL = c.String(flagModelZCloudURL)
@@ -68,5 +64,6 @@ func configFromCLI(c *cli.Context) config.Config {
 	cfg.ModelZCloud.UpstreamTimeout = c.Duration(flagModelZCloudUpstreamTimeout)
 	cfg.ModelZCloud.MaxIdleConnections = c.Int(flagModelZCloudMaxIdleConnections)
 	cfg.ModelZCloud.MaxIdleConnectionsPerHost = c.Int(flagModelZCloudMaxIdleConnectionsPerHost)
+	cfg.ModelZCloud.EventEnabled = c.Bool(flagModelZCloudEventEnabled)
 	return cfg
 }

@@ -126,9 +126,6 @@ mockgen-install:
 addlicense-install:
 	go install github.com/google/addlicense@latest
 
-sqlc-install:
-	go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
-
 # https://github.com/swaggo/swag/pull/1322, we should use master instead of latest for now.
 swag-install:
 	go install github.com/swaggo/swag/cmd/swag@v1.8.7
@@ -195,7 +192,5 @@ release:
 		goreleaser/goreleaser-cross:${GOLANG_CROSS_VERSION} \
 		release --rm-dist
 
-generate: mockgen-install sqlc-install swag
-	@mockgen -source pkg/query/querier.go -destination pkg/query/mock/mock.go -package mock
+generate: mockgen-install swag
 	@mockgen -source pkg/runtime/runtime.go -destination pkg/runtime/mock/mock.go -package mock
-	# @sqlc generate

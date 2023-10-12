@@ -2,6 +2,8 @@ package server
 
 import (
 	"context"
+
+	"github.com/sirupsen/logrus"
 )
 
 func (s *Server) getUIDFromDeploymentID(ctx context.Context, id string) (string, bool) {
@@ -11,8 +13,9 @@ func (s *Server) getUIDFromDeploymentID(ctx context.Context, id string) (string,
 		return uid.(string), true
 	}
 
-	uid, err := s.modelzCloudClient.GetUIDFromDeploymentID(ctx, s.config.ModelZCloud.TokenID, s.config.ModelZCloud.ID, id)
+	uid, err := s.modelzCloudClient.GetUIDFromDeploymentID(ctx, s.config.ModelZCloud.AgentToken, s.config.ModelZCloud.ID, id)
 	if err != nil {
+		logrus.Errorf("failed to get uid from deployment id: %v", err)
 		return "", false
 	}
 

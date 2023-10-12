@@ -165,3 +165,25 @@ func (cli *Client) GetUIDFromDeploymentID(ctx context.Context, token string, clu
 	}
 	return "", fmt.Errorf("failed to get uid from deployment id, status code: %d", resp.statusCode)
 }
+
+func (cli *Client) CreateDeploymentEvent(ctx context.Context, token string, event types.DeploymentEvent) error {
+	urlValues := url.Values{}
+	agentToken, err := ParseAgentToken(token)
+	if err != nil {
+		return err
+	}
+	headers := make(map[string][]string)
+	headers["Authorization"] = []string{"Bearer " + agentToken.Token}
+	urlPath := fmt.Sprintf(modelzCloudClusterDeploymentEventControlPlanePath, agentToken.UID, agentToken.ClusterName, event.DeploymentID)
+
+	resp, err := cli.post(ctx, urlPath, urlValues, event, headers)
+	if err != nil {
+		return err
+	}
+	defer ensureReaderClosed(resp)
+
+	if resp.statusCode == http.StatusCreated {
+		return nil
+	}
+	return fmt.Errorf("failed to create deployment event, status code: %d", resp.statusCode)
+}
