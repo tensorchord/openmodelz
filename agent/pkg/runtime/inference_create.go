@@ -207,5 +207,11 @@ func makeIngress(request types.InferenceDeployment, cfg config.IngressConfig) (*
 		},
 	}
 
+	annotation := map[string]string{}
+	if value, exist := request.Spec.Annotations[localconsts.AnnotationControlPlaneKey]; exist {
+		annotation[localconsts.AnnotationControlPlaneKey] = value
+	}
+	ingress.Annotations = annotation
+
 	return ingress, nil
 }
