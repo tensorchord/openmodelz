@@ -5,8 +5,16 @@ const (
 
 	LabelInferenceName      = "inference"
 	LabelInferenceNamespace = "inference-namespace"
+	LabelBuildName          = "ai.tensorchord.build"
+	LabelName               = "ai.tensorchord.name"
+	LabelNamespace          = "modelz.tensorchord.ai/namespace"
+	LabelServerResource     = "ai.tensorchord.server-resource"
 
-	AnnotationBuilding = "ai.tensorchord.building"
+	AnnotationBuilding        = "ai.tensorchord.building"
+	AnnotationDockerImage     = "ai.tensorchord.docker.image"
+	AnnotationControlPlaneKey = "ai.tensorchord.control-plane"
+
+	ModelzAnnotationValue = "modelz"
 
 	TolerationGPU              = "ai.tensorchord.gpu"
 	TolerationNvidiaGPUPresent = "nvidia.com/gpu"

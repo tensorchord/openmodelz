@@ -1,15 +1,24 @@
 package server
 
 import (
+	"context"
 	"fmt"
+	"strings"
+	"time"
 
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/sirupsen/logrus"
+	v1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	kubeinformers "k8s.io/client-go/informers"
+	kubeinformersv1 "k8s.io/client-go/informers/core/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/tools/clientcmd"
 
 	kubefledged "github.com/senthilrch/kube-fledged/pkg/client/clientset/versioned"
+	"github.com/tensorchord/openmodelz/agent/api/types"
+	"github.com/tensorchord/openmodelz/agent/pkg/event"
 	"github.com/tensorchord/openmodelz/agent/pkg/k8s"
 	"github.com/tensorchord/openmodelz/agent/pkg/log"
 	"github.com/tensorchord/openmodelz/agent/pkg/runtime"
@@ -78,6 +87,7 @@ func (s *Server) initKubernetesResources() error {
 	}
 
 	pods := kubeInformerFactory.Core().V1().Pods()
+	s.podStartWatch(pods, kubeClient)
 	go pods.Informer().Run(stopCh)
 	if ok := cache.WaitForNamedCacheSync(
 		fmt.Sprintf("%s:pods", consts.ProviderName),
@@ -119,4 +129,66 @@ func (s *Server) initKubernetesResources() error {
 		return fmt.Errorf("scaler is nil")
 	}
 	return nil
+}
+
+// podStartWatch log event when pod start began and finished
+func (s *Server) podStartWatch(pods kubeinformersv1.PodInformer, client *kubernetes.Clientset) {
+	pods.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+		AddFunc: func(obj interface{}) {
+			new := obj.(*v1.Pod)
+			if !strings.HasPrefix(new.Namespace, "modelz-") {
+				return
+			}
+			podWatchEventLog(s.eventRecorder, new, types.DeploymentStartBeginEvent)
+			start := time.Now()
+
+			// Ticker will keep watching until pod start or timeout
+			ticker := time.NewTicker(time.Second * 2)
+			timeout := time.After(5 * time.Minute)
+			go func() {
+				for {
+					select {
+					case <-timeout:
+						podWatchEventLog(s.eventRecorder, new, types.DeploymentStartTimeoutEvent)
+						return
+					case <-ticker.C:
+						pod, err := client.CoreV1().Pods(new.Namespace).Get(context.TODO(), new.Name, metav1.GetOptions{})
+						if err != nil {
+							logrus.WithFields(logrus.Fields{
+								"namespace":  pod.Namespace,
+								"deployment": pod.Labels["app"],
+								"name":       pod.Name,
+							}).Errorf("failed to get pod: %s", err)
+						}
+						for _, c := range pod.Status.Conditions {
+							if c.Type == v1.PodReady && c.Status == v1.ConditionTrue {
+								podWatchEventLog(s.eventRecorder, new, types.DeploymentStartFinishEvent)
+								label := prometheus.Labels{
+									"inference_name": new.Labels["app"],
+									"source_image":   new.Annotations[consts.AnnotationDockerImage]}
+								s.metricsOptions.PodStartHistogram.With(label).
+									Observe(time.Since(start).Seconds())
+								return
+							}
+						}
+						break
+					}
+				}
+			}()
+		},
+	})
+}
+
+// log status for pod watch status transfer
+func podWatchEventLog(recorder event.Interface, obj *v1.Pod, event string) {
+	deployment := obj.Labels["app"]
+	err := recorder.CreateDeploymentEvent(obj.Namespace, deployment, event, obj.Name)
+	if err != nil {
+		logrus.WithFields(logrus.Fields{
+			"namespace":  obj.Namespace,
+			"deployment": deployment,
+			"name":       obj.Name,
+			"event":      event,
+		}).Errorf("failed to create deployment event: %s", err)
+	}
 }

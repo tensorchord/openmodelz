@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	localconsts "github.com/tensorchord/openmodelz/agent/pkg/consts"
 	ingressv1 "github.com/tensorchord/openmodelz/ingress-operator/pkg/apis/modelzetes/v1"
 	v2alpha1 "github.com/tensorchord/openmodelz/modelzetes/pkg/apis/modelzetes/v2alpha1"
 	"github.com/tensorchord/openmodelz/modelzetes/pkg/consts"
@@ -14,7 +15,6 @@ import (
 	"github.com/tensorchord/openmodelz/agent/api/types"
 	"github.com/tensorchord/openmodelz/agent/errdefs"
 	"github.com/tensorchord/openmodelz/agent/pkg/config"
-	localconsts "github.com/tensorchord/openmodelz/agent/pkg/consts"
 )
 
 func (r generalRuntime) InferenceCreate(ctx context.Context,
@@ -37,7 +37,7 @@ func (r generalRuntime) InferenceCreate(ctx context.Context,
 	// Create the ingress
 	// TODO(gaocegege): Check if the domain is already used.
 	if r.ingressEnabled {
-		name := req.Spec.Labels[localconsts.LabelName]
+		name := req.Spec.Labels[consts.LabelName]
 
 		if r.ingressAnyIPToDomain {
 			// Get the service with type=loadbalancer.
@@ -208,8 +208,8 @@ func makeIngress(request types.InferenceDeployment, cfg config.IngressConfig) (*
 	}
 
 	annotation := map[string]string{}
-	if value, exist := request.Spec.Annotations[localconsts.AnnotationControlPlaneKey]; exist {
-		annotation[localconsts.AnnotationControlPlaneKey] = value
+	if value, exist := request.Spec.Annotations[consts.AnnotationControlPlaneKey]; exist {
+		annotation[consts.AnnotationControlPlaneKey] = value
 	}
 	ingress.Annotations = annotation
 
