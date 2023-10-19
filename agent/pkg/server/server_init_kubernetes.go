@@ -3,7 +3,6 @@ package server
 import (
 	"context"
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -136,10 +135,12 @@ func (s *Server) podStartWatch(pods kubeinformersv1.PodInformer, client *kuberne
 	pods.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: func(obj interface{}) {
 			new := obj.(*v1.Pod)
-			if !strings.HasPrefix(new.Namespace, "modelz-") {
+			controlPlane, exist := new.Annotations[consts.AnnotationControlPlaneKey]
+			// for inference created by modelz apiserver
+			if !exist || controlPlane != consts.ModelzAnnotationValue {
 				return
 			}
-			podWatchEventLog(s.eventRecorder, new, types.DeploymentStartBeginEvent)
+			podWatchEventLog(s.eventRecorder, new, types.PodCreateEvent)
 			start := time.Now()
 
 			// Ticker will keep watching until pod start or timeout
@@ -149,7 +150,7 @@ func (s *Server) podStartWatch(pods kubeinformersv1.PodInformer, client *kuberne
 				for {
 					select {
 					case <-timeout:
-						podWatchEventLog(s.eventRecorder, new, types.DeploymentStartTimeoutEvent)
+						podWatchEventLog(s.eventRecorder, new, types.PodTimeoutEvent)
 						return
 					case <-ticker.C:
 						pod, err := client.CoreV1().Pods(new.Namespace).Get(context.TODO(), new.Name, metav1.GetOptions{})
@@ -159,10 +160,11 @@ func (s *Server) podStartWatch(pods kubeinformersv1.PodInformer, client *kuberne
 								"deployment": pod.Labels["app"],
 								"name":       pod.Name,
 							}).Errorf("failed to get pod: %s", err)
+							return
 						}
 						for _, c := range pod.Status.Conditions {
 							if c.Type == v1.PodReady && c.Status == v1.ConditionTrue {
-								podWatchEventLog(s.eventRecorder, new, types.DeploymentStartFinishEvent)
+								podWatchEventLog(s.eventRecorder, new, types.PodReadyEvent)
 								label := prometheus.Labels{
 									"inference_name": new.Labels["app"],
 									"source_image":   new.Annotations[consts.AnnotationDockerImage]}
@@ -171,7 +173,6 @@ func (s *Server) podStartWatch(pods kubeinformersv1.PodInformer, client *kuberne
 								return
 							}
 						}
-						break
 					}
 				}
 			}()

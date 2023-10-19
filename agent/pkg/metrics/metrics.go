@@ -113,7 +113,7 @@ func BuildMetricsOptions() MetricOptions {
 	podStartHistogram := prometheus.NewHistogramVec(prometheus.HistogramOpts{
 		Name:    "pod_start_seconds",
 		Help:    "Pod start time taken",
-		Buckets: []float64{5.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 150.0, 300.0},
+		Buckets: prometheus.ExponentialBuckets(8, 1.5, 10),
 	}, []string{"inference_name", "source_image"})
 
 	metricsOptions := MetricOptions{

@@ -8,12 +8,6 @@ import (
 	"time"
 
 	"github.com/google/go-cmp/cmp"
-	faasv1 "github.com/tensorchord/openmodelz/ingress-operator/pkg/apis/modelzetes/v1"
-	"github.com/tensorchord/openmodelz/ingress-operator/pkg/client/clientset/versioned/scheme"
-	faasscheme "github.com/tensorchord/openmodelz/ingress-operator/pkg/client/clientset/versioned/scheme"
-	v1 "github.com/tensorchord/openmodelz/ingress-operator/pkg/client/informers/externalversions/modelzetes/v1"
-	listers "github.com/tensorchord/openmodelz/ingress-operator/pkg/client/listers/modelzetes/v1"
-	"github.com/tensorchord/openmodelz/modelzetes/pkg/consts"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -26,6 +20,13 @@ import (
 	"k8s.io/client-go/tools/record"
 	"k8s.io/client-go/util/workqueue"
 	klog "k8s.io/klog"
+
+	faasv1 "github.com/tensorchord/openmodelz/ingress-operator/pkg/apis/modelzetes/v1"
+	"github.com/tensorchord/openmodelz/ingress-operator/pkg/client/clientset/versioned/scheme"
+	faasscheme "github.com/tensorchord/openmodelz/ingress-operator/pkg/client/clientset/versioned/scheme"
+	v1 "github.com/tensorchord/openmodelz/ingress-operator/pkg/client/informers/externalversions/modelzetes/v1"
+	listers "github.com/tensorchord/openmodelz/ingress-operator/pkg/client/listers/modelzetes/v1"
+	"github.com/tensorchord/openmodelz/modelzetes/pkg/consts"
 )
 
 const AgentName = "ingress-operator"
