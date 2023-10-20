@@ -10,9 +10,8 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
 	"github.com/tensorchord/openmodelz/agent/api/types"
-	"github.com/tensorchord/openmodelz/agent/pkg/consts"
 	"github.com/tensorchord/openmodelz/modelzetes/pkg/apis/modelzetes/v2alpha1"
-	mzconsts "github.com/tensorchord/openmodelz/modelzetes/pkg/consts"
+	"github.com/tensorchord/openmodelz/modelzetes/pkg/consts"
 )
 
 func MakeBuild(req types.Build, inference *v2alpha1.Inference, builderImage, buildkitdAddr, buildctlBin, secret string) (*batchv1.Job, error) {
@@ -70,8 +69,8 @@ func MakeBuild(req types.Build, inference *v2alpha1.Inference, builderImage, bui
 			Namespace:       req.Spec.Namespace,
 			OwnerReferences: ownerReference,
 			Labels: map[string]string{
-				consts.LabelBuildName:       req.Spec.Name,
-				mzconsts.AnnotationBuilding: "true",
+				consts.LabelBuildName:     req.Spec.Name,
+				consts.AnnotationBuilding: "true",
 			},
 		},
 		Spec: batchv1.JobSpec{

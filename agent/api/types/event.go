@@ -9,6 +9,9 @@ const (
 	DeploymentScaleUpEvent    = "deployment-scale-up"
 	DeploymentScaleDownEvent  = "deployment-scale-down"
 	DeploymentScaleBlockEvent = "deployment-scale-block"
+	PodCreateEvent            = "pod-create"
+	PodReadyEvent             = "pod-ready"
+	PodTimeoutEvent           = "pod-timeout"
 )
 
 type DeploymentEvent struct {

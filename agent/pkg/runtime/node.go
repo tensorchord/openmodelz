@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/sirupsen/logrus"
-	"github.com/tensorchord/openmodelz/agent/pkg/consts"
+	"github.com/tensorchord/openmodelz/modelzetes/pkg/consts"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 

@@ -55,6 +55,8 @@ func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 	e.metricOptions.ServiceAvailableReplicasGauge.Reset()
 	e.metricOptions.ServiceTargetLoad.Reset()
 
+	e.metricOptions.PodStartHistogram.Collect(ch)
+
 	for _, service := range e.services {
 		var serviceName string
 		if len(service.Spec.Namespace) > 0 {

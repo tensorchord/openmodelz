@@ -58,23 +58,7 @@ func AsInferenceDeployment(inf *v2alpha1.Inference, item *appsv1.Deployment) *ty
 		res.Status.CreatedAt = &item.CreationTimestamp.Time
 		res.Status.InvocationCount = 0
 		res.Status.AvailableReplicas = item.Status.AvailableReplicas
-
-		res.Status.Phase = types.PhaseNotReady
-		for _, c := range item.Status.Conditions {
-			if c.Type == appsv1.DeploymentAvailable && c.Status == v1.ConditionTrue {
-				res.Status.Phase = types.PhaseReady
-			} else if c.Type == appsv1.DeploymentProgressing && c.Status == v1.ConditionFalse {
-				res.Status.Phase = types.PhaseScaling
-			}
-		}
-
-		if item.Spec.Replicas != nil && *item.Spec.Replicas == 0 {
-			res.Status.Phase = types.PhaseNoReplicas
-		}
-
-		if item.DeletionTimestamp != nil {
-			res.Status.Phase = types.PhaseTerminating
-		}
+		res.Status.Phase = AsStatusPhase(item)
 	}
 	return res
 }
@@ -97,4 +81,24 @@ func AsResourceList(resources v1.ResourceList) types.ResourceList {
 			gpuPtr.String())
 	}
 	return res
+}
+
+func AsStatusPhase(item *appsv1.Deployment) types.Phase {
+	phase := types.PhaseNotReady
+	for _, c := range item.Status.Conditions {
+		if c.Type == appsv1.DeploymentAvailable && c.Status == v1.ConditionTrue {
+			phase = types.PhaseReady
+		} else if c.Type == appsv1.DeploymentProgressing && c.Status == v1.ConditionFalse {
+			phase = types.PhaseScaling
+		}
+	}
+
+	if item.Spec.Replicas != nil && *item.Spec.Replicas == 0 {
+		phase = types.PhaseNoReplicas
+	}
+
+	if item.DeletionTimestamp != nil {
+		phase = types.PhaseTerminating
+	}
+	return phase
 }
