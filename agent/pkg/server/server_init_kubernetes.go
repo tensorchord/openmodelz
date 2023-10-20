@@ -164,10 +164,10 @@ func (s *Server) podStartWatch(pods kubeinformersv1.PodInformer, client *kuberne
 						}
 						for _, c := range pod.Status.Conditions {
 							if c.Type == v1.PodReady && c.Status == v1.ConditionTrue {
-								podWatchEventLog(s.eventRecorder, new, types.PodReadyEvent)
+								podWatchEventLog(s.eventRecorder, pod, types.PodReadyEvent)
 								label := prometheus.Labels{
-									"inference_name": new.Labels["app"],
-									"source_image":   new.Annotations[consts.AnnotationDockerImage]}
+									"inference_name": fmt.Sprintf("%s.%s", pod.Labels["app"], pod.Namespace),
+									"source_image":   pod.Annotations[consts.AnnotationDockerImage]}
 								s.metricsOptions.PodStartHistogram.With(label).
 									Observe(time.Since(start).Seconds())
 								return
