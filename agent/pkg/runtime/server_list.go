@@ -6,8 +6,8 @@ import (
 
 	"github.com/tensorchord/openmodelz/agent/api/types"
 	"github.com/tensorchord/openmodelz/agent/errdefs"
-	"github.com/tensorchord/openmodelz/agent/pkg/consts"
 	"github.com/tensorchord/openmodelz/agent/pkg/k8s"
+	"github.com/tensorchord/openmodelz/modelzetes/pkg/consts"
 	v1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
