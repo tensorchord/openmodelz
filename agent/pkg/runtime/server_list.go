@@ -6,6 +6,7 @@ import (
 
 	"github.com/tensorchord/openmodelz/agent/api/types"
 	"github.com/tensorchord/openmodelz/agent/errdefs"
+	"github.com/tensorchord/openmodelz/agent/pkg/consts"
 	"github.com/tensorchord/openmodelz/agent/pkg/k8s"
 	v1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
@@ -57,8 +58,12 @@ func getServer(n v1.Node) types.Server {
 	}
 
 	for k, v := range n.Labels {
-		if strings.HasPrefix(k, "tensorchord.ai/") {
-			node.Spec.Labels[strings.TrimPrefix(k, "tensorchord.ai/")] = v
+		if strings.HasPrefix(k, "ai.tensorchord.") {
+			node.Spec.Labels[strings.TrimPrefix(k, "ai.tensorchord.")] = v
+		}
+
+		if k == consts.LabelServerResource {
+			node.Status.System.ResourceType = v
 		}
 	}
 

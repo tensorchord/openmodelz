@@ -31,4 +31,6 @@ type NodeSystemInfo struct {
 	OperatingSystem string `json:"operatingSystem" protobuf:"bytes,9,opt,name=operatingSystem"`
 	// The Architecture reported by the node
 	Architecture string `json:"architecture" protobuf:"bytes,10,opt,name=architecture"`
+	// The Resource Type reported by the node
+	ResourceType string `json:"resourceType" protobuf:"bytes,11,opt,name=resourceType"`
 }
