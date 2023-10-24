@@ -14,6 +14,7 @@ CLI for OpenModelZ.
 ## Installation
 
 ```
+# Installing and using openmodelz this way is currently only supported on Linux.
 pip install openmodelz
 ```
 
