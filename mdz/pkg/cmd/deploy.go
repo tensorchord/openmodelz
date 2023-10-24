@@ -9,6 +9,7 @@ import (
 	petname "github.com/dustinkirkland/golang-petname"
 	"github.com/spf13/cobra"
 	"github.com/tensorchord/openmodelz/agent/api/types"
+	"github.com/tensorchord/openmodelz/agent/client"
 	"github.com/tensorchord/openmodelz/mdz/pkg/telemetry"
 )
 
@@ -21,6 +22,7 @@ var (
 	deployName        string
 	deployGPU         int
 	deployNodeLabel   []string
+	deployDetach      bool
 	deployCommand     string
 	deployProbePath   string
 )
@@ -56,8 +58,35 @@ func init() {
 	deployCmd.Flags().IntVar(&deployGPU, "gpu", 0, "Number of GPUs")
 	deployCmd.Flags().StringVar(&deployName, "name", "", "Name of inference")
 	deployCmd.Flags().StringSliceVarP(&deployNodeLabel, "node-labels", "l", []string{}, "Node labels")
+	deployCmd.Flags().BoolVar(&deployDetach, "detach", false, "If set, the command returns immediately without waiting for the deployment to complete")
 	deployCmd.Flags().StringVar(&deployCommand, "command", "", "Command to run")
 	deployCmd.Flags().StringVar(&deployProbePath, "probe-path", "", "HTTP Health probe path")
+}
+
+func waitForDeploymentReady(cmd *cobra.Command, client *client.Client, namespace, name string, interval time.Duration, timeout time.Duration) error {
+	timeoutChan := time.After(timeout)
+	tick := time.Tick(interval)
+
+	for {
+		select {
+		case <-timeoutChan:
+			cmd.PrintErrf("Timed out while waiting for deployment to be ready\n")
+			return errors.New("deployment readiness timed out")
+		case <-tick:
+			instances, err := client.InstanceList(cmd.Context(), namespace, name)
+			if err != nil {
+				cmd.PrintErrf("Failed to fetch deployment status: %s\n", errors.Cause(err))
+				return err
+			}
+
+			for _, instance := range instances {
+				if instance.Status.Phase == "Running" { // Update this with the correct ready state
+					cmd.Printf("Deployment %s is ready\n", name)
+					return nil
+				}
+			}
+		}
+	}
 }
 
 func commandDeploy(cmd *cobra.Command, args []string) error {
@@ -129,6 +158,14 @@ func commandDeploy(cmd *cobra.Command, args []string) error {
 	}
 
 	cmd.Printf("Inference %s is created\n", inf.Spec.Name)
+	if !deployDetach {
+		interval := 3 * time.Second
+		timeout := 300 * time.Second
+		if err := waitForDeploymentReady(cmd, agentClient, namespace, name, interval, timeout); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
