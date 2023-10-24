@@ -21,6 +21,8 @@ type MetricOptions struct {
 	ServiceReplicasGauge          *prometheus.GaugeVec
 	ServiceAvailableReplicasGauge *prometheus.GaugeVec
 	ServiceTargetLoad             *prometheus.GaugeVec
+
+	PodStartHistogram *prometheus.HistogramVec
 }
 
 // ServiceMetricOptions provides RED metrics
@@ -108,6 +110,12 @@ func BuildMetricsOptions() MetricOptions {
 		[]string{"inference_name"},
 	)
 
+	podStartHistogram := prometheus.NewHistogramVec(prometheus.HistogramOpts{
+		Name:    "pod_start_seconds",
+		Help:    "Pod start time taken",
+		Buckets: prometheus.ExponentialBuckets(8, 1.5, 10),
+	}, []string{"inference_name", "source_image"})
+
 	metricsOptions := MetricOptions{
 		GatewayInferencesHistogram:         gatewayInferencesHistogram,
 		GatewayInferenceInvocation:         gatewayInferenceInvocation,
@@ -116,6 +124,7 @@ func BuildMetricsOptions() MetricOptions {
 		ServiceTargetLoad:                  serviceTargetLoad,
 		GatewayInferenceInvocationStarted:  gatewayInferenceInvocationStarted,
 		GatewayInferenceInvocationInflight: gatewayInferenceInvocationInflight,
+		PodStartHistogram:                  podStartHistogram,
 	}
 
 	return metricsOptions

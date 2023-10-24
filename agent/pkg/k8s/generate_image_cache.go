@@ -5,8 +5,8 @@ import (
 
 	kubefledged "github.com/senthilrch/kube-fledged/pkg/apis/kubefledged/v1alpha3"
 	"github.com/tensorchord/openmodelz/agent/api/types"
-	"github.com/tensorchord/openmodelz/agent/pkg/consts"
 	modelzetes "github.com/tensorchord/openmodelz/modelzetes/pkg/apis/modelzetes/v2alpha1"
+	"github.com/tensorchord/openmodelz/modelzetes/pkg/consts"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"

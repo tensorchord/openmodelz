@@ -8,14 +8,14 @@ import (
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/tensorchord/openmodelz/agent/api/types"
 	"github.com/tensorchord/openmodelz/agent/errdefs"
+	"github.com/tensorchord/openmodelz/modelzetes/pkg/consts"
 )
 
 func (r generalRuntime) NamespaceList(ctx context.Context) ([]string, error) {
 	ns, err := r.kubeClient.CoreV1().Namespaces().List(ctx,
 		metav1.ListOptions{
-			LabelSelector: fmt.Sprintf("%s=true", types.LabelNamespace),
+			LabelSelector: fmt.Sprintf("%s=true", consts.LabelNamespace),
 		})
 	if err != nil {
 		if k8serrors.IsNotFound(err) {
@@ -37,7 +37,7 @@ func (r generalRuntime) NamespaceCreate(ctx context.Context, name string) error 
 		ObjectMeta: metav1.ObjectMeta{
 			Name: name,
 			Labels: map[string]string{
-				types.LabelNamespace: "true",
+				consts.LabelNamespace: "true",
 			},
 		},
 	}
