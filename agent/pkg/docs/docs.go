@@ -1166,6 +1166,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/system/secrets": {
+            "post": {
+                "description": "Create the secret.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "secret"
+                ],
+                "summary": "Create the secret.",
+                "parameters": [
+                    {
+                        "description": "Secret",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.Secret"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.Secret"
+                        }
+                    }
+                }
+            }
+        },
         "/system/server/{name}/delete": {
             "delete": {
                 "description": "Delete a node.",
@@ -1472,13 +1506,20 @@ const docTemplate = `{
                 },
                 "scaling": {
                     "description": "Scaling is the scaling configuration for the inference.",
-                    "$ref": "#/definitions/types.ScalingConfig"
+                    "$ref": "#/definitions/v2alpha1.ScalingConfig"
                 },
                 "secrets": {
                     "description": "Secrets list of secrets to be made available to inference.",
                     "type": "array",
                     "items": {
                         "type": "string"
+                    }
+                },
+                "volumes": {
+                    "description": "Volumes are the volumes to mount.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/v2alpha1.VolumeConfig"
                     }
                 }
             }
@@ -1585,6 +1626,10 @@ const docTemplate = `{
                 "osImage": {
                     "description": "OS Image reported by the node from /etc/os-release (e.g. Debian GNU/Linux 7 (wheezy)).",
                     "type": "string"
+                },
+                "resourceType": {
+                    "description": "The Resource Type reported by the node",
+                    "type": "string"
                 }
             }
         },
@@ -1638,32 +1683,33 @@ const docTemplate = `{
                 }
             }
         },
-        "types.ScalingConfig": {
+        "types.Secret": {
             "type": "object",
             "properties": {
-                "max_replicas": {
-                    "description": "MaxReplicas is the upper limit for the number of replicas to which the\nautoscaler can scale up. It cannot be less that minReplicas. It defaults\nto 1.",
-                    "type": "integer"
+                "data": {
+                    "description": "Data contains the secret data. Each key must consist of alphanumeric\ncharacters, '-', '_' or '.'. The serialized form of the secret data is a\nbase64 encoded string, representing the arbitrary (possibly non-string)\ndata value here. Described in https://tools.ietf.org/html/rfc4648#section-4",
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    }
                 },
-                "min_replicas": {
-                    "description": "MinReplicas is the lower limit for the number of replicas to which the\nautoscaler can scale down. It defaults to 0.",
-                    "type": "integer"
-                },
-                "startup_duration": {
-                    "description": "StartupDuration is the duration (in seconds) of startup time.",
-                    "type": "integer"
-                },
-                "target_load": {
-                    "description": "TargetLoad is the target load. In capacity mode, it is the expected number of the inflight requests per replica.",
-                    "type": "integer"
-                },
-                "type": {
-                    "description": "Type is the scaling type. It can be either \"capacity\" or \"rps\". Default is \"capacity\".",
+                "name": {
+                    "description": "Name of the secret",
                     "type": "string"
                 },
-                "zero_duration": {
-                    "description": "ZeroDuration is the duration (in seconds) of zero load before scaling down to zero. Default is 5 minutes.",
-                    "type": "integer"
+                "namespace": {
+                    "description": "Namespace if applicable for the secret",
+                    "type": "string"
+                },
+                "stringData": {
+                    "description": "stringData allows specifying non-binary secret data in string form.\nIt is provided as a write-only input field for convenience.\nAll keys and values are merged into the data field on write, overwriting any existing values.\nThe stringData field is never output when reading from the API.",
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
                 }
             }
         },
@@ -1734,6 +1780,71 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "v2alpha1.ScalingConfig": {
+            "type": "object",
+            "properties": {
+                "max_replicas": {
+                    "description": "MaxReplicas is the upper limit for the number of replicas to which the\nautoscaler can scale up. It cannot be less that minReplicas. It defaults\nto 1.",
+                    "type": "integer"
+                },
+                "min_replicas": {
+                    "description": "MinReplicas is the lower limit for the number of replicas to which the\nautoscaler can scale down. It defaults to 0.",
+                    "type": "integer"
+                },
+                "startup_duration": {
+                    "description": "StartupDuration is the duration of startup time.",
+                    "type": "integer"
+                },
+                "target_load": {
+                    "description": "TargetLoad is the target load. In capacity mode, it is the expected number of the inflight requests per replica.",
+                    "type": "integer"
+                },
+                "type": {
+                    "description": "Type is the scaling type. It can be either \"capacity\" or \"rps\". Default is \"capacity\".",
+                    "type": "string"
+                },
+                "zero_duration": {
+                    "description": "ZeroDuration is the duration of zero load before scaling down to zero. Default is 5 minutes.",
+                    "type": "integer"
+                }
+            }
+        },
+        "v2alpha1.VolumeConfig": {
+            "type": "object",
+            "properties": {
+                "mount_option": {
+                    "description": "MountOption is the mount option.",
+                    "type": "string"
+                },
+                "mount_path": {
+                    "description": "MountPath is the path in pod to mount the volume.",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "Name is the name of the volume.",
+                    "type": "string"
+                },
+                "node_name": {
+                    "description": "NodeNames are the name list of the node. It is only used for local volume.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "secret_name": {
+                    "description": "SecretName is the name of the secret. It is only used for object storage volume.",
+                    "type": "string"
+                },
+                "sub_path": {
+                    "description": "SubPath is the sub path of the volume.",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "Type of the volume.",
                     "type": "string"
                 }
             }

@@ -7,6 +7,7 @@ import (
 	"k8s.io/apimachinery/pkg/util/rand"
 
 	"github.com/tensorchord/openmodelz/agent/api/types"
+	modelzetes "github.com/tensorchord/openmodelz/modelzetes/pkg/apis/modelzetes/v2alpha1"
 )
 
 const (
@@ -47,7 +48,7 @@ func (v Validator) ValidateService(service string) error {
 // DefaultDeployRequest sets default values for the deploy request.
 func (v Validator) DefaultDeployRequest(request *types.InferenceDeployment) {
 	if request.Spec.Scaling == nil {
-		request.Spec.Scaling = &types.ScalingConfig{}
+		request.Spec.Scaling = &modelzetes.ScalingConfig{}
 	}
 
 	if request.Spec.Scaling.MinReplicas == nil {
@@ -66,8 +67,8 @@ func (v Validator) DefaultDeployRequest(request *types.InferenceDeployment) {
 	}
 
 	if request.Spec.Scaling.Type == nil {
-		request.Spec.Scaling.Type = new(types.ScalingType)
-		*request.Spec.Scaling.Type = types.ScalingTypeCapacity
+		request.Spec.Scaling.Type = new(modelzetes.ScalingType)
+		*request.Spec.Scaling.Type = modelzetes.ScalingTypeCapacity
 	}
 
 	if request.Spec.Scaling.ZeroDuration == nil {

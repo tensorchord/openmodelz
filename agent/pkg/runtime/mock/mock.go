@@ -82,6 +82,20 @@ func (mr *MockRuntimeMockRecorder) BuildList(ctx, namespace interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BuildList", reflect.TypeOf((*MockRuntime)(nil).BuildList), ctx, namespace)
 }
 
+// CreateSecret mocks base method.
+func (m *MockRuntime) CreateSecret(ctx context.Context, secret *types.Secret) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateSecret", ctx, secret)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateSecret indicates an expected call of CreateSecret.
+func (mr *MockRuntimeMockRecorder) CreateSecret(ctx, secret interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateSecret", reflect.TypeOf((*MockRuntime)(nil).CreateSecret), ctx, secret)
+}
+
 // GetClusterInfo mocks base method.
 func (m *MockRuntime) GetClusterInfo(cluster *types.ManagedCluster) error {
 	m.ctrl.T.Helper()

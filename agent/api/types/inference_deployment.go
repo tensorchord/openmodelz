@@ -1,5 +1,9 @@
 package types
 
+import (
+	modelzetes "github.com/tensorchord/openmodelz/modelzetes/pkg/apis/modelzetes/v2alpha1"
+)
+
 // InferenceDeployment represents a request to create or update a Model.
 type InferenceDeployment struct {
 	Spec   InferenceDeploymentSpec   `json:"spec"`
@@ -14,7 +18,7 @@ type InferenceDeploymentSpec struct {
 	Namespace string `json:"namespace,omitempty"`
 
 	// Scaling is the scaling configuration for the inference.
-	Scaling *ScalingConfig `json:"scaling,omitempty"`
+	Scaling *modelzetes.ScalingConfig `json:"scaling,omitempty"`
 
 	// Framework is the inference framework.
 	Framework Framework `json:"framework,omitempty"`
@@ -48,6 +52,9 @@ type InferenceDeploymentSpec struct {
 
 	// Resources are the compute resource requirements.
 	Resources *ResourceRequirements `json:"resources,omitempty"`
+
+	// Volumes are the volumes to mount.
+	Volumes []modelzetes.VolumeConfig `json:"volumes,omitempty"`
 }
 
 // Framework is the inference framework. It is only used to set the default port
@@ -61,31 +68,6 @@ const (
 	FrameworkStreamlit Framework = "streamlit"
 	FrameworkMosec     Framework = "mosec"
 	FrameworkOther     Framework = "other"
-)
-
-type ScalingConfig struct {
-	// MinReplicas is the lower limit for the number of replicas to which the
-	// autoscaler can scale down. It defaults to 0.
-	MinReplicas *int32 `json:"min_replicas,omitempty"`
-	// MaxReplicas is the upper limit for the number of replicas to which the
-	// autoscaler can scale up. It cannot be less that minReplicas. It defaults
-	// to 1.
-	MaxReplicas *int32 `json:"max_replicas,omitempty"`
-	// TargetLoad is the target load. In capacity mode, it is the expected number of the inflight requests per replica.
-	TargetLoad *int32 `json:"target_load,omitempty"`
-	// Type is the scaling type. It can be either "capacity" or "rps". Default is "capacity".
-	Type *ScalingType `json:"type,omitempty"`
-	// ZeroDuration is the duration (in seconds) of zero load before scaling down to zero. Default is 5 minutes.
-	ZeroDuration *int32 `json:"zero_duration,omitempty"`
-	// StartupDuration is the duration (in seconds) of startup time.
-	StartupDuration *int32 `json:"startup_duration,omitempty"`
-}
-
-type ScalingType string
-
-const (
-	ScalingTypeCapacity ScalingType = "capacity"
-	ScalingTypeRPS      ScalingType = "rps"
 )
 
 // ResourceRequirements describes the compute resource requirements.

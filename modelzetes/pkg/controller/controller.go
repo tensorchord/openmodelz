@@ -249,6 +249,49 @@ func (c *Controller) syncHandler(key string) error {
 		}
 	}
 
+	// Create persistentvolume if needed.
+	if len(function.Spec.Volumes) != 0 {
+		for _, volume := range function.Spec.Volumes {
+
+			if (volume.Type == v2alpha1.VolumeTypeLocal) && (len(volume.NodeNames) == 0) {
+				// no need create pv and pvc for hostPath
+				continue
+			}
+			pvName := makePersistentVolumeName(volume.Name)
+			_, err := c.kubeclientset.CoreV1().PersistentVolumes().Get(context.TODO(), pvName, metav1.GetOptions{})
+			if errors.IsNotFound(err) {
+				err = nil
+				glog.Infof("Creating persistentvolume %s for '%s'", pvName, function.Spec.Name)
+				if _, err := c.kubeclientset.CoreV1().PersistentVolumes().Create(context.TODO(),
+					newPersistentVolume(function, volume), metav1.CreateOptions{}); err != nil {
+					if errors.IsAlreadyExists(err) {
+						err = nil
+						glog.V(2).Infof("Persistentvolume '%s' already exists. Skipping creation.", function.Spec.Name)
+					} else {
+						return err
+					}
+				}
+			}
+
+			pvcName := makePersistentVolumeClaimName(volume.Name)
+			_, err = c.kubeclientset.CoreV1().PersistentVolumeClaims(function.Namespace).Get(context.TODO(), pvcName, metav1.GetOptions{})
+			if errors.IsNotFound(err) {
+				err = nil
+				glog.Infof("Creating persistentvolumeclaim %s for '%s'", pvcName, function.Spec.Name)
+				if _, err := c.kubeclientset.CoreV1().PersistentVolumeClaims(function.Namespace).Create(context.TODO(),
+					makePersistentVolumeClaim(function, volume), metav1.CreateOptions{}); err != nil {
+					if errors.IsAlreadyExists(err) {
+						err = nil
+						glog.V(2).Infof("Persistentvolumeclaim '%s' already exists. Skipping creation.", function.Spec.Name)
+					} else {
+						return err
+					}
+				}
+			}
+		}
+	}
+	// Create persistentvolumeclaim if needed.
+
 	// Get the deployment with the name specified in Function.spec
 	deployment, err := c.deploymentsLister.
 		Deployments(function.Namespace).Get(deploymentName)

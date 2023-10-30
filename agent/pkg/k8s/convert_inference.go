@@ -31,7 +31,7 @@ func AsInferenceDeployment(inf *v2alpha1.Inference, item *appsv1.Deployment) *ty
 	}
 
 	if inf.Spec.Scaling != nil {
-		res.Spec.Scaling = &types.ScalingConfig{
+		res.Spec.Scaling = &v2alpha1.ScalingConfig{
 			MinReplicas:     inf.Spec.Scaling.MinReplicas,
 			MaxReplicas:     inf.Spec.Scaling.MaxReplicas,
 			TargetLoad:      inf.Spec.Scaling.TargetLoad,
@@ -39,7 +39,7 @@ func AsInferenceDeployment(inf *v2alpha1.Inference, item *appsv1.Deployment) *ty
 			StartupDuration: inf.Spec.Scaling.StartupDuration,
 		}
 		if inf.Spec.Scaling.Type != nil {
-			typ := types.ScalingType(*inf.Spec.Scaling.Type)
+			typ := v2alpha1.ScalingType(*inf.Spec.Scaling.Type)
 			res.Spec.Scaling.Type = &typ
 		}
 	}

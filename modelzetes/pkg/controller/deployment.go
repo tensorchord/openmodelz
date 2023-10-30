@@ -61,6 +61,9 @@ func newDeployment(
 
 	allowPrivilegeEscalation := false
 
+	volumes := makeVolumes(inference)
+	volumeMounts := makeVolumeMounts(inference)
+
 	deploymentSpec := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        inference.Spec.Name,
@@ -115,24 +118,10 @@ func newDeployment(
 								AllowPrivilegeEscalation: &allowPrivilegeEscalation,
 							},
 							// TODO(xieydd): Add a function to set shm size
-							VolumeMounts: []corev1.VolumeMount{
-								{
-									Name:      "dshm",
-									MountPath: "/dev/shm",
-								},
-							},
+							VolumeMounts: volumeMounts,
 						},
 					},
-					Volumes: []corev1.Volume{
-						{
-							Name: "dshm",
-							VolumeSource: corev1.VolumeSource{
-								EmptyDir: &corev1.EmptyDirVolumeSource{
-									Medium: corev1.StorageMediumMemory,
-								},
-							},
-						},
-					},
+					Volumes: volumes,
 				},
 			},
 		},
@@ -183,6 +172,72 @@ func newDeployment(
 	factory.ConfigureContainerUserID(deploymentSpec)
 
 	return deploymentSpec
+}
+
+func makeVolumes(inference *v2alpha1.Inference) []corev1.Volume {
+	volumes := []corev1.Volume{
+		{
+			Name: "dshm",
+			VolumeSource: corev1.VolumeSource{
+				EmptyDir: &corev1.EmptyDirVolumeSource{
+					Medium: corev1.StorageMediumMemory,
+				},
+			},
+		},
+	}
+
+	if len(inference.Spec.Volumes) != 0 {
+		for _, volume := range inference.Spec.Volumes {
+			if (volume.Type == v2alpha1.VolumeTypeLocal) && (len(volume.NodeNames) == 0) {
+				types := corev1.HostPathDirectoryOrCreate
+				volumes = append(volumes, corev1.Volume{
+					Name: volume.Name,
+					VolumeSource: corev1.VolumeSource{
+						HostPath: &corev1.HostPathVolumeSource{
+							Path: *volume.SubPath,
+							Type: &types,
+						},
+					},
+				})
+			} else {
+				volumes = append(volumes, corev1.Volume{
+					Name: volume.Name,
+					VolumeSource: corev1.VolumeSource{
+						PersistentVolumeClaim: &corev1.PersistentVolumeClaimVolumeSource{
+							ClaimName: makePersistentVolumeClaimName(volume.Name),
+						},
+					},
+				})
+			}
+		}
+	}
+
+	return volumes
+}
+
+func makeVolumeMounts(inference *v2alpha1.Inference) []corev1.VolumeMount {
+	volumeMounts := []corev1.VolumeMount{
+		{
+			Name:      "dshm",
+			MountPath: "/dev/shm",
+		},
+	}
+
+	if len(inference.Spec.Volumes) != 0 {
+		for _, volume := range inference.Spec.Volumes {
+			volumeMount := corev1.VolumeMount{
+				Name:      makePersistentVolumeName(volume.Name),
+				MountPath: volume.MountPath,
+			}
+
+			if volume.SubPath != nil {
+				volumeMount.SubPath = *volume.SubPath
+			}
+			volumeMounts = append(volumeMounts, volumeMount)
+		}
+	}
+
+	return volumeMounts
 }
 
 func makeTolerationGPU() []corev1.Toleration {

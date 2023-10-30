@@ -157,17 +157,11 @@ func makeInference(request types.InferenceDeployment) (*v2alpha1.Inference, erro
 	}
 
 	if request.Spec.Scaling != nil {
-		is.Spec.Scaling = &v2alpha1.ScalingConfig{
-			MinReplicas:     request.Spec.Scaling.MinReplicas,
-			MaxReplicas:     request.Spec.Scaling.MaxReplicas,
-			TargetLoad:      request.Spec.Scaling.TargetLoad,
-			ZeroDuration:    request.Spec.Scaling.ZeroDuration,
-			StartupDuration: request.Spec.Scaling.StartupDuration,
-		}
-		if request.Spec.Scaling.Type != nil {
-			buf := v2alpha1.ScalingType(*request.Spec.Scaling.Type)
-			is.Spec.Scaling.Type = &buf
-		}
+		is.Spec.Scaling = request.Spec.Scaling
+	}
+
+	if len(request.Spec.Volumes) != 0 {
+		is.Spec.Volumes = request.Spec.Volumes
 	}
 
 	rr, err := createResources(request)
