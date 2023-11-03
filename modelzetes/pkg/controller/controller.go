@@ -119,6 +119,12 @@ func NewController(
 			UpdateFunc: func(old, new interface{}) {
 				controller.enqueueFunction(new)
 			},
+			DeleteFunc: func(obj interface{}) {
+				_, err := cache.DeletionHandlingMetaNamespaceKeyFunc(obj)
+				if err == nil {
+					controller.deleteFunction(obj)
+				}
+			},
 		})
 
 	// Set up an event handler for when functions related resources like pods, deployments, replica sets
@@ -250,9 +256,8 @@ func (c *Controller) syncHandler(key string) error {
 	}
 
 	// Create persistentvolume if needed.
-	if len(function.Spec.Volumes) != 0 {
+	if len(function.Spec.Volumes) > 0 {
 		for _, volume := range function.Spec.Volumes {
-
 			if (volume.Type == v2alpha1.VolumeTypeLocal) && (len(volume.NodeNames) == 0) {
 				// no need create pv and pvc for hostPath
 				continue
@@ -397,6 +402,33 @@ func (c *Controller) enqueueFunction(obj interface{}) {
 		return
 	}
 	c.workqueue.AddRateLimited(key)
+}
+
+func (c *Controller) deleteFunction(obj interface{}) {
+
+	function := obj.(*v2alpha1.Inference)
+
+	if len(function.Spec.Volumes) > 0 {
+		for _, volume := range function.Spec.Volumes {
+			if (volume.Type == v2alpha1.VolumeTypeLocal) && (len(volume.NodeNames) == 0) {
+				// no need create pv and pvc for hostPath
+				continue
+			}
+			pvName := makePersistentVolumeName(volume.Name)
+			err := c.kubeclientset.CoreV1().PersistentVolumes().Delete(context.TODO(), pvName, metav1.DeleteOptions{})
+
+			if errors.IsNotFound(err) {
+				glog.Infof("Persistentvolume '%s' already deleted. Skipping deletion.", function.Spec.Name)
+				return
+			}
+			if err != nil {
+				runtime.HandleError(fmt.Errorf("failed to delete persistentvolume %s for '%s': %s", pvName, function.Spec.Name, err.Error()))
+				return
+			}
+			glog.Infof("Deleted persistentvolume %s for '%s'", pvName, function.Spec.Name)
+		}
+	}
+	return
 }
 
 // handleObject will take any resource implementing metav1.Object and attempt

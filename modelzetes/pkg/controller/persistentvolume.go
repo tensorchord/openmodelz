@@ -6,7 +6,6 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/runtime/schema"
 	glog "k8s.io/klog"
 )
 
@@ -22,13 +21,6 @@ func newPersistentVolume(function *v2alpha1.Inference, volume v2alpha1.VolumeCon
 	pv := &corev1.PersistentVolume{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: makePersistentVolumeName(volume.Name),
-			OwnerReferences: []metav1.OwnerReference{
-				*metav1.NewControllerRef(function, schema.GroupVersionKind{
-					Group:   v2alpha1.SchemeGroupVersion.Group,
-					Version: v2alpha1.SchemeGroupVersion.Version,
-					Kind:    v2alpha1.Kind,
-				}),
-			},
 		},
 		Spec: corev1.PersistentVolumeSpec{
 			AccessModes: []corev1.PersistentVolumeAccessMode{

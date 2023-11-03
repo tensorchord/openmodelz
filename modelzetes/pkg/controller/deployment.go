@@ -226,7 +226,7 @@ func makeVolumeMounts(inference *v2alpha1.Inference) []corev1.VolumeMount {
 	if len(inference.Spec.Volumes) != 0 {
 		for _, volume := range inference.Spec.Volumes {
 			volumeMount := corev1.VolumeMount{
-				Name:      makePersistentVolumeName(volume.Name),
+				Name:      volume.Name,
 				MountPath: volume.MountPath,
 			}
 
