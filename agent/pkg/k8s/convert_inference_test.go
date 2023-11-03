@@ -112,8 +112,8 @@ var _ = Describe("agent/pkg/k8s/convert_inference", func() {
 				}),
 				expect: Ptr(types.InferenceDeployment{
 					Spec: types.InferenceDeploymentSpec{
-						Scaling: Ptr(types.ScalingConfig{
-							Type: Ptr(types.ScalingTypeCapacity),
+						Scaling: Ptr(v2alpha1.ScalingConfig{
+							Type: Ptr(v2alpha1.ScalingTypeCapacity),
 						}),
 					},
 					Status: types.InferenceDeploymentStatus{

@@ -24,6 +24,7 @@ const (
 	gatewayBuildControlPlanePath                      = "/system/build"
 	gatewayBuildInstanceControlPlanePath              = "/system/build/%s"
 	gatewayImageCacheControlPlanePath                 = "/system/image-cache"
+	gatewaySecretControlPlanePath                     = "/system/secrets"
 	modelzCloudClusterControlPlanePath                = "/api/v1/users/%s/clusters/%s"
 	modelzCloudClusterWithUserControlPlanePath        = "/api/v1/users/%s/clusters"
 	modelzCloudClusterAPIKeyControlPlanePath          = "/api/v1/users/%s/clusters/%s/api_keys"

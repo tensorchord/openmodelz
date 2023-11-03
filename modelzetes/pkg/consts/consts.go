@@ -30,4 +30,9 @@ const (
 
 	// MaxReplicas is the maximum number of replicas that can be set for a inference.
 	MaxReplicas = 5
+
+	GCSCSIDriverName      = "gcs.csi.ofek.dev"
+	GCSVolumeHandle       = "csi-gcs"
+	GCSStorageClassName   = "csi-gcs-sc"
+	LocalStorageClassName = "local-storage"
 )

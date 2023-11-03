@@ -17,6 +17,7 @@ import (
 	"github.com/tensorchord/openmodelz/agent/api/types"
 	"github.com/tensorchord/openmodelz/agent/pkg/config"
 	"github.com/tensorchord/openmodelz/agent/pkg/event"
+	"github.com/tensorchord/openmodelz/agent/pkg/k8s"
 	ingressclient "github.com/tensorchord/openmodelz/ingress-operator/pkg/client/clientset/versioned"
 	"github.com/tensorchord/openmodelz/modelzetes/pkg/apis/modelzetes/v2alpha1"
 	apis "github.com/tensorchord/openmodelz/modelzetes/pkg/apis/modelzetes/v2alpha1"
@@ -55,6 +56,8 @@ type Runtime interface {
 	ServerList(ctx context.Context) ([]types.Server, error)
 	// managed cluster
 	GetClusterInfo(cluster *types.ManagedCluster) error
+	// secret
+	CreateSecret(ctx context.Context, secret *types.Secret) error
 }
 
 type generalRuntime struct {
@@ -69,6 +72,7 @@ type generalRuntime struct {
 	ingressClient     ingressclient.Interface
 	inferenceClient   clientset.Interface
 	kubefledgedClient kubefledged.Interface
+	secretClient      k8s.SecretsClient
 
 	logger        *logrus.Entry
 	eventRecorder event.Interface
@@ -104,6 +108,7 @@ func New(clientConfig *rest.Config,
 		clientConfig:         clientConfig,
 		ingressClient:        ingressClient,
 		inferenceClient:      inferenceClient,
+		secretClient:         k8s.NewSecretClient(kubeClient),
 		logger:               logrus.WithField("component", "runtime"),
 		eventRecorder:        eventRecorder,
 		ingressEnabled:       ingressEnabled,

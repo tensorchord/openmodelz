@@ -58,6 +58,8 @@ type InferenceSpec struct {
 
 	// Limits for inference
 	Resources *v1.ResourceRequirements `json:"resources,omitempty"`
+
+	Volumes []VolumeConfig `json:"volumes,omitempty"`
 }
 
 // Framework is the inference framework. It is only used to set the default port
@@ -97,6 +99,31 @@ const (
 	ScalingTypeCapacity ScalingType = "capacity"
 	ScalingTypeRPS      ScalingType = "rps"
 )
+
+const (
+	VolumeTypeLocal   VolumeType = "local"
+	VolumeTypeS3Fuse  VolumeType = "s3fuse"
+	VolumeTypeGCSFuse VolumeType = "gcsfuse"
+)
+
+type VolumeType string
+
+type VolumeConfig struct {
+	// Name is the name of the volume.
+	Name string `json:"name"`
+	// Type of the volume.
+	Type VolumeType `json:"type,omitempty"`
+	// MountPath is the path in pod to mount the volume.
+	MountPath string `json:"mount_path"`
+	// SubPath is the sub path of the volume.
+	SubPath *string `json:"sub_path,omitempty"`
+	// MountOption is the mount option.
+	MountOption *string `json:"mount_option,omitempty"`
+	// SecretName is the name of the secret. It is only used for object storage volume.
+	SecretName *string `json:"secret_name,omitempty"`
+	// NodeNames are the name list of the node. It is only used for local volume.
+	NodeNames []string `json:"node_name,omitempty"`
+}
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 

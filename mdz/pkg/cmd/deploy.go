@@ -10,6 +10,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/tensorchord/openmodelz/agent/api/types"
 	"github.com/tensorchord/openmodelz/mdz/pkg/telemetry"
+	modelzetes "github.com/tensorchord/openmodelz/modelzetes/pkg/apis/modelzetes/v2alpha1"
 )
 
 var (
@@ -70,7 +71,7 @@ func commandDeploy(cmd *cobra.Command, args []string) error {
 		name = petname.Generate(2, "-")
 	}
 
-	var typ types.ScalingType = types.ScalingTypeCapacity
+	var typ modelzetes.ScalingType = modelzetes.ScalingTypeCapacity
 	inf := types.InferenceDeployment{
 		Spec: types.InferenceDeploymentSpec{
 			Image:     deployImage,
@@ -80,7 +81,7 @@ func commandDeploy(cmd *cobra.Command, args []string) error {
 				"ai.tensorchord.name": name,
 			},
 			Framework: types.FrameworkOther,
-			Scaling: &types.ScalingConfig{
+			Scaling: &modelzetes.ScalingConfig{
 				MinReplicas:     int32Ptr(deployMinReplicas),
 				MaxReplicas:     int32Ptr(deployMaxReplicas),
 				TargetLoad:      int32Ptr(10),

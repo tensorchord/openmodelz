@@ -119,6 +119,12 @@ func NewController(
 			UpdateFunc: func(old, new interface{}) {
 				controller.enqueueFunction(new)
 			},
+			DeleteFunc: func(obj interface{}) {
+				_, err := cache.DeletionHandlingMetaNamespaceKeyFunc(obj)
+				if err == nil {
+					controller.deleteFunction(obj)
+				}
+			},
 		})
 
 	// Set up an event handler for when functions related resources like pods, deployments, replica sets
@@ -249,6 +255,48 @@ func (c *Controller) syncHandler(key string) error {
 		}
 	}
 
+	// Create persistentvolume if needed.
+	if len(function.Spec.Volumes) > 0 {
+		for _, volume := range function.Spec.Volumes {
+			if (volume.Type == v2alpha1.VolumeTypeLocal) && (len(volume.NodeNames) == 0) {
+				// no need create pv and pvc for hostPath
+				continue
+			}
+			pvName := makePersistentVolumeName(volume.Name)
+			_, err := c.kubeclientset.CoreV1().PersistentVolumes().Get(context.TODO(), pvName, metav1.GetOptions{})
+			if errors.IsNotFound(err) {
+				err = nil
+				glog.Infof("Creating persistentvolume %s for '%s'", pvName, function.Spec.Name)
+				if _, err := c.kubeclientset.CoreV1().PersistentVolumes().Create(context.TODO(),
+					newPersistentVolume(function, volume), metav1.CreateOptions{}); err != nil {
+					if errors.IsAlreadyExists(err) {
+						err = nil
+						glog.V(2).Infof("Persistentvolume '%s' already exists. Skipping creation.", function.Spec.Name)
+					} else {
+						return err
+					}
+				}
+			}
+
+			pvcName := makePersistentVolumeClaimName(volume.Name)
+			_, err = c.kubeclientset.CoreV1().PersistentVolumeClaims(function.Namespace).Get(context.TODO(), pvcName, metav1.GetOptions{})
+			if errors.IsNotFound(err) {
+				err = nil
+				glog.Infof("Creating persistentvolumeclaim %s for '%s'", pvcName, function.Spec.Name)
+				if _, err := c.kubeclientset.CoreV1().PersistentVolumeClaims(function.Namespace).Create(context.TODO(),
+					makePersistentVolumeClaim(function, volume), metav1.CreateOptions{}); err != nil {
+					if errors.IsAlreadyExists(err) {
+						err = nil
+						glog.V(2).Infof("Persistentvolumeclaim '%s' already exists. Skipping creation.", function.Spec.Name)
+					} else {
+						return err
+					}
+				}
+			}
+		}
+	}
+	// Create persistentvolumeclaim if needed.
+
 	// Get the deployment with the name specified in Function.spec
 	deployment, err := c.deploymentsLister.
 		Deployments(function.Namespace).Get(deploymentName)
@@ -354,6 +402,33 @@ func (c *Controller) enqueueFunction(obj interface{}) {
 		return
 	}
 	c.workqueue.AddRateLimited(key)
+}
+
+func (c *Controller) deleteFunction(obj interface{}) {
+
+	function := obj.(*v2alpha1.Inference)
+
+	if len(function.Spec.Volumes) > 0 {
+		for _, volume := range function.Spec.Volumes {
+			if (volume.Type == v2alpha1.VolumeTypeLocal) && (len(volume.NodeNames) == 0) {
+				// no need create pv and pvc for hostPath
+				continue
+			}
+			pvName := makePersistentVolumeName(volume.Name)
+			err := c.kubeclientset.CoreV1().PersistentVolumes().Delete(context.TODO(), pvName, metav1.DeleteOptions{})
+
+			if errors.IsNotFound(err) {
+				glog.Infof("Persistentvolume '%s' already deleted. Skipping deletion.", function.Spec.Name)
+				return
+			}
+			if err != nil {
+				runtime.HandleError(fmt.Errorf("failed to delete persistentvolume %s for '%s': %s", pvName, function.Spec.Name, err.Error()))
+				return
+			}
+			glog.Infof("Deleted persistentvolume %s for '%s'", pvName, function.Spec.Name)
+		}
+	}
+	return
 }
 
 // handleObject will take any resource implementing metav1.Object and attempt

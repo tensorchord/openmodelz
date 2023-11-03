@@ -21,6 +21,7 @@ const (
 	endpointHealthz         = "/healthz"
 	endpointBuild           = "/build"
 	endpointImageCache      = "/image-cache"
+	endpointSecretPlural    = "/secrets"
 )
 
 func (s *Server) registerRoutes() {
@@ -105,6 +106,9 @@ func (s *Server) registerRoutes() {
 
 	// image cache
 	controlPlane.POST(endpointImageCache, WrapHandler(s.handleImageCacheCreate))
+
+	// secret
+	controlPlane.POST(endpointSecretPlural, WrapHandler(s.handleSecretCreate))
 }
 
 // registerMetricsRoutes registers the metrics routes.
